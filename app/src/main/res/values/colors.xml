@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="pri" type="color">#cddc39</item>
+    <item name="pri_dark" type="color">#9e9d24</item>
+    <item name="acc" type="color">#f8bbd0</item>
+    <item name="bac" type="color">#f9fbe7</item>
+    <item name="txt" type="color">#455a64</item>
+    <item name="nav" type="color">#827717</item>
+</resources>
