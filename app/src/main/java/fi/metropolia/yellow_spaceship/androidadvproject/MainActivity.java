@@ -1,10 +1,12 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -25,33 +27,38 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(0).setChecked(true);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
-        toolbar.setNavigationIcon(R.drawable.nav);
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawerLayout.setDrawerListener(drawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerToggle.syncState();
+        //toolbar.setNavigationIcon(R.drawable.nav);
+        /*
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+        */
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
+                //menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
 
                 switch (menuItem.getItemId()) {
-                    case R.id.home_nav_item:
-                        swapFragment(HomeFragment.newInstance());
-                        break;
                     case R.id.create_nav_item:
-                        swapFragment(CreateSoundscapeFragment.newInstance());
+                        Intent intent = new Intent(MainActivity.this, CreateSoundscapeActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.scan_listen_nav_item:
-                        swapFragment(ScanAndListenFragment.newInstance());
                         break;
                     case R.id.quiz_nav_item:
-                        swapFragment(QuizFragment.newInstance());
                         break;
                 }
 
@@ -59,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        HomeFragment homeFragment = HomeFragment.newInstance();
+        //HomeFragment homeFragment = HomeFragment.newInstance();
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).commit();
+        //getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).commit();
 
     }
 

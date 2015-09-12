@@ -3,9 +3,15 @@
     <string name="action_settings">Settings</string>
 
     <string name="toolbar_title">SoundScapegoat</string>
+
     <string name="home_nav_text">Home</string>
     <string name="create_nav_text">Create Soundscape</string>
     <string name="scan_listen_nav_text">Scan &amp; Listen</string>
     <string name="quiz_nav_text">Quiz</string>
+
+    <string name="drawer_open">1</string>
+    <string name="drawer_close">1</string>
+
+    <string name="create_soundscape_title">Create Soundscape</string>
 
 </resources>
