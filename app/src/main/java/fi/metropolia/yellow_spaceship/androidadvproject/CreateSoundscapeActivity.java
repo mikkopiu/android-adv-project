@@ -19,8 +19,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_soundscape);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
+        setSupportActionBar(toolbar);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
