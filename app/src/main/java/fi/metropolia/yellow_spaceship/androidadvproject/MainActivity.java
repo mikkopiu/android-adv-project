@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -39,14 +40,36 @@ public class MainActivity extends AppCompatActivity {
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
 
+                switch (menuItem.getItemId()) {
+                    case R.id.home_nav_item:
+                        swapFragment(HomeFragment.newInstance());
+                        break;
+                    case R.id.create_nav_item:
+                        swapFragment(CreateSoundscapeFragment.newInstance());
+                        break;
+                    case R.id.scan_listen_nav_item:
+                        swapFragment(ScanAndListenFragment.newInstance());
+                        break;
+                    case R.id.quiz_nav_item:
+                        swapFragment(QuizFragment.newInstance());
+                        break;
+                }
+
                 return true;
             }
         });
 
-        TestFragment testFragment = TestFragment.newInstance();
+        HomeFragment homeFragment = HomeFragment.newInstance();
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, testFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).commit();
 
+    }
+
+    private void swapFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     /*

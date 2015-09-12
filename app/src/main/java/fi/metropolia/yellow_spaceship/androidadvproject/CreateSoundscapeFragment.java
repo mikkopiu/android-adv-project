@@ -7,16 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Petri on 10.9.2015.
+ * Created by Petri on 12.9.2015.
  */
-public class TestFragment extends Fragment {
-
-    public static TestFragment newInstance() {
-        TestFragment fragment = new TestFragment();
+public class CreateSoundscapeFragment extends Fragment {
+    public static CreateSoundscapeFragment newInstance() {
+        CreateSoundscapeFragment fragment = new CreateSoundscapeFragment();
         return fragment;
     }
 
-    public TestFragment() {
+    public CreateSoundscapeFragment() {
         // Required empty public constructor
     }
 
@@ -29,8 +28,7 @@ public class TestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.test_fragment, container, false);
+        return inflater.inflate(R.layout.create_soundscape_fragment, container, false);
 
     }
-
 }
