@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/activity_main_ll"
+        android:background="@color/pri_dark"
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
@@ -21,17 +22,27 @@
             android:background="@color/pri"
             android:minHeight="?attr/actionBarSize"/>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/fragment_container">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:weightSum="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MAIN ACTIVITY"/>
+            <Button
+                android:id="@+id/incontext_create_soundscape"
+                android:layout_width="0dip"
+                android:layout_height="200dip"
+                android:text="CREATE SOUNDSCAPE"
+                android:layout_weight=".5"/>
 
-        </FrameLayout>
+            <Button
+                android:layout_width="0dip"
+                android:layout_height="200dip"
+                android:text="TESTINAMISKA"
+                android:layout_weight=".5"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -9,8 +9,8 @@
     <string name="scan_listen_nav_text">Scan &amp; Listen</string>
     <string name="quiz_nav_text">Quiz</string>
 
-    <string name="drawer_open">1</string>
-    <string name="drawer_close">1</string>
+    <string name="drawer_open">10</string>
+    <string name="drawer_close">10</string>
 
     <string name="create_soundscape_title">Create Soundscape</string>
 

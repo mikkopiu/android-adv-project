@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Toolbar and menus + menu click events
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -35,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerToggle.syncState();
+
+        // Incontext navigation click events
+        Button incontextCreateSoundscapeButton = (Button)findViewById(R.id.incontext_create_soundscape);
+        incontextCreateSoundscapeButton.setOnClickListener(incontextButtonListener);
+
         //toolbar.setNavigationIcon(R.drawable.nav);
         /*
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -71,6 +78,18 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).commit();
 
     }
+
+    // OnClickListener for incontext navigation buttons
+    View.OnClickListener incontextButtonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.incontext_create_soundscape:
+                    Intent intent = new Intent(MainActivity.this, CreateSoundscapeActivity.class);
+                    startActivity(intent);
+                    break;
+            }
+        }
+    };
 
     private void swapFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
