@@ -20,204 +20,187 @@ public class DAMSound {
     private String CreatedBy;
     private String CollectionName;
     private String CollectionID;
+    private String DownloadLink;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
-     * @return
-     * The Title
+     * Title of the sound
+     * @return The Title
      */
     public String getTitle() {
         return Title;
     }
 
     /**
-     *
-     * @param Title
-     * The Title
+     * @param Title The Title
      */
     public void setTitle(String Title) {
         this.Title = Title;
     }
 
     /**
-     *
-     * @return
-     * The OriginalFilename
+     * Original file name
+     * @return The OriginalFilename
      */
     public String getOriginalFilename() {
         return OriginalFilename;
     }
 
     /**
-     *
-     * @param OriginalFilename
-     * The Original filename
+     * @param OriginalFilename The Original filename
      */
     public void setOriginalFilename(String OriginalFilename) {
         this.OriginalFilename = OriginalFilename;
     }
 
     /**
-     *
-     * @return
-     * The Category
+     * Category of the sound, e.g. NATURE, HUMAN
+     * @return The Category
      */
     public SoundCategory getCategory() {
         return Category;
     }
 
     /**
-     *
-     * @param Category
-     * The Category
+     * @param Category The Category
      */
     public void setCategory(SoundCategory Category) {
         this.Category = Category;
     }
 
     /**
-     *
-     * @return
-     * The SoundType
+     * The sound's type, e.g. SOUNDSCAPE, EFFECT
+     * @return The SoundType
      */
     public SoundType getSoundType() {
         return SoundType;
     }
 
     /**
-     *
-     * @param SoundType
-     * The Sound Type
+     * @param SoundType The Sound Type
      */
     public void setSoundType(SoundType SoundType) {
         this.SoundType = SoundType;
     }
 
     /**
-     *
-     * @return
-     * The LengthSec
+     * Length of the sound in full seconds
+     * @return The LengthSec
      */
     public String getLengthSec() {
         return LengthSec;
     }
 
     /**
-     *
-     * @param LengthSec
-     * The Length (sec)
+     * @param LengthSec The Length (sec)
      */
     public void setLengthSec(String LengthSec) {
         this.LengthSec = LengthSec;
     }
 
     /**
-     *
-     * @return
-     * The CreationDate
+     * Date that the sound was created on
+     * @return The CreationDate
      */
     public Date getCreationDate() {
         return CreationDate;
     }
 
     /**
-     *
-     * @param CreationDate
-     * The Creation date
+     * @param CreationDate The Creation date
      */
     public void setCreationDate(Date CreationDate) {
         this.CreationDate = CreationDate;
     }
 
     /**
-     *
-     * @return
-     * The FileExtension
+     * File extension, without the dot, e.g. "mp3"
+     * @return The FileExtension
      */
     public String getFileExtension() {
         return FileExtension;
     }
 
     /**
-     *
-     * @param FileExtension
-     * The File extension
+     * @param FileExtension The File extension
      */
     public void setFileExtension(String FileExtension) {
         this.FileExtension = FileExtension;
     }
 
     /**
-     *
-     * @return
-     * The FileSizeKB
+     * File size in kilobytes
+     * @return The FileSizeKB
      */
     public String getFileSizeKB() {
         return FileSizeKB;
     }
 
     /**
-     *
-     * @param FileSizeKB
-     * The File size(KB)
+     * @param FileSizeKB The File size(KB)
      */
     public void setFileSizeKB(String FileSizeKB) {
         this.FileSizeKB = FileSizeKB;
     }
 
     /**
-     *
-     * @return
-     * The CreatedBy
+     * Username of the user that created this sound
+     * @return The CreatedBy
      */
     public String getCreatedBy() {
         return CreatedBy;
     }
 
     /**
-     *
-     * @param CreatedBy
-     * The Created by
+     * @param CreatedBy The Created by
      */
     public void setCreatedBy(String CreatedBy) {
         this.CreatedBy = CreatedBy;
     }
 
     /**
-     *
-     * @return
-     * The CollectionName
+     * Name of the collection where this sound is located
+     * @return The CollectionName
      */
     public String getCollectionName() {
         return CollectionName;
     }
 
     /**
-     *
-     * @param CollectionName
-     * The Collection name
+     * @param CollectionName The Collection name
      */
     public void setCollectionName(String CollectionName) {
         this.CollectionName = CollectionName;
     }
 
     /**
-     *
-     * @return
-     * The CollectionID
+     * The ID of the collection where this sound is located
+     * @return The CollectionID
      */
     public String getCollectionID() {
         return CollectionID;
     }
 
     /**
-     *
-     * @param CollectionID
-     * The Collection ID
+     * @param CollectionID The Collection ID
      */
     public void setCollectionID(String CollectionID) {
         this.CollectionID = CollectionID;
+    }
+
+    /**
+     * URL to download the sound
+     * @return Download URL
+     */
+    public String getDownloadLink() {
+        return DownloadLink;
+    }
+
+    /**
+     * @param downloadLink New download URL
+     */
+    public void setDownloadLink(String downloadLink) {
+        DownloadLink = downloadLink;
     }
 
     public Map<String, Object> getAdditionalProperties() {
@@ -227,5 +210,4 @@ public class DAMSound {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
-
 }
