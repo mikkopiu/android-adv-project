@@ -13,7 +13,7 @@ public class DAMSound {
     private String OriginalFilename;
     private SoundCategory Category;
     private SoundType SoundType;
-    private String LengthSec;
+    private int LengthSec; // TODO: Can this be a float on the DAM side?
     private Date CreationDate;
     private String FileExtension;
     private String FileSizeKB;
@@ -87,14 +87,14 @@ public class DAMSound {
      * Length of the sound in full seconds
      * @return The LengthSec
      */
-    public String getLengthSec() {
+    public int getLengthSec() {
         return LengthSec;
     }
 
     /**
      * @param LengthSec The Length (sec)
      */
-    public void setLengthSec(String LengthSec) {
+    public void setLengthSec(int LengthSec) {
         this.LengthSec = LengthSec;
     }
 

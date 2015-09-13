@@ -1,15 +1,23 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.api;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.Date;
 import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMUser;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.DateDeserializer;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.IntegerDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategoryDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundTypeDeserializer;
 import retrofit.Callback;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -25,21 +33,31 @@ public class ApiClient {
     public static DAMApiInterface getDAMApiClient() {
         if (sDAMService == null) {
             // Create a new RestAdapter instance to create a base for API calls
-            // TODO: How to manage the API key? Should ApiClient have a constructor? How to skip in case of login?
             RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setConverter(getConverter())
                     .setEndpoint(BASE_URL)
-//                    .setRequestInterceptor(new RequestInterceptor() {
-//                        @Override
-//                        public void intercept(RequestFacade request) {
-//                            request.addQueryParam("key", "API_KEY_HERE");
-//                        }
-//                    })
                     .build();
 
             sDAMService = restAdapter.create(DAMApiInterface.class);
         }
 
         return sDAMService;
+    }
+
+    private static GsonConverter getConverter() {
+        // Create the builder responsible for creating the GSON used in parsing our response
+        GsonBuilder builder = new GsonBuilder();
+
+        // Register our Deserializer classes as type adapters for their classes
+        // This will instruct retrofit to deserialize the JSON into the correct format
+        builder.registerTypeAdapter(Date.class, new DateDeserializer());
+        builder.registerTypeAdapter(SoundCategory.class, new SoundCategoryDeserializer());
+        builder.registerTypeAdapter(SoundType.class, new SoundTypeDeserializer());
+        builder.registerTypeAdapter(Integer.class, new IntegerDeserializer());
+
+        Gson gson = builder.create();
+
+        return new GsonConverter(gson);
     }
 
     /**
@@ -75,7 +93,8 @@ public class ApiClient {
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getSoundsWithParams(@Query("format") String format,
+        void getSoundsWithParams(@Query("key") String apiKey,
+                                 @Query("format") String format,
                                  @Query("size") String size,
                                  @Query("collection") int collection,
                                  @Query("category") SoundCategory category,
@@ -93,7 +112,8 @@ public class ApiClient {
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getCollection(@Query("collection") int collection,
+        void getCollection(@Query("key") String apiKey,
+                           @Query("collection") int collection,
                            @Query("link") boolean link,
                            Callback<List<List<DAMSound>>> callback);
 
@@ -107,7 +127,8 @@ public class ApiClient {
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getCategory(@Query("category") SoundCategory category,
+        void getCategory(@Query("key") String apiKey,
+                         @Query("category") SoundCategory category,
                          @Query("link") boolean link,
                          Callback<List<List<DAMSound>>> callback);
 
@@ -118,7 +139,8 @@ public class ApiClient {
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getType(@Query("sound_type") SoundType soundType,
+        void getType(@Query("key") String apiKey,
+                     @Query("sound_type") SoundType soundType,
                      @Query("link") boolean link,
                      Callback<List<List<DAMSound>>> callback);
     }
