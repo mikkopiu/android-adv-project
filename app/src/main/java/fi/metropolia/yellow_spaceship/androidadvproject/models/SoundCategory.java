@@ -39,4 +39,20 @@ public enum SoundCategory {
                 return "Unknown sound category";
         }
     }
+
+    public String toString() {
+        switch (this) {
+            case NATURE:
+                return "nature";
+            case HUMAN:
+                return "human";
+            case MACHINE:
+                return "machine";
+            case STORY:
+                return "story";
+            case UNKNOWN:
+            default:
+                return "";
+        }
+    }
 }

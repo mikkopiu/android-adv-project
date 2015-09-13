@@ -34,4 +34,18 @@ public enum SoundType {
                 return "Unknown sound type";
         }
     }
+
+    public String toString() {
+        switch (this) {
+            case SOUNDSCAPE:
+                return "soundscapes";
+            case AMBIENCE:
+                return "ambience";
+            case EFFECT:
+                return "effects";
+            case UNKNOWN:
+            default:
+                return "";
+        }
+    }
 }
