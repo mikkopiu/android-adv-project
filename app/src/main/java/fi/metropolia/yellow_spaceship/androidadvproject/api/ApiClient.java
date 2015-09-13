@@ -3,6 +3,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.RequestBody;
 
 import java.util.Date;
 import java.util.List;
@@ -20,8 +21,11 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 /**
  * The API client for accessing the DAM.
@@ -143,5 +147,21 @@ public class ApiClient {
                      @Query("sound_type") SoundType soundType,
                      @Query("link") boolean link,
                      Callback<List<List<DAMSound>>> callback);
+
+//        /**
+//         * TODO: Should the resourcetype and collection be hard-coded, or not?
+//         */
+//        @Multipart
+//        @POST("/api_upload/?resourcetype=4&collection=11")
+//        void uploadSound(@Query("key") String apiKey,
+//                         @Query("field8") String title,
+//                         @Query("field73") String description,
+//                         @Query("field74") String tags,
+//                         @Query("field75") SoundCategory category,
+//                         @Query("field76") SoundType soundType,
+//                         @Query("field78") int lengthInSecs,
+//                         @Part("name") RequestBody name, // name should always be "userfile"
+//                         @Part("file") TypedFile file,
+//                         Callback<String> callback);
     }
 }
