@@ -19,7 +19,7 @@ public class DAMSound {
     private String FileSizeKB;
     private String CreatedBy;
     private String CollectionName;
-    private String CollectionID;
+    private int CollectionID;
     private String DownloadLink;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -177,14 +177,14 @@ public class DAMSound {
      * The ID of the collection where this sound is located
      * @return The CollectionID
      */
-    public String getCollectionID() {
+    public int getCollectionID() {
         return CollectionID;
     }
 
     /**
      * @param CollectionID The Collection ID
      */
-    public void setCollectionID(String CollectionID) {
+    public void setCollectionID(int CollectionID) {
         this.CollectionID = CollectionID;
     }
 
