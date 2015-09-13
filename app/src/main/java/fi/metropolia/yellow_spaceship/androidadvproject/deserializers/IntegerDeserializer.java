@@ -1,4 +1,4 @@
-package fi.metropolia.yellow_spaceship.androidadvproject.models;
+package fi.metropolia.yellow_spaceship.androidadvproject.deserializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

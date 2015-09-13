@@ -9,12 +9,12 @@ import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMUser;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.DateDeserializer;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.IntegerDeserializer;
+import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.DateDeserializer;
+import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.IntegerDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategoryDeserializer;
+import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.SoundCategoryDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundTypeDeserializer;
+import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.SoundTypeDeserializer;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
