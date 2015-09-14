@@ -148,20 +148,21 @@ public class ApiClient {
                      @Query("link") boolean link,
                      Callback<List<List<DAMSound>>> callback);
 
-//        /**
-//         * TODO: Should the resourcetype and collection be hard-coded, or not?
-//         */
-//        @Multipart
-//        @POST("/api_upload/?resourcetype=4&collection=11")
-//        void uploadSound(@Query("key") String apiKey,
-//                         @Query("field8") String title,
-//                         @Query("field73") String description,
-//                         @Query("field74") String tags,
-//                         @Query("field75") SoundCategory category,
-//                         @Query("field76") SoundType soundType,
-//                         @Query("field78") int lengthInSecs,
-//                         @Part("name") RequestBody name, // name should always be "userfile"
-//                         @Part("file") TypedFile file,
-//                         Callback<String> callback);
+        /**
+         * TODO: Should the resourcetype and collection be hard-coded, or not?
+         */
+        @Multipart
+        @POST("/api_upload/?resourcetype=4&collection=11")
+        void uploadSound(@Query("key") String apiKey,
+                         @Query("field8") String title,
+                         @Query("field73") String description,
+                         @Query("field74") String tags,
+                         @Query("field75") SoundCategory category,
+                         @Query("field76") SoundType soundType,
+                         @Query("field78") int lengthInSecs,
+                         @Part("name") RequestBody name, // TODO: is this correct, how to set Content-Disposition props?
+                         @Part("filename") String fileName, // TODO: is this correct, how to set Content-Disposition props?
+                         @Part("file") TypedFile file, // TODO: is this correct?
+                         Callback<String> callback);
     }
 }
