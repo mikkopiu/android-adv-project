@@ -4,17 +4,16 @@
     tools:context=".MainActivity">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/home_nav_item"
-            android:title="@string/home_nav_text"/>
+            android:id="@+id/side_nav_item1"
+            android:title="@string/side_nav_item1"/>
         <item
-            android:id="@+id/create_nav_item"
-            android:title="@string/create_nav_text"/>
+            android:id="@+id/side_nav_item2"
+            android:title="@string/side_nav_item2"/>
         <item
-            android:id="@+id/scan_listen_nav_item"
-            android:checked="true"
-            android:title="@string/scan_listen_nav_text"/>
+            android:id="@+id/side_nav_item3"
+            android:title="@string/side_nav_item3"/>
         <item
-            android:id="@+id/quiz_nav_item"
-            android:title="@string/quiz_nav_text"/>
+            android:id="@+id/side_nav_item4"
+            android:title="@string/side_nav_item4"/>
     </group>
 </menu>

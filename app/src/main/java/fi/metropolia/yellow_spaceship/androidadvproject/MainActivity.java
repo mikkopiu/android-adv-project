@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,51 +29,15 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
-        setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawerLayout.setDrawerListener(drawerToggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        drawerToggle.syncState();
+        DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
+        drawerMenu.createMenu();
 
         // Incontext navigation click events
         Button incontextCreateSoundscapeButton = (Button)findViewById(R.id.incontext_create_soundscape);
         incontextCreateSoundscapeButton.setOnClickListener(incontextButtonListener);
 
-        //toolbar.setNavigationIcon(R.drawable.nav);
-        /*
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-        */
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                //menuItem.setChecked(true);
-                drawerLayout.closeDrawers();
-
-                switch (menuItem.getItemId()) {
-                    case R.id.create_nav_item:
-                        Intent intent = new Intent(MainActivity.this, CreateSoundscapeActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.scan_listen_nav_item:
-                        break;
-                    case R.id.quiz_nav_item:
-                        break;
-                }
-
-                return true;
-            }
-        });
-
         //HomeFragment homeFragment = HomeFragment.newInstance();
-
         //getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, homeFragment).commit();
 
     }
