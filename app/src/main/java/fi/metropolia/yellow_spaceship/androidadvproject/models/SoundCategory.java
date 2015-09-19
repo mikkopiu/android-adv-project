@@ -55,4 +55,20 @@ public enum SoundCategory {
                 return "";
         }
     }
+
+    public String menuCaption() {
+        switch (this) {
+            case NATURE:
+                return "Nature";
+            case HUMAN:
+                return "Human";
+            case MACHINE:
+                return "Machine";
+            case STORY:
+                return "Story";
+            case UNKNOWN:
+            default:
+                return "Unknown";
+        }
+    }
 }
