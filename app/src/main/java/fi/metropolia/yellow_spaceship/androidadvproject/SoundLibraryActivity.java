@@ -62,8 +62,13 @@ public class SoundLibraryActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
+        System.out.println("TEEEESTAT");
         drawerMenu.changeToDrawerMenu();
         super.onBackPressed();
+    }
+
+    public void changeToDrawerMenu() {
+        drawerMenu.changeToDrawerMenu();
     }
 
 }

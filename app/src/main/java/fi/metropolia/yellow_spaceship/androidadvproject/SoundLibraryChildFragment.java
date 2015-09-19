@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -32,16 +33,25 @@ public class SoundLibraryChildFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
+
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.sound_library_child_fragment, container, false);
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
         // Set onClickListener for back button
-        ((Toolbar)((AppCompatActivity)getActivity()).findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
+        ((Toolbar)getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
             }
         });
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
     }
 

@@ -106,7 +106,7 @@ public class DrawerMenu {
      */
     public void changeToDrawerMenu() {
 
-        this.drawerToggle.setDrawerIndicatorEnabled(true);
+        createMenu();
         this.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
     }
