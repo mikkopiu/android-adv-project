@@ -3,7 +3,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.RequestBody;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +24,6 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Query;
-import retrofit.mime.TypedFile;
 
 /**
  * The API client for accessing the DAM.
@@ -83,7 +81,8 @@ public class ApiClient {
          * Get a list of sounds matching given parameters.
          * Set parameter as null to ignore.
          *
-         * TODO: Check if .toString() is called on values, i.e. can we use SoundType or does it need to be a String?
+         * String.valueOf(Object) is called for all Query objects, so adding a toString-method
+         * to a custom class/enum should be enough.
          *
          * @param format File format
          * @param size File size, e.g. "<50KB"
@@ -160,9 +159,7 @@ public class ApiClient {
                          @Query("field75") SoundCategory category,
                          @Query("field76") SoundType soundType,
                          @Query("field78") int lengthInSecs,
-                         @Part("name") RequestBody name, // TODO: is this correct, how to set Content-Disposition props?
-                         @Part("filename") String fileName, // TODO: is this correct, how to set Content-Disposition props?
-                         @Part("file") TypedFile file, // TODO: is this correct?
+                         @Part("userfile") TypedByteArrayWithFilename file,
                          Callback<String> callback);
     }
 }
