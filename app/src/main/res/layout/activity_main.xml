@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar"
+            android:elevation="8dp"
             android:background="@color/pri"
             android:minHeight="?attr/actionBarSize"/>
 

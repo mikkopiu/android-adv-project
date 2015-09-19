@@ -19,6 +19,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     private Context context;
     private ArrayList<ListRowData> dataSet;
+    private View.OnClickListener listener;
 
     /**
      * Basic ViewHolder inner class
@@ -27,8 +28,9 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         public View view;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v, View.OnClickListener listener) {
             super(v);
+            v.setOnClickListener(listener);
             this.view = v;
         }
 
@@ -39,10 +41,11 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
      * @param context The activity
      * @param dataSet Data for the adapter.
      */
-    public SoundLibraryListAdapter(Context context, ArrayList<ListRowData> dataSet) {
+    public SoundLibraryListAdapter(Context context, View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
 
         this.dataSet = dataSet;
         this.context = context;
+        this.listener = listener;
 
     }
 
@@ -54,7 +57,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
                             .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v, this.listener);
 
         return vh;
 

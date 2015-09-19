@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.menu;
 
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class DrawerMenu {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private ActionBarDrawerToggle drawerToggle;
 
     /**
      * Constructor
@@ -43,7 +45,7 @@ public class DrawerMenu {
      */
     public void createMenu() {
         this.activity.setSupportActionBar(toolbar);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this.activity, this.drawerLayout, this.toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawerToggle = new ActionBarDrawerToggle(this.activity, this.drawerLayout, this.toolbar, R.string.drawer_open, R.string.drawer_close);
         this.drawerLayout.setDrawerListener(drawerToggle);
         this.activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.activity.getSupportActionBar().setHomeButtonEnabled(true);
@@ -84,6 +86,29 @@ public class DrawerMenu {
                 return false;
             }
         });
+    }
+
+    /**
+     * Changes hamburger to back arrow
+     */
+    public void changeToBackButton() {
+
+        // Hide drawer menu button and disable swipe
+        this.drawerToggle.setDrawerIndicatorEnabled(false);
+        this.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        // This shows the back arrow
+        activity.getSupportActionBar().setHomeAsUpIndicator(null);
+
+    }
+
+    /**
+     * Changes back arrow back to hamburger
+     */
+    public void changeToDrawerMenu() {
+
+        this.drawerToggle.setDrawerIndicatorEnabled(true);
+        this.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
 }
