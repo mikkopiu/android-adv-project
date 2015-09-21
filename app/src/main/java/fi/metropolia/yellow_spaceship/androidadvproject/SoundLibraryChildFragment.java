@@ -8,6 +8,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.List;
+
+import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Petri on 19.9.2015.
@@ -27,7 +37,7 @@ public class SoundLibraryChildFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        loadData();
     }
 
     @Override
@@ -53,6 +63,28 @@ public class SoundLibraryChildFragment extends Fragment {
             }
         });
 
+    }
+
+    private void loadData() {
+        ApiClient.getDAMApiClient().getCategory("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
+                SoundCategory.HUMAN,
+                true,
+                new Callback<List<List<DAMSound>>>() {
+                    @Override
+                    public void success(List<List<DAMSound>> lists, Response response) {
+                        for (List<DAMSound> d : lists) {
+                            System.out.println(d.get(0).getTitle());
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
     }
 
 }
