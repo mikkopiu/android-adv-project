@@ -59,15 +59,12 @@ public class SoundLibraryChildFragment extends Fragment {
 
         // Data for RecycleView
         data = new ArrayList<ListRowData>();
-        data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp, null));
-        data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
-        data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));
 
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        adapter = new SoundLibraryListAdapter(getActivity(), null, null);
+        adapter = new SoundLibraryListAdapter(getActivity(), null, data);
         recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -103,14 +100,11 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-                        System.out.println(data.size());
+                        data.clear();
                         for (List<DAMSound> d : lists) {
-                            System.out.println(d.get(0).getTitle());
                             data.add(new ListRowData(d.get(0).getTitle(), null, null));
                         }
-                        adapter.swap(data);
                         recyclerView.getAdapter().notifyDataSetChanged();
-                        System.out.println(data.size());
                     }
 
                     @Override
