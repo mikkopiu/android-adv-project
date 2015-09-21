@@ -30,7 +30,8 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         public ViewHolder(View v, View.OnClickListener listener) {
             super(v);
-            v.setOnClickListener(listener);
+            if(listener != null)
+                v.setOnClickListener(listener);
             this.view = v;
         }
 
@@ -59,6 +60,14 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
             return dataSet.get(position);
         else
             return null;
+    }
+
+    public void swap(ArrayList<ListRowData> data) {
+        if(dataSet != null) {
+            dataSet.clear();
+            dataSet.addAll(data);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -94,7 +103,10 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        if(dataSet != null)
+            return dataSet.size();
+        else
+            return 0;
     }
 
 }

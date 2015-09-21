@@ -1,18 +1,22 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.menu.ListRowData;
+import fi.metropolia.yellow_spaceship.androidadvproject.menu.SoundLibraryListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import retrofit.Callback;
@@ -23,6 +27,12 @@ import retrofit.client.Response;
  * Created by Petri on 19.9.2015.
  */
 public class SoundLibraryChildFragment extends Fragment {
+
+    private SoundCategory category;
+    private RecyclerView.LayoutManager layoutManager;
+    ArrayList<ListRowData> data;
+    private SoundLibraryListAdapter adapter;
+    private RecyclerView recyclerView;
 
     public static SoundLibraryChildFragment newInstance() {
         SoundLibraryChildFragment fragment = new SoundLibraryChildFragment();
@@ -37,7 +47,7 @@ public class SoundLibraryChildFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        loadData();
+
     }
 
     @Override
@@ -45,8 +55,29 @@ public class SoundLibraryChildFragment extends Fragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
 
+        this.category = SoundCategory.fromApi(getArguments().getString("category"));
+
+        // Data for RecycleView
+        data = new ArrayList<ListRowData>();
+        data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp, null));
+        data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
+        data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.sound_library_child_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
+
+        // Adapter for RecyclerView
+        adapter = new SoundLibraryListAdapter(getActivity(), null, null);
+        recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
+
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(adapter);
+
+        loadData();
+
+        return fragmentView;
 
     }
 
@@ -67,14 +98,19 @@ public class SoundLibraryChildFragment extends Fragment {
 
     private void loadData() {
         ApiClient.getDAMApiClient().getCategory("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
-                SoundCategory.HUMAN,
+                this.category,
                 true,
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
+                        System.out.println(data.size());
                         for (List<DAMSound> d : lists) {
                             System.out.println(d.get(0).getTitle());
+                            data.add(new ListRowData(d.get(0).getTitle(), null, null));
                         }
+                        adapter.swap(data);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        System.out.println(data.size());
                     }
 
                     @Override

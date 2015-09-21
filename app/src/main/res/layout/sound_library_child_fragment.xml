@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     android:id="@+id/sound_library_child_fragment">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SOUND LIBRARY CHILD FRAGMENT"/>
+        android:id="@+id/recycler_view">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

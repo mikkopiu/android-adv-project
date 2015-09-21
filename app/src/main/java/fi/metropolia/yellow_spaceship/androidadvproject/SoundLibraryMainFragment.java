@@ -80,10 +80,12 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
         ((SoundLibraryActivity)getActivity()).changeToBackButton();
-        ((SoundLibraryActivity)getActivity()).swapFragment(fragment);
         int itemPosition = recyclerView.getChildAdapterPosition(v);
         ListRowData data = adapter.getDataWithPosition(itemPosition);
-
+        Bundle bundle = new Bundle();
+        bundle.putString("category", data.getCategory().toString());
+        fragment.setArguments(bundle);
+        ((SoundLibraryActivity)getActivity()).swapFragment(fragment);
     }
 
     @Override
