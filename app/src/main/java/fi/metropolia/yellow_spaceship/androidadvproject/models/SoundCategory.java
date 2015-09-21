@@ -36,7 +36,7 @@ public enum SoundCategory {
                 return "Story sound";
             case UNKNOWN:
             default:
-                return "Unknown sound category";
+                return "Unknown sound";
         }
     }
 
@@ -52,7 +52,7 @@ public enum SoundCategory {
                 return "story";
             case UNKNOWN:
             default:
-                return "";
+                return null;
         }
     }
 
