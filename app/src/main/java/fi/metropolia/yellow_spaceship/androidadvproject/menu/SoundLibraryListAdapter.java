@@ -49,6 +49,18 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     }
 
+    /**
+     * Get a ListRowData-object with position
+     * @param position index position in the dataSet
+     * @return ListRowData object
+     */
+    public ListRowData getDataWithPosition(int position) {
+        if(dataSet.size() > position)
+            return dataSet.get(position);
+        else
+            return null;
+    }
+
     @Override
     public SoundLibraryListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

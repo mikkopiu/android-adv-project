@@ -18,10 +18,12 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 /**
  * Created by Petri on 19.9.2015.
  */
-public class SoundLibraryMainFragment extends Fragment {
+public class SoundLibraryMainFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView.LayoutManager layoutManager;
     private View fragmentView;
+    private RecyclerView recyclerView;
+    private SoundLibraryListAdapter adapter;
 
     public static SoundLibraryMainFragment newInstance() {
         SoundLibraryMainFragment fragment = new SoundLibraryMainFragment();
@@ -47,17 +49,17 @@ public class SoundLibraryMainFragment extends Fragment {
 
         // Data for RecycleView
         ArrayList<ListRowData> data = new ArrayList<ListRowData>();
-        data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp));
-        data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp));
-        data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp));
+        data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp, null));
+        data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
+        data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));
 
         for(SoundCategory cat : SoundCategory.values()) {
-            data.add(new ListRowData(cat.menuCaption(), null));
+            data.add(new ListRowData(cat.menuCaption(), null, cat));
         }
 
         // Adapter for RecyclerView
-        SoundLibraryListAdapter adapter = new SoundLibraryListAdapter(getActivity(), (View.OnClickListener)getActivity(), data);
-        RecyclerView recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
+        adapter = new SoundLibraryListAdapter(getActivity(), this, data);
+        recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
         recyclerView.setHasFixedSize(true);
 
@@ -67,6 +69,20 @@ public class SoundLibraryMainFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         return fragmentView;
+
+    }
+
+    /**
+     * OnClickListener for RecyclerView views.
+     * @param v View object
+     */
+    @Override
+    public void onClick(View v) {
+        SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
+        ((SoundLibraryActivity)getActivity()).changeToBackButton();
+        ((SoundLibraryActivity)getActivity()).swapFragment(fragment);
+        int itemPosition = recyclerView.getChildAdapterPosition(v);
+        ListRowData data = adapter.getDataWithPosition(itemPosition);
 
     }
 

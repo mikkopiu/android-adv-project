@@ -15,7 +15,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
 /**
  * Created by Petri on 15.9.2015.
  */
-public class SoundLibraryActivity extends AppCompatActivity implements View.OnClickListener {
+public class SoundLibraryActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -46,14 +46,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    @Override
-    public void onClick(View v) {
-        SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
-        drawerMenu.changeToBackButton();
-        swapFragment(fragment);
-    }
-
-    private void swapFragment(Fragment fragment) {
+    public void swapFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragment)
                 .addToBackStack(null)
@@ -69,6 +62,10 @@ public class SoundLibraryActivity extends AppCompatActivity implements View.OnCl
 
     public void changeToDrawerMenu() {
         drawerMenu.changeToDrawerMenu();
+    }
+
+    public void changeToBackButton() {
+        drawerMenu.changeToBackButton();
     }
 
 }
