@@ -33,6 +33,7 @@ public class SoundLibraryChildFragment extends Fragment {
     ArrayList<ListRowData> data;
     private SoundLibraryListAdapter adapter;
     private RecyclerView recyclerView;
+    private String searchQuery;
 
     public static SoundLibraryChildFragment newInstance() {
         SoundLibraryChildFragment fragment = new SoundLibraryChildFragment();
@@ -41,6 +42,10 @@ public class SoundLibraryChildFragment extends Fragment {
 
     public SoundLibraryChildFragment() {
         // Required empty public constructor
+    }
+
+    public void setSearchQuery(String query) {
+        this.searchQuery = query;
     }
 
     @Override
@@ -55,7 +60,17 @@ public class SoundLibraryChildFragment extends Fragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
 
-        this.category = SoundCategory.fromApi(getArguments().getString("category"));
+        if(getArguments().getString("category") != null) {
+            this.category = SoundCategory.fromApi(getArguments().getString("category"));
+        } else {
+            this.category = null;
+        }
+
+        if(getArguments().getString("search-query") != null) {
+            this.searchQuery = getArguments().getString("search-query");
+        } else {
+            this.searchQuery = null;
+        }
 
         // Data for RecycleView
         data = new ArrayList<ListRowData>();
@@ -72,7 +87,12 @@ public class SoundLibraryChildFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        loadData();
+        if(this.category != null)
+            loadData();
+
+        if(this.searchQuery != null) {
+            loadSearchData();
+        }
 
         return fragmentView;
 
@@ -97,6 +117,37 @@ public class SoundLibraryChildFragment extends Fragment {
         ApiClient.getDAMApiClient().getCategory("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
                 this.category,
                 true,
+                new Callback<List<List<DAMSound>>>() {
+                    @Override
+                    public void success(List<List<DAMSound>> lists, Response response) {
+                        data.clear();
+                        for (List<DAMSound> d : lists) {
+                            data.add(new ListRowData(d.get(0).getTitle(), null, null));
+                        }
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        error.printStackTrace();
+
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+    }
+
+    public void loadSearchData() {
+        ApiClient.getDAMApiClient().getSoundsWithParams("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
+                null,
+                null,
+                null,
+                null,
+                null,
+                true,
+                this.searchQuery,
+                null,
+                null,
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {

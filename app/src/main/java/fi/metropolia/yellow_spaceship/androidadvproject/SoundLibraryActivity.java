@@ -1,21 +1,26 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
 
 /**
  * Created by Petri on 15.9.2015.
  */
-public class SoundLibraryActivity extends AppCompatActivity {
+public class SoundLibraryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -55,9 +60,60 @@ public class SoundLibraryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        System.out.println("TEEEESTAT");
         drawerMenu.changeToDrawerMenu();
         super.onBackPressed();
+    }
+
+    // http://stackoverflow.com/a/27482902
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.search_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager)SoundLibraryActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(SoundLibraryActivity.this.getComponentName()));
+            searchView.setOnQueryTextListener(this);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (query.length() > 0) {
+
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+            if(f == null || !(f instanceof SoundLibraryChildFragment)) {
+
+                SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("search-query", query);
+                fragment.setArguments(bundle);
+                swapFragment(fragment);
+
+            } else {
+
+                if(f instanceof SoundLibraryChildFragment) {
+                    ((SoundLibraryChildFragment) f).setSearchQuery(query);
+                    ((SoundLibraryChildFragment) f).loadSearchData();
+                }
+
+            }
+
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 
     public void changeToDrawerMenu() {

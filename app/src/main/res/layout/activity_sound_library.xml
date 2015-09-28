@@ -21,7 +21,9 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar"
             android:background="@color/pri"
-            android:minHeight="?attr/actionBarSize"/>
+            android:minHeight="?attr/actionBarSize">
+
+        </android.support.v7.widget.Toolbar>
 
         <FrameLayout
             android:layout_width="fill_parent"

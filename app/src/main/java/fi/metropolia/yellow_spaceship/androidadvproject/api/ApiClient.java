@@ -99,7 +99,7 @@ public class ApiClient {
         void getSoundsWithParams(@Query("key") String apiKey,
                                  @Query("format") String format,
                                  @Query("size") String size,
-                                 @Query("collection") int collection,
+                                 @Query("collection") Integer collection,
                                  @Query("category") SoundCategory category,
                                  @Query("tag") String tag,
                                  @Query("link") boolean link,
