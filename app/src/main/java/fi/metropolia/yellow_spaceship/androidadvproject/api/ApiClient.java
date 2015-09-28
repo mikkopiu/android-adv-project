@@ -162,5 +162,18 @@ public class ApiClient {
                          @Query("field78") int lengthInSecs,
                          @Part("userfile") TypedByteArrayWithFilename file,
                          Callback<String> callback);
+
+        /**
+         * Make a free text search on all available metadata fields
+         * @param apiKey DAM API key
+         * @param search Free text search query
+         * @param link Show download links?
+         * @param callback Callback for parsing
+         */
+        @GET("/api_audio_search/index.php/")
+        void getTextSearchResults(@Query("key") String apiKey,
+                                  @Query("search") String search,
+                                  @Query("link") boolean link,
+                                  Callback<List<List<DAMSound>>> callback);
     }
 }

@@ -37,6 +37,8 @@ public class SoundLibraryChildFragment extends Fragment {
     private RecyclerView recyclerView;
     private String searchQuery;
 
+    private SessionManager session;
+
     public static SoundLibraryChildFragment newInstance() {
         SoundLibraryChildFragment fragment = new SoundLibraryChildFragment();
         return fragment;
@@ -61,6 +63,8 @@ public class SoundLibraryChildFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
+
+        session = new SessionManager(getActivity());
 
         if(getArguments().getString("category") != null) {
             this.category = SoundCategory.fromApi(getArguments().getString("category"));
@@ -116,7 +120,6 @@ public class SoundLibraryChildFragment extends Fragment {
     }
 
     private void loadData() {
-        SessionManager session = new SessionManager(getActivity());
         session.checkLogin();
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
@@ -143,16 +146,11 @@ public class SoundLibraryChildFragment extends Fragment {
     }
 
     public void loadSearchData() {
-        ApiClient.getDAMApiClient().getSoundsWithParams("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
-                null,
-                null,
-                null,
-                null,
-                null,
-                true,
+        session.checkLogin();
+
+        ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
                 this.searchQuery,
-                null,
-                null,
+                true,
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
