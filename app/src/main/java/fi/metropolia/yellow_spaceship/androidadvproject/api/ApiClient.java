@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.util.Date;
 import java.util.List;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMApiKey;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMUser;
 import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.DateDeserializer;
@@ -75,7 +76,7 @@ public class ApiClient {
          */
         @POST("/api_auth/auth.php")
         void login(@Body DAMUser user,
-                   Callback<String> callback);
+                   Callback<DAMApiKey> callback);
 
         /**
          * Get a list of sounds matching given parameters.

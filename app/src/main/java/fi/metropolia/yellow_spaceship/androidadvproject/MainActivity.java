@@ -16,10 +16,18 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        session = new SessionManager(getApplicationContext());
+
+        // Check login status and redirect to LoginActivity if necessary
+        // TODO: is this the best place?
+        session.checkLogin();
 
         // Toolbar and menus + menu click events
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);

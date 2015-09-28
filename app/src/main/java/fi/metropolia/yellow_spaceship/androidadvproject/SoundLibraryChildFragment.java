@@ -1,5 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -114,7 +116,10 @@ public class SoundLibraryChildFragment extends Fragment {
     }
 
     private void loadData() {
-        ApiClient.getDAMApiClient().getCategory("M4B-lnwO3clT-MGJmnMM1NGOpJF4q4YNxaBoQzLTjMx9dit4w1QoUZxO3LuVJeQWO03fxaNfdX38tMN1oJ_2ViQq7h_2e1hKcv_h_jAhYXPJJnMayzS-Ih6FcgwvBVaB",
+        SessionManager session = new SessionManager(getActivity());
+        session.checkLogin();
+
+        ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.category,
                 true,
                 new Callback<List<List<DAMSound>>>() {

@@ -1,6 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 /**
@@ -52,25 +53,35 @@ public class SessionManager {
         editor.apply();
 
         // TODO: Start login activity here?
+        // After logout redirect user to Loing Activity
+        Intent i = new Intent(mContext, LoginActivity.class);
+        // Closing all the Activities
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // Add new Flag to start new Activity
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Staring Login Activity
+        mContext.startActivity(i);
     }
 
-    // TODO: If using activity, create something like this
-//    public void checkLogin(){
-//        // Check login status
-//        if(!this.isLoggedIn()){
-//            // user is not logged in redirect him to Login Activity
-//            Intent i = new Intent(_context, LoginActivity.class);
-//            // Closing all the Activities
-//            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//            // Add new Flag to start new Activity
-//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//            // Staring Login Activity
-//            _context.startActivity(i);
-//        }
-//
-//    }
+    // TODO: If using activity, create something like this?
+    public void checkLogin(){
+        // Check login status
+        if(!this.isLoggedIn()){
+            // user is not logged in redirect him to Login Activity
+            Intent i = new Intent(mContext, LoginActivity.class);
+            // Closing all the Activities
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            // Add new Flag to start new Activity
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Staring Login Activity
+            mContext.startActivity(i);
+        }
+
+    }
 
     /**
      * Quick check for login status
