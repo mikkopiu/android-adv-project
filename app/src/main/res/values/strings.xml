@@ -16,4 +16,8 @@
     <string name="sound_library_title">Sound Library</string>
     <string name="museum_tour_title">Museum Tour</string>
 
+    <string name="login_main_action">Login</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+
 </resources>

@@ -8,7 +8,6 @@ public class DAMUser {
     private String username;
     private String password;
 
-    public DAMUser() {}
     public DAMUser(String username, String password) {
         this.username = username;
         this.password = password;
