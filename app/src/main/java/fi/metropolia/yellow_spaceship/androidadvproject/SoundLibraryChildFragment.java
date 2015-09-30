@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class SoundLibraryChildFragment extends Fragment {
     private SoundLibraryListAdapter adapter;
     private RecyclerView recyclerView;
     private String searchQuery;
+    private ProgressBar spinner;
 
     private SessionManager session;
 
@@ -93,13 +95,6 @@ public class SoundLibraryChildFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        if(this.category != null)
-            loadData();
-
-        if(this.searchQuery != null) {
-            loadSearchData();
-        }
-
         return fragmentView;
 
     }
@@ -117,10 +112,23 @@ public class SoundLibraryChildFragment extends Fragment {
             }
         });
 
+        this.spinner = (ProgressBar)getActivity().findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+
+
+        if(this.category != null)
+            loadData();
+
+        if(this.searchQuery != null) {
+            loadSearchData();
+        }
+
     }
 
     private void loadData() {
         session.checkLogin();
+
+        spinner.setVisibility(View.VISIBLE);
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.category,
@@ -133,12 +141,14 @@ public class SoundLibraryChildFragment extends Fragment {
                             data.add(new ListRowData(d.get(0).getTitle(), null, null));
                         }
                         recyclerView.getAdapter().notifyDataSetChanged();
+                        spinner.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         error.printStackTrace();
 
+                        spinner.setVisibility(View.GONE);
                         Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
                         toast.show();
                     }
@@ -147,6 +157,8 @@ public class SoundLibraryChildFragment extends Fragment {
 
     public void loadSearchData() {
         session.checkLogin();
+
+        spinner.setVisibility(View.VISIBLE);
 
         ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
                 this.searchQuery,
@@ -159,12 +171,14 @@ public class SoundLibraryChildFragment extends Fragment {
                             data.add(new ListRowData(d.get(0).getTitle(), null, null));
                         }
                         recyclerView.getAdapter().notifyDataSetChanged();
+                        spinner.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         error.printStackTrace();
 
+                        spinner.setVisibility(View.GONE);
                         Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
                         toast.show();
                     }
