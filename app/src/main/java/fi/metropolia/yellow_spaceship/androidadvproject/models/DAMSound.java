@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class DAMSound {
 
+    // Properties found in DAM
     private String Title;
     private String OriginalFilename;
     private SoundCategory Category;
@@ -22,6 +23,10 @@ public class DAMSound {
     private int CollectionID;
     private String DownloadLink;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    // Additional local properties
+    private transient boolean isFavorite;
+    private transient String fileName;
 
     /**
      * Title of the sound
@@ -209,5 +214,37 @@ public class DAMSound {
 
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+    /**
+     * Has the local user favorited this sound
+     * @return Is this sound favorited
+     */
+    public boolean getIsFavorite() {
+        return isFavorite;
+    }
+
+    /**
+     * Set favorite-status for this sound
+     * @param favorite True if this is a favorite
+     */
+    public void setIsFavorite(boolean favorite) {
+        this.isFavorite = favorite;
+    }
+
+    /**
+     * Get local file name
+     * @return {?String} Returns null if file is not saved locally
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Set local file name
+     * @param fileName Local file name for sound
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
