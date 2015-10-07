@@ -30,28 +30,38 @@ public class MainActivity extends AppCompatActivity {
         session.checkLogin();
 
         // Toolbar and menus + menu click events
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView)findViewById(R.id.navigation_view);
-        navigationView.getMenu().getItem(0).setChecked(true);
+        //drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        //navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        //navigationView.getMenu().getItem(0).setChecked(true);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
 
-        DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
-        drawerMenu.createMenu();
+        //DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
+        //drawerMenu.createMenu();
 
         // Incontext navigation click events
-        Button incontextCreateSoundscapeButton = (Button)findViewById(R.id.incontext_create_soundscape);
-        incontextCreateSoundscapeButton.setOnClickListener(incontextButtonListener);
+        View incontextCreateSoundscape = findViewById(R.id.incontext_create_soundscape);
+        View incontextSoundLibrary = findViewById(R.id.incontext_sound_library);
+
+        incontextCreateSoundscape.setOnClickListener(incontextButtonListener);
+        incontextSoundLibrary.setOnClickListener(incontextButtonListener);
 
     }
 
     // OnClickListener for incontext navigation buttons
     View.OnClickListener incontextButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
+
+            Intent intent = null;
+
             switch (v.getId()) {
                 case R.id.incontext_create_soundscape:
-                    Intent intent = new Intent(MainActivity.this, CreateSoundscapeActivity.class);
+                    intent = new Intent(MainActivity.this, CreateSoundscapeActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.incontext_sound_library:
+                    intent = new Intent(MainActivity.this, SoundLibraryActivity.class);
                     startActivity(intent);
                     break;
             }
