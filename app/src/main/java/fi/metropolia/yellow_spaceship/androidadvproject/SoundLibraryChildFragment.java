@@ -1,7 +1,5 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundDbHelper;
 import fi.metropolia.yellow_spaceship.androidadvproject.menu.ListRowData;
 import fi.metropolia.yellow_spaceship.androidadvproject.menu.SoundLibraryListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
@@ -136,8 +135,13 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
+                        DAMSoundDbHelper dbHelper = DAMSoundDbHelper.getInstance(getActivity().getApplicationContext());
+
                         data.clear();
                         for (List<DAMSound> d : lists) {
+                            String uniqId = d.get(0).getCollectionID() + d.get(0).getTitle() + d.get(0).getCreationDate();
+                            d.get(0).setIsFavorite(dbHelper.isFavorite(uniqId));
+                            System.out.println(d.get(0).getIsFavorite());
                             data.add(new ListRowData(d.get(0).getTitle(), null, null));
                         }
                         recyclerView.getAdapter().notifyDataSetChanged();
