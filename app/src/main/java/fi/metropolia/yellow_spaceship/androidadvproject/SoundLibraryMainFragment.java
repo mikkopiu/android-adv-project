@@ -53,7 +53,10 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));
 
         for(SoundCategory cat : SoundCategory.values()) {
-            data.add(new ListRowData(cat.menuCaption(), null, cat));
+            // No need to show the unknown category in the list
+            if (cat != SoundCategory.UNKNOWN) {
+                data.add(new ListRowData(cat.menuCaption(), null, cat));
+            }
         }
 
         // Adapter for RecyclerView
