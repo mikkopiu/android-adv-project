@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.util.Date;
 import java.util.List;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.deserializers.DAMSoundDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMApiKey;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMUser;
@@ -57,6 +58,7 @@ public class ApiClient {
         builder.registerTypeAdapter(SoundCategory.class, new SoundCategoryDeserializer());
         builder.registerTypeAdapter(SoundType.class, new SoundTypeDeserializer());
         builder.registerTypeAdapter(Integer.class, new IntegerDeserializer());
+        builder.registerTypeAdapter(DAMSound.class, new DAMSoundDeserializer());
 
         Gson gson = builder.create();
 

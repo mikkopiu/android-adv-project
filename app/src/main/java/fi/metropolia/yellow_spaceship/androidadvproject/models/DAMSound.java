@@ -11,13 +11,14 @@ public class DAMSound {
 
     // Properties found in DAM
     private String Title;
+    private String Description;
     private String OriginalFilename;
     private SoundCategory Category;
     private SoundType SoundType;
     private int LengthSec; // TODO: Can this be a float on the DAM side?
     private Date CreationDate;
     private String FileExtension;
-    private String FileSizeKB;
+    private float FileSizeKB;
     private String CreatedBy;
     private String CollectionName;
     private int CollectionID;
@@ -41,6 +42,21 @@ public class DAMSound {
      */
     public void setTitle(String Title) {
         this.Title = Title;
+    }
+
+    /**
+     * Get a description of the sound
+     * @return A description of the sound
+     */
+    public String getDescription() {
+        return Description;
+    }
+
+    /**
+     * @param Description A description of the sound
+     */
+    public void setDescription(String Description) {
+        this.Description = Description;
     }
 
     /**
@@ -137,14 +153,14 @@ public class DAMSound {
      * File size in kilobytes
      * @return The FileSizeKB
      */
-    public String getFileSizeKB() {
+    public float getFileSizeKB() {
         return FileSizeKB;
     }
 
     /**
      * @param FileSizeKB The File size(KB)
      */
-    public void setFileSizeKB(String FileSizeKB) {
+    public void setFileSizeKB(float FileSizeKB) {
         this.FileSizeKB = FileSizeKB;
     }
 

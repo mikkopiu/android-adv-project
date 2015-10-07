@@ -13,6 +13,9 @@ import java.lang.reflect.Type;
 public class IntegerDeserializer implements JsonDeserializer<Integer> {
     @Override
     public Integer deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+        if (jsonElement.getAsString().equals("")) {
+            return 0;
+        }
         return jsonElement.getAsInt();
     }
 }
