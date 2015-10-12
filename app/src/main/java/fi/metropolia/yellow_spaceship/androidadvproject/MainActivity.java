@@ -7,9 +7,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 

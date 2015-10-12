@@ -1,16 +1,18 @@
-package fi.metropolia.yellow_spaceship.androidadvproject.menu;
+package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
 
 /**
  * Adapter for SoundLibrary RecyclerView
@@ -78,10 +80,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
                             .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        ViewHolder vh = new ViewHolder(v, this.listener);
-
-        return vh;
-
+        return new ViewHolder(v, this.listener);
     }
 
     @Override
@@ -89,16 +88,19 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         // Find the views in the layout
         TextView textView = (TextView)holder.view.findViewById(R.id.sound_library_list_text);
-        ImageView imageView = (ImageView)holder.view.findViewById(R.id.sound_library_list_button);
 
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
-        if(dataSet.get(position).getIcon() != null){
-            imageView.setImageResource(dataSet.get(position).getIcon());
+        Drawable icon;
+        if (dataSet.get(position).getIcon() != null){
+            icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
         } else {
-            imageView.setImageResource(R.drawable.ic_audiotrack_black_48dp);
-            imageView.setVisibility(View.INVISIBLE);
+            // TODO: There's probably a better way than setting an invisible drawable
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_audiotrack_black_48dp);
+            icon.setAlpha(0);
         }
+
+        textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     @Override

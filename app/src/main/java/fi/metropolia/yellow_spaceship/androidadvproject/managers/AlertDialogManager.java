@@ -1,4 +1,4 @@
-package fi.metropolia.yellow_spaceship.androidadvproject;
+package fi.metropolia.yellow_spaceship.androidadvproject.managers;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -23,7 +23,7 @@ public class DAMSound {
     private String CollectionName;
     private int CollectionID;
     private String DownloadLink;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     // Additional local properties
     private transient boolean isFavorite;
@@ -262,5 +262,15 @@ public class DAMSound {
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    /**
+     * Get a unique identified for the sound
+     * @return Unique ID for this sound
+     */
+    public String getFormattedSoundId() {
+        return String.valueOf(getCollectionID()) +
+                getTitle() +
+                getCreationDate().toString();
     }
 }

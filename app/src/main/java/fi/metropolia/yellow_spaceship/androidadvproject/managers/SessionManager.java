@@ -1,8 +1,10 @@
-package fi.metropolia.yellow_spaceship.androidadvproject;
+package fi.metropolia.yellow_spaceship.androidadvproject.managers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import fi.metropolia.yellow_spaceship.androidadvproject.LoginActivity;
 
 /**
  * SessionManager is used to store and manage DAM API key/login

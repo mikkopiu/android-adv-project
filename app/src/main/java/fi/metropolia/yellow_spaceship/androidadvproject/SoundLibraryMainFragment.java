@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.ListRowData;
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.SoundLibraryListAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundLibraryListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 
 /**
@@ -25,8 +25,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     private SoundLibraryListAdapter adapter;
 
     public static SoundLibraryMainFragment newInstance() {
-        SoundLibraryMainFragment fragment = new SoundLibraryMainFragment();
-        return fragment;
+        return new SoundLibraryMainFragment();
     }
 
     public SoundLibraryMainFragment() {
@@ -47,7 +46,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
 
         // Data for RecycleView
-        ArrayList<ListRowData> data = new ArrayList<ListRowData>();
+        ArrayList<ListRowData> data = new ArrayList<>();
         data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp, null));
         data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
         data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));

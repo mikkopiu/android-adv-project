@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.AlertDialogManager;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMApiKey;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMUser;
 import retrofit.Callback;

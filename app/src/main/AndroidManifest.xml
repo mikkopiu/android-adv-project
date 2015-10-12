@@ -39,6 +39,12 @@
             android:name=".LoginActivity"
             android:label="User Login" >
         </activity>
+
+        <provider
+            android:authorities="fi.metropolia.yellow_spaceship.androidadvproject.providers"
+            android:name=".providers.SoundContentProvider"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>

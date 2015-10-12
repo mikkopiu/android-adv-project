@@ -20,5 +20,6 @@
     <string name="login_main_action">Login</string>
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
+    <string name="favorite_btn_description">Toggle favorite status</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package fi.metropolia.yellow_spaceship.androidadvproject.menu;
+package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
 import android.graphics.drawable.Drawable;
 

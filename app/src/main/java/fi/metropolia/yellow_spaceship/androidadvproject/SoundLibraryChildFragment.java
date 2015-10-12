@@ -15,10 +15,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
-import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundDbHelper;
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.ListRowData;
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.SoundLibraryListAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import retrofit.Callback;
@@ -30,19 +29,18 @@ import retrofit.client.Response;
  */
 public class SoundLibraryChildFragment extends Fragment {
 
-    private SoundCategory category;
-    private RecyclerView.LayoutManager layoutManager;
-    ArrayList<ListRowData> data;
-    private SoundLibraryListAdapter adapter;
-    private RecyclerView recyclerView;
-    private String searchQuery;
-    private ProgressBar spinner;
+    ArrayList<DAMSound> data;
+    private SoundCategory mCategory;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private SoundListAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private String mSearchQuery;
+    private ProgressBar mSpinner;
 
     private SessionManager session;
 
     public static SoundLibraryChildFragment newInstance() {
-        SoundLibraryChildFragment fragment = new SoundLibraryChildFragment();
-        return fragment;
+        return new SoundLibraryChildFragment();
     }
 
     public SoundLibraryChildFragment() {
@@ -50,7 +48,7 @@ public class SoundLibraryChildFragment extends Fragment {
     }
 
     public void setSearchQuery(String query) {
-        this.searchQuery = query;
+        this.mSearchQuery = query;
     }
 
     @Override
@@ -68,31 +66,34 @@ public class SoundLibraryChildFragment extends Fragment {
         session = new SessionManager(getActivity());
 
         if(getArguments().getString("category") != null) {
-            this.category = SoundCategory.fromApi(getArguments().getString("category"));
+            this.mCategory = SoundCategory.fromApi(getArguments().getString("category"));
         } else {
-            this.category = null;
+            this.mCategory = null;
         }
 
         if(getArguments().getString("search-query") != null) {
-            this.searchQuery = getArguments().getString("search-query");
+            this.mSearchQuery = getArguments().getString("search-query");
         } else {
-            this.searchQuery = null;
+            this.mSearchQuery = null;
         }
 
         // Data for RecycleView
-        data = new ArrayList<ListRowData>();
+        data = new ArrayList<>();
 
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        adapter = new SoundLibraryListAdapter(getActivity(), null, data);
-        recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
+        mAdapter = new SoundListAdapter(data);
+        mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        // Changes in content don't affect the layout size, so set as true to improve performance
+        mRecyclerView.setHasFixedSize(true);
 
-        recyclerView.setAdapter(adapter);
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.setAdapter(mAdapter);
 
         return fragmentView;
 
@@ -111,14 +112,14 @@ public class SoundLibraryChildFragment extends Fragment {
             }
         });
 
-        this.spinner = (ProgressBar)getActivity().findViewById(R.id.progressBar);
-        spinner.setVisibility(View.GONE);
+        this.mSpinner = (ProgressBar)getActivity().findViewById(R.id.progressBar);
+        mSpinner.setVisibility(View.GONE);
 
 
-        if(this.category != null)
+        if(this.mCategory != null)
             loadData();
 
-        if(this.searchQuery != null) {
+        if(this.mSearchQuery != null) {
             loadSearchData();
         }
 
@@ -127,32 +128,28 @@ public class SoundLibraryChildFragment extends Fragment {
     private void loadData() {
         session.checkLogin();
 
-        spinner.setVisibility(View.VISIBLE);
+        mSpinner.setVisibility(View.VISIBLE);
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
-                this.category,
+                this.mCategory,
                 true,
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-                        DAMSoundDbHelper dbHelper = DAMSoundDbHelper.getInstance(getActivity().getApplicationContext());
 
                         data.clear();
                         for (List<DAMSound> d : lists) {
-                            String uniqId = d.get(0).getCollectionID() + d.get(0).getTitle() + d.get(0).getCreationDate();
-                            d.get(0).setIsFavorite(dbHelper.isFavorite(uniqId));
-                            System.out.println(d.get(0).getIsFavorite());
-                            data.add(new ListRowData(d.get(0).getTitle(), null, null));
+                            data.add(d.get(0));
                         }
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        spinner.setVisibility(View.GONE);
+                        mRecyclerView.getAdapter().notifyDataSetChanged();
+                        mSpinner.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         error.printStackTrace();
 
-                        spinner.setVisibility(View.GONE);
+                        mSpinner.setVisibility(View.GONE);
                         Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
                         toast.show();
                     }
@@ -162,27 +159,27 @@ public class SoundLibraryChildFragment extends Fragment {
     public void loadSearchData() {
         session.checkLogin();
 
-        spinner.setVisibility(View.VISIBLE);
+        mSpinner.setVisibility(View.VISIBLE);
 
         ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
-                this.searchQuery,
+                this.mSearchQuery,
                 true,
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
                         data.clear();
                         for (List<DAMSound> d : lists) {
-                            data.add(new ListRowData(d.get(0).getTitle(), null, null));
+                            data.add(d.get(0));
                         }
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        spinner.setVisibility(View.GONE);
+                        mRecyclerView.getAdapter().notifyDataSetChanged();
+                        mSpinner.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         error.printStackTrace();
 
-                        spinner.setVisibility(View.GONE);
+                        mSpinner.setVisibility(View.GONE);
                         Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
                         toast.show();
                     }
