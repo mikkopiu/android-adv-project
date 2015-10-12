@@ -1,5 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -17,16 +19,15 @@ import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by Petri on 19.9.2015.
- */
 public class SoundLibraryChildFragment extends Fragment {
 
     ArrayList<DAMSound> data;
@@ -94,7 +95,7 @@ public class SoundLibraryChildFragment extends Fragment {
             public void onRowSelect(View view, int layoutPosition) {
                 // TODO: do something here
             }
-        });
+        }, getActivity().getApplicationContext());
         mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
@@ -166,7 +167,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 });
     }
 
-    private void loadSearchData() {
+    public void loadSearchData() {
         session.checkLogin();
 
         mSpinner.setVisibility(View.VISIBLE);
@@ -196,16 +197,32 @@ public class SoundLibraryChildFragment extends Fragment {
                 });
     }
 
+    /**
+     * Set item's favorite status.
+     * Saves the state in our ContentProvider
+     * @param isFavorite New favorite-status
+     * @param layoutPosition Index of the item
+     */
     private void setItemFavorite(boolean isFavorite, int layoutPosition) {
         DAMSound sound = data.get(layoutPosition);
 
         if (sound != null) {
             sound.setIsFavorite(isFavorite);
 
-            // TODO: make content provider calls
-        }
+            ContentValues values = new ContentValues();
+            values.put(DAMSoundEntry.COLUMN_NAME_SOUND_ID, sound.getFormattedSoundId());
+            values.put(DAMSoundEntry.COLUMN_NAME_TITLE, sound.getTitle());
+            values.put(DAMSoundEntry.COLUMN_NAME_CATEGORY, sound.getCategory().toString());
+            values.put(DAMSoundEntry.COLUMN_NAME_TYPE, sound.getSoundType().toString());
+            values.put(DAMSoundEntry.COLUMN_NAME_LENGTH_SEC, sound.getLengthSec());
+            values.put(DAMSoundEntry.COLUMN_NAME_IS_FAVORITE, sound.getIsFavorite());
 
-        mAdapter.notifyDataSetChanged();
+            // Insert or update favorite status, depending on whether the sound already exists
+            // in the database.
+            getActivity().getContentResolver().insert(SoundContentProvider.CONTENT_URI, values);
+
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
 }

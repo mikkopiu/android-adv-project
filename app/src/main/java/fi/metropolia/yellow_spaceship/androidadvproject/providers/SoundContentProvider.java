@@ -2,9 +2,12 @@ package fi.metropolia.yellow_spaceship.androidadvproject.providers;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -96,22 +99,45 @@ public class SoundContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) throws IllegalArgumentException {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        long id;
+        long id = 0;
 
         // Verify that the proper URI is being accessed
         switch (uriType) {
             case SOUNDS:
-                id = sqlDB.insert(DAMSoundEntry.TABLE_NAME, null, values);
-                break;
+                String selection = DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?";
+                String[] selectionArgs = new String[] {
+                        values.getAsString(DAMSoundEntry.COLUMN_NAME_SOUND_ID)
+                };
+
+                // Do an update if the constraints match
+                int rowsAffected = sqlDB.update(DAMSoundEntry.TABLE_NAME, values, selection, selectionArgs);
+
+                if (rowsAffected == 0) {
+                    // No such row already existed, do an actual insert
+                    id = sqlDB.insert(DAMSoundEntry.TABLE_NAME, null, values);
+                } else {
+                    // Find the ID of the already existing sound (to return)
+                    Cursor cursor = sqlDB.query(
+                            DAMSoundEntry.TABLE_NAME,
+                            new String[] {DAMSoundEntry._ID},
+                            selection,
+                            selectionArgs,
+                            null, null, null
+                    );
+
+                    if (cursor.moveToFirst()) {
+                        id = cursor.getLong(0);
+                    }
+
+                    cursor.close();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return ContentUris.withAppendedId(uri, id);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-
-        // Notify any possible ContentResolvers of the change
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        // Return a URI for the newly created item
-        return Uri.parse(BASE_PATH + "/" + id);
     }
 
     @Override
@@ -213,6 +239,33 @@ public class SoundContentProvider extends ContentProvider {
             // Check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
+            }
+        }
+    }
+
+    /**
+     * In case of a conflict when inserting the values, another update query is sent.
+     *
+     * @param db     Database to insert to.
+     * @param uri    Content provider uri.
+     * @param table  Table to insert to.
+     * @param values The values to insert to.
+     * @param column Column to identify the object.
+     * @throws android.database.SQLException
+     */
+    private void insertOrUpdateById(SQLiteDatabase db, Uri uri, String table,
+                                    ContentValues values, String column) throws SQLException {
+
+        try {
+            db.insertOrThrow(table, null, values);
+        } catch (SQLiteConstraintException e) {
+            int nrRows = update(uri,
+                    values,
+                    column + "=?",
+                    new String[]{values.getAsString(column)}
+            );
+            if (nrRows == 0) {
+                throw e;
             }
         }
     }
