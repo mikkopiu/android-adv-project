@@ -84,7 +84,17 @@ public class SoundLibraryChildFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        mAdapter = new SoundListAdapter(data);
+        mAdapter = new SoundListAdapter(data, new SoundListAdapter.ViewHolder.ISoundViewHolderClicks() {
+            @Override
+            public void onFavorite(View view, int layoutPosition) {
+                setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);
+            }
+
+            @Override
+            public void onRowSelect(View view, int layoutPosition) {
+                // TODO: do something here
+            }
+        });
         mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
@@ -156,7 +166,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 });
     }
 
-    public void loadSearchData() {
+    private void loadSearchData() {
         session.checkLogin();
 
         mSpinner.setVisibility(View.VISIBLE);
@@ -184,6 +194,18 @@ public class SoundLibraryChildFragment extends Fragment {
                         toast.show();
                     }
                 });
+    }
+
+    private void setItemFavorite(boolean isFavorite, int layoutPosition) {
+        DAMSound sound = data.get(layoutPosition);
+
+        if (sound != null) {
+            sound.setIsFavorite(isFavorite);
+
+            // TODO: make content provider calls
+        }
+
+        mAdapter.notifyDataSetChanged();
     }
 
 }

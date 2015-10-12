@@ -1,15 +1,11 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,28 +14,55 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 
 
 public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
-    private ArrayList<DAMSound> mDataset;
+    private ArrayList<DAMSound> mDataSet;
+    private ViewHolder.ISoundViewHolderClicks listener;
 
     /**
      * Basic ViewHolder inner class
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public ISoundViewHolderClicks mListener;
+
+        public TextView tvTitle;
         public ImageButton imgButton;
 
-        public ViewHolder(final View itemView) {
+        public ViewHolder(final View itemView, ISoundViewHolderClicks listener) {
             super(itemView);
-            imgButton = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+
+            this.mListener = listener;
+
+            this.tvTitle = (TextView) itemView.findViewById(R.id.sound_library_list_text);
+            this.imgButton = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+
+            itemView.setOnClickListener(this);
+            this.imgButton.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            System.out.println(v.toString());
+            if (v instanceof ImageButton) {
+                this.mListener.onFavorite(v, getLayoutPosition());
+            } else {
+                this.mListener.onRowSelect(v, getLayoutPosition());
+            }
+        }
+
+        public interface ISoundViewHolderClicks {
+            void onRowSelect(View view, int layoutPosition);
+            void onFavorite(View view, int layoutPosition);
         }
 
     }
 
     /**
      * Constructor
-     * @param dataset A reference to the data for the adapter
+     * @param dataSet A reference to the data for the adapter
      */
-    public SoundListAdapter(ArrayList<DAMSound> dataset) {
-        this.mDataset = dataset;
+    public SoundListAdapter(ArrayList<DAMSound> dataSet, SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener) {
+        this.mDataSet = dataSet;
+        this.listener = listener;
     }
 
     /**
@@ -56,16 +79,15 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                 .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        return new ViewHolder(v);
+        return new ViewHolder(v, this.listener);
     }
 
     @Override
     public void onBindViewHolder(final SoundListAdapter.ViewHolder holder, int position) {
-        final DAMSound item = mDataset.get(position);
+        final DAMSound item = mDataSet.get(position);
 
         // Find the views in the layout
         TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_library_list_text);
-        final ImageButton imgButton = (ImageButton) holder.itemView.findViewById(R.id.sound_library_fav_button);
 
         // And set data to the views
         textView.setText(item.getTitle());
@@ -76,28 +98,12 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         } else {
             holder.imgButton.setImageResource(R.drawable.ic_favorite_outline_48dp);
         }
-
-        holder.imgButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.sound_library_fav_button) {
-                    boolean isFavorite = item.getIsFavorite();
-                    if (!isFavorite) {
-                        item.setIsFavorite(true);
-                        imgButton.setImageResource(R.drawable.ic_favorite_48dp);
-                    } else {
-                        item.setIsFavorite(false);
-                        imgButton.setImageResource(R.drawable.ic_favorite_outline_48dp);
-                    }
-                }
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        if (mDataset != null) {
-            return mDataset.size();
+        if (mDataSet != null) {
+            return mDataSet.size();
         } else {
             return 0;
         }
