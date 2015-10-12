@@ -5,6 +5,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
 
@@ -13,36 +14,24 @@ import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
  */
 public class CreateSoundscapeActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_create_soundscape);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_soundscape);
 
-            // Toolbar and menus + menu click events
-            drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-            navigationView = (NavigationView)findViewById(R.id.navigation_view);
-            navigationView.getMenu().getItem(1).setChecked(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
-            drawerMenu.createMenu();
-
-        /*
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CreateSoundscapeActivity.this.onBackPressed();
             }
         });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        */
 
     }
 

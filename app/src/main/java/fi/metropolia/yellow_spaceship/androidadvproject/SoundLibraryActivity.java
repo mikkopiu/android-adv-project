@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
@@ -22,26 +23,26 @@ import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
  */
 public class SoundLibraryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
     private RecyclerView.LayoutManager layoutManager;
-    private DrawerMenu drawerMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_library);
 
-        // Toolbar and menus + menu click events
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.getMenu().getItem(2).setChecked(true);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.sound_library_title));
+        setSupportActionBar(toolbar);
 
-        drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
-        drawerMenu.createMenu();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SoundLibraryActivity.this.onBackPressed();
+            }
+        });
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
         if(f == null) {
@@ -56,12 +57,6 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
                 .replace(R.id.frame_layout, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onBackPressed() {
-        drawerMenu.changeToDrawerMenu();
-        super.onBackPressed();
     }
 
     // http://stackoverflow.com/a/27482902
@@ -114,14 +109,6 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    public void changeToDrawerMenu() {
-        drawerMenu.changeToDrawerMenu();
-    }
-
-    public void changeToBackButton() {
-        drawerMenu.changeToBackButton();
     }
 
 }
