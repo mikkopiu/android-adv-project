@@ -2,6 +2,8 @@ package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +32,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         public ISoundViewHolderClicks mListener;
 
         public TextView tvTitle;
-        public ImageButton imgButton;
+        public ImageButton favBtn;
+        public ImageButton previewBtn;
 
         public ViewHolder(final View itemView, ISoundViewHolderClicks listener) {
             super(itemView);
@@ -38,16 +41,22 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             this.mListener = listener;
 
             this.tvTitle = (TextView) itemView.findViewById(R.id.sound_library_list_text);
-            this.imgButton = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+            this.favBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+            this.previewBtn = (ImageButton) itemView.findViewById(R.id.sound_library_preview_button);
+
+            this.previewBtn.setImageResource(R.drawable.ic_play_arrow_48dp);
 
             itemView.setOnClickListener(this);
-            this.imgButton.setOnClickListener(this);
+            this.favBtn.setOnClickListener(this);
+            this.previewBtn.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (v instanceof ImageButton) {
+            if (v.getId() == R.id.sound_library_fav_button) {
                 this.mListener.onFavorite(v, getLayoutPosition());
+            } else if (v.getId() == R.id.sound_library_preview_button) {
+                this.mListener.onPlayPauseToggle(v, getLayoutPosition());
             } else {
                 this.mListener.onRowSelect(v, getLayoutPosition());
             }
@@ -56,6 +65,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         public interface ISoundViewHolderClicks {
             void onRowSelect(View view, int layoutPosition);
             void onFavorite(View view, int layoutPosition);
+            void onPlayPauseToggle(View view, int layoutPosition);
         }
 
     }
@@ -63,8 +73,12 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
     /**
      * Constructor
      * @param dataSet A reference to the data for the adapter
+     * @param listener
+     * @param context
      */
-    public SoundListAdapter(ArrayList<DAMSound> dataSet, SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener, Context context) {
+    public SoundListAdapter(ArrayList<DAMSound> dataSet,
+                            SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener,
+                            Context context) {
         this.mDataSet = dataSet;
         this.listener = listener;
         this.context = context;
@@ -117,9 +131,9 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         }
 
         if (isFavorite) {
-            holder.imgButton.setImageResource(R.drawable.ic_favorite_48dp);
+            holder.favBtn.setImageResource(R.drawable.ic_favorite_48dp);
         } else {
-            holder.imgButton.setImageResource(R.drawable.ic_favorite_outline_48dp);
+            holder.favBtn.setImageResource(R.drawable.ic_favorite_outline_48dp);
         }
     }
 

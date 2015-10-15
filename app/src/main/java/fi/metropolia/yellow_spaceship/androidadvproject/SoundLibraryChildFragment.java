@@ -1,19 +1,25 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +45,7 @@ public class SoundLibraryChildFragment extends Fragment {
     private ProgressBar mSpinner;
 
     private SessionManager session;
+    private MediaPlayer mediaPlayer;
 
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
@@ -95,6 +102,11 @@ public class SoundLibraryChildFragment extends Fragment {
             public void onRowSelect(View view, int layoutPosition) {
                 // TODO: do something here
             }
+
+            @Override
+            public void onPlayPauseToggle(View view, int layoutPosition) {
+//                downloadFile(""); // TODO: playback checks
+            }
         }, getActivity().getApplicationContext());
         mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
@@ -133,7 +145,6 @@ public class SoundLibraryChildFragment extends Fragment {
         if(this.mSearchQuery != null) {
             loadSearchData();
         }
-
     }
 
     private void loadData() {
@@ -222,6 +233,75 @@ public class SoundLibraryChildFragment extends Fragment {
             getActivity().getContentResolver().insert(SoundContentProvider.CONTENT_URI, values);
 
             mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    // TODO: everything below this is just an example, need to finalize
+
+    private void downloadFile(String url) {
+        url = "http://dev.mw.metropolia.fi/dianag/AudioResourceSpace/filestore/9_27b83a6bb5c6cea/9_f79eb4f22f03a3d.mp3?v=2015-09-01+13%3A00%3A05"; // TODO: remove
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        new Player()
+                .execute(url);
+    }
+
+    class Player extends AsyncTask<String, Void, Boolean> {
+        private ProgressDialog progress;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Boolean prepared;
+            try {
+
+                mediaPlayer.setDataSource(params[0]);
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                    }
+                });
+                mediaPlayer.prepare();
+                prepared = true;
+            } catch (IllegalArgumentException e) {
+                Log.d("IllegalArgument", e.getMessage());
+                prepared = false;
+                e.printStackTrace();
+            } catch (IOException e) {
+                prepared = false;
+                e.printStackTrace();
+            }
+            return prepared;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            if (progress.isShowing()) {
+                progress.cancel();
+            }
+            Log.d("Prepared", "//" + result);
+            mediaPlayer.start();
+        }
+
+        public Player() {
+            progress = new ProgressDialog(getActivity());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            this.progress.setMessage("Buffering...");
+            this.progress.show();
+
         }
     }
 

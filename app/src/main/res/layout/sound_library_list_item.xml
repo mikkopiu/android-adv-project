@@ -13,29 +13,45 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/sound_library_preview_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:minWidth="0dp"
+            android:maxWidth="53dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@string/sound_library_preview_description"
+            android:padding="5dp" />
+
         <TextView
             android:id="@+id/sound_library_list_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:paddingStart="10dp"
+            android:layout_toEndOf="@id/sound_library_preview_button"
             android:layout_toStartOf="@+id/sound_library_fav_button"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
             android:text=""
             android:textSize="20sp" />
 
         <ImageButton
             android:id="@id/sound_library_fav_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
+            android:minWidth="0dp"
+            android:maxWidth="53dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:clickable="true"
-            style="?android:attr/borderlessButtonStyle"
             android:contentDescription="@string/favorite_btn_description"
             android:padding="5dp" />
 
