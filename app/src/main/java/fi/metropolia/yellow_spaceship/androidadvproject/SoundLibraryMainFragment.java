@@ -47,7 +47,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
         // Data for RecycleView
         ArrayList<ListRowData> data = new ArrayList<>();
-        data.add(new ListRowData("Your Souncdscapes", R.drawable.ic_audiotrack_black_48dp, null));
+        data.add(new ListRowData("Your Soundscapes", R.drawable.ic_audiotrack_black_48dp, null));
         data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
         data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_border_black_48dp, null));
 
