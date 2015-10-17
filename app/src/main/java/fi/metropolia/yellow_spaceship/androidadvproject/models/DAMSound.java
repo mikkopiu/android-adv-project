@@ -271,6 +271,6 @@ public class DAMSound {
     public String getFormattedSoundId() {
         return String.valueOf(getCollectionID()) +
                 getTitle() +
-                getCreationDate().toString();
+                String.valueOf(getCreationDate().getTime());
     }
 }

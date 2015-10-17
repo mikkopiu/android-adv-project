@@ -13,7 +13,7 @@ public class DAMSoundDbHelper extends SQLiteOpenHelper {
     private static DAMSoundDbHelper sInstance;
 
     // NOTE: Increment DATABASE_VERSION if changing the schema
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "DAMSound.db";
 
     private static final String TEXT_TYPE = " TEXT";
