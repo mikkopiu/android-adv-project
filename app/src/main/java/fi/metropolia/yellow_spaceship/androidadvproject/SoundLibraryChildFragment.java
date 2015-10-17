@@ -54,6 +54,8 @@ public class SoundLibraryChildFragment extends Fragment {
     private boolean initialStage = true;
     private int playingInd = -1;
 
+    private static final String LOCAL_SOUND_FOLDER = "/sounds";
+
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
     }
@@ -310,7 +312,10 @@ public class SoundLibraryChildFragment extends Fragment {
     private void startPreviewPlayback(int layoutPosition) {
         String url = this.data.get(layoutPosition).getFileName();
 
-        if (TextUtils.isEmpty(url)) {
+        if (!TextUtils.isEmpty(url)) {
+            url = getActivity().getApplicationContext().getFilesDir() + LOCAL_SOUND_FOLDER +
+                    "/" + url;
+        } else {
             // Stream from the DAM, if no local file is available
             url = this.data.get(layoutPosition).getDownloadLink();
         }
