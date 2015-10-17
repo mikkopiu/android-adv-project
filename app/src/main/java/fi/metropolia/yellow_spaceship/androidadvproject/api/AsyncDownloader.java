@@ -29,6 +29,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     private DAMSound mDAMSound;
     private Context mContext;
     private File mFile;
+    private File mFolder;
 
     /**
      * Constructor, sets the file url.
@@ -60,7 +61,12 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                 try {
 
-                    mFile = new File(mContext.getFilesDir(), mDAMSound.getFormattedSoundId() + "." + mDAMSound.getFileExtension());
+                    mFolder = new File(mContext.getFilesDir() + "/sounds");
+                    if(!mFolder.exists()) {
+                        mFolder.mkdirs();
+                    }
+
+                    mFile = new File(mFolder, mDAMSound.getFormattedSoundId() + "." + mDAMSound.getFileExtension());
                     inputStream = response.body().byteStream();
                     outputStream = new FileOutputStream(mFile);
 
