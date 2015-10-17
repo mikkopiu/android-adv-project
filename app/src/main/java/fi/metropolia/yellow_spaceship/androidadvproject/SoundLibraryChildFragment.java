@@ -2,7 +2,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -12,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -47,6 +48,10 @@ public class SoundLibraryChildFragment extends Fragment {
     private SessionManager session;
     private MediaPlayer mediaPlayer;
 
+    private boolean playingAudio;
+    private boolean initialStage = true;
+    private int playingInd = -1;
+
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
     }
@@ -61,9 +66,7 @@ public class SoundLibraryChildFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -105,7 +108,39 @@ public class SoundLibraryChildFragment extends Fragment {
 
             @Override
             public void onPlayPauseToggle(View view, int layoutPosition) {
-//                downloadFile(""); // TODO: playback checks
+                // No need to instantiate this on onCreate, only when we first need it
+                if (mediaPlayer == null) {
+                    initMediaPlayer();
+                }
+
+                if (layoutPosition != playingInd) {
+                    // Play was clicked in some other position than which was playing earlier
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+
+                    if (playingInd != -1) {
+                        setPlaybackStatus(false);
+                    }
+
+                    startPreviewPlayback(layoutPosition);
+                } else {
+                    if (!playingAudio) {
+                        // No sound has played before, or the earlier one has already completed
+                        if (initialStage) {
+                            startPreviewPlayback(layoutPosition);
+                        } else {
+                            if (!mediaPlayer.isPlaying()) {
+                                mediaPlayer.start();
+                                setPlaybackStatus(true);
+                            }
+                        }
+                    } else {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                            setPlaybackStatus(false);
+                        }
+                    }
+                }
             }
         }, getActivity().getApplicationContext());
         mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
@@ -161,7 +196,10 @@ public class SoundLibraryChildFragment extends Fragment {
 
                         data.clear();
                         for (List<DAMSound> d : lists) {
-                            data.add(d.get(0));
+                            // We are only interested in sounds with working download links
+                            if (!TextUtils.isEmpty(d.get(0).getDownloadLink())) {
+                                data.add(d.get(0));
+                            }
                         }
                         mRecyclerView.getAdapter().notifyDataSetChanged();
                         mSpinner.setVisibility(View.GONE);
@@ -191,7 +229,10 @@ public class SoundLibraryChildFragment extends Fragment {
                     public void success(List<List<DAMSound>> lists, Response response) {
                         data.clear();
                         for (List<DAMSound> d : lists) {
-                            data.add(d.get(0));
+                            // We are only interested in sounds with working download links
+                            if (!TextUtils.isEmpty(d.get(0).getDownloadLink())) {
+                                data.add(d.get(0));
+                            }
                         }
                         mRecyclerView.getAdapter().notifyDataSetChanged();
                         mSpinner.setVisibility(View.GONE);
@@ -236,37 +277,98 @@ public class SoundLibraryChildFragment extends Fragment {
         }
     }
 
-    // TODO: everything below this is just an example, need to finalize
+    /**
+     * Start preview playback when nothing is currently playing/previous audio has finished
+     * @param layoutPosition
+     */
+    private void startPreviewPlayback(int layoutPosition) {
+        String url = this.data.get(layoutPosition).getFileName();
 
-    private void downloadFile(String url) {
-        url = "http://dev.mw.metropolia.fi/dianag/AudioResourceSpace/filestore/9_27b83a6bb5c6cea/9_f79eb4f22f03a3d.mp3?v=2015-09-01+13%3A00%3A05"; // TODO: remove
+        if (TextUtils.isEmpty(url)) {
+            // Stream from the DAM, if no local file is available
+            url = this.data.get(layoutPosition).getDownloadLink();
+        }
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        new Player()
-                .execute(url);
+        if (!TextUtils.isEmpty(url)) {
+            new Player().execute(url);
+            this.playingInd = layoutPosition;
+            this.setPlaybackStatus(true);
+        } else {
+            Toast.makeText(
+                    getActivity(),
+                    "Sorry, there is something wrong with this sound, please try another sound.",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
+    /**
+     * Update playback status
+     * @param playing Is audio playing
+     */
+    private void setPlaybackStatus(boolean playing) {
+        this.playingAudio = playing;
+
+        if (!this.playingAudio) {
+            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(this.mRecyclerView.getChildAt(this.playingInd))).previewBtn.setImageResource(R.drawable.ic_play_arrow_48dp);
+        } else {
+            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(this.mRecyclerView.getChildAt(this.playingInd))).previewBtn.setImageResource(R.drawable.ic_pause_48dp);
+        }
+    }
+
+    /**
+     * Initialize the MediaPlayer
+     */
+    private void initMediaPlayer() {
+        if (this.mediaPlayer != null) {
+            clearMediaPlayer();
+        }
+
+        this.mediaPlayer = new MediaPlayer();
+        this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        this.mediaPlayer.setLooping(false);
+    }
+
+    /**
+     * Stop and clear an existing MediaPlayer instance
+     */
+    private void clearMediaPlayer() {
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.reset();
+            this.mediaPlayer.release();
+            this.mediaPlayer = null;
+        }
+    }
+
+    /**
+     * Inner class Player is used to asynchronous audio playback when previewing sounds.
+     * Player will also display a ProgressDialog when buffering an audio stream.
+     */
     class Player extends AsyncTask<String, Void, Boolean> {
+
+        // Display a progress dialog when buffering an audio stream
         private ProgressDialog progress;
 
         @Override
         protected Boolean doInBackground(String... params) {
-            // TODO Auto-generated method stub
             Boolean prepared;
             try {
-
                 mediaPlayer.setDataSource(params[0]);
 
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
                     @Override
                     public void onCompletion(MediaPlayer mp) {
+                        // This sound has completed, so clicking play should restart the sound,
+                        // not unpause it.
+                        initialStage = true;
+                        setPlaybackStatus(false);
+
                         mediaPlayer.stop();
                         mediaPlayer.reset();
                     }
                 });
+
                 mediaPlayer.prepare();
                 prepared = true;
             } catch (IllegalArgumentException e) {
@@ -282,13 +384,13 @@ public class SoundLibraryChildFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            // TODO Auto-generated method stub
             super.onPostExecute(result);
             if (progress.isShowing()) {
                 progress.cancel();
             }
-            Log.d("Prepared", "//" + result);
             mediaPlayer.start();
+
+            initialStage = false;
         }
 
         public Player() {
@@ -297,12 +399,16 @@ public class SoundLibraryChildFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             this.progress.setMessage("Buffering...");
             this.progress.show();
-
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        clearMediaPlayer();
     }
 
 }
