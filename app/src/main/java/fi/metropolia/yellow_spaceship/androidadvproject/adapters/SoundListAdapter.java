@@ -1,9 +1,5 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +10,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
-import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
-import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 
 
 public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
     private ArrayList<DAMSound> mDataSet;
     private ViewHolder.ISoundViewHolderClicks listener;
-    private Context context;
 
     /**
      * Basic ViewHolder inner class
@@ -74,14 +67,11 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
      * Constructor
      * @param dataSet A reference to the data for the adapter
      * @param listener
-     * @param context
      */
     public SoundListAdapter(ArrayList<DAMSound> dataSet,
-                            SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener,
-                            Context context) {
+                            SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener) {
         this.mDataSet = dataSet;
         this.listener = listener;
-        this.context = context;
     }
 
     /**
@@ -111,34 +101,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         // And set data to the views
         textView.setText(item.getTitle());
 
-        Cursor cursor = this.context.getContentResolver().query(
-                SoundContentProvider.CONTENT_URI,
-                new String[] {
-                        DAMSoundContract.DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
-                        DAMSoundContract.DAMSoundEntry.COLUMN_NAME_FILE_NAME
-                },
-                DAMSoundContract.DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
-                new String[] {item.getFormattedSoundId()},
-                null
-        );
-
-        boolean isFavorite = false;
-        String fileName = null;
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                isFavorite = cursor.getInt(0) == 1;
-                fileName = cursor.getString(1);
-
-                // Set favorite-button's image based on favorite-status
-                item.setIsFavorite(isFavorite);
-                // Set file name for the DAMSound, null if there is no local copy of the file
-                item.setFileName(fileName);
-            }
-
-            cursor.close();
-        }
-
-        if (isFavorite) {
+        if (item.getIsFavorite()) {
             holder.favBtn.setImageResource(R.drawable.ic_favorite_48dp);
         } else {
             holder.favBtn.setImageResource(R.drawable.ic_favorite_outline_48dp);

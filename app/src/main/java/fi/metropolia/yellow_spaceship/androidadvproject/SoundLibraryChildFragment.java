@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,6 +27,7 @@ import java.util.List;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
+import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
@@ -144,7 +145,7 @@ public class SoundLibraryChildFragment extends Fragment {
                     }
                 }
             }
-        }, getActivity().getApplicationContext());
+        });
         mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
@@ -195,16 +196,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-
-                        data.clear();
-                        for (List<DAMSound> d : lists) {
-                            // We are only interested in sounds with working download links
-                            if (!TextUtils.isEmpty(d.get(0).getDownloadLink())) {
-                                data.add(d.get(0));
-                            }
-                        }
-                        mRecyclerView.getAdapter().notifyDataSetChanged();
-                        mSpinner.setVisibility(View.GONE);
+                        setSoundData(lists);
                     }
 
                     @Override
@@ -229,15 +221,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-                        data.clear();
-                        for (List<DAMSound> d : lists) {
-                            // We are only interested in sounds with working download links
-                            if (!TextUtils.isEmpty(d.get(0).getDownloadLink())) {
-                                data.add(d.get(0));
-                            }
-                        }
-                        mRecyclerView.getAdapter().notifyDataSetChanged();
-                        mSpinner.setVisibility(View.GONE);
+                        setSoundData(lists);
                     }
 
                     @Override
@@ -249,6 +233,46 @@ public class SoundLibraryChildFragment extends Fragment {
                         toast.show();
                     }
                 });
+    }
+
+    /**
+     * Set new data for sound list
+     * @param lists New data
+     */
+    private void setSoundData(List<List<DAMSound>> lists) {
+        this.data.clear();
+        for (List<DAMSound> d : lists) {
+            DAMSound s = d.get(0);
+
+            // We are only interested in sounds with working download links
+            if (!TextUtils.isEmpty(s.getDownloadLink())) {
+                Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
+                        SoundContentProvider.CONTENT_URI,
+                        new String[] {
+                                DAMSoundContract.DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                                DAMSoundContract.DAMSoundEntry.COLUMN_NAME_FILE_NAME
+                        },
+                        DAMSoundContract.DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
+                        new String[] {s.getFormattedSoundId()},
+                        null
+                );
+
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        // Set favorite-button's image based on favorite-status
+                        s.setIsFavorite(cursor.getInt(0) == 1);
+                        // Set file name for the DAMSound, null if there is no local copy of the file
+                        s.setFileName(cursor.getString(1));
+                    }
+
+                    cursor.close();
+                }
+
+                this.data.add(d.get(0));
+            }
+        }
+        this.mRecyclerView.getAdapter().notifyDataSetChanged();
+        this.mSpinner.setVisibility(View.GONE);
     }
 
     /**
@@ -390,9 +414,18 @@ public class SoundLibraryChildFragment extends Fragment {
             if (progress.isShowing()) {
                 progress.cancel();
             }
-            mediaPlayer.start();
 
-            initialStage = false;
+            if (result) {
+                mediaPlayer.start();
+                initialStage = false;
+            } else {
+                setPlaybackStatus(false);
+                Toast.makeText(
+                        getActivity().getApplicationContext(),
+                        "Something went wrong, please try another sound",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         }
 
         public Player() {
