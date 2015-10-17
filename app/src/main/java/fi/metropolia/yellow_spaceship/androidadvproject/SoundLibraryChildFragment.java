@@ -26,6 +26,7 @@ import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
+import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
@@ -104,6 +105,7 @@ public class SoundLibraryChildFragment extends Fragment {
             @Override
             public void onRowSelect(View view, int layoutPosition) {
                 // TODO: do something here
+                new AsyncDownloader(data.get(layoutPosition), getActivity()).execute();
             }
 
             @Override

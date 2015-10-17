@@ -113,18 +113,26 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         Cursor cursor = this.context.getContentResolver().query(
                 SoundContentProvider.CONTENT_URI,
-                new String[] {DAMSoundContract.DAMSoundEntry.COLUMN_NAME_IS_FAVORITE},
+                new String[] {
+                        DAMSoundContract.DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                        DAMSoundContract.DAMSoundEntry.COLUMN_NAME_FILE_NAME
+                },
                 DAMSoundContract.DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
                 new String[] {item.getFormattedSoundId()},
                 null
         );
 
         boolean isFavorite = false;
+        String fileName = null;
         if (cursor != null) {
             if (cursor.moveToNext()) {
                 isFavorite = cursor.getInt(0) == 1;
+                fileName = cursor.getString(1);
+
                 // Set favorite-button's image based on favorite-status
                 item.setIsFavorite(isFavorite);
+                // Set file name for the DAMSound, null if there is no local copy of the file
+                item.setFileName(fileName);
             }
 
             cursor.close();
