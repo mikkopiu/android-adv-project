@@ -1,28 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/linear_layout">
+    tools:context="fi.metropolia.yellow_spaceship.androidadvproject.CreateSoundscapeActivity">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/toolbar"
         android:background="@color/pri"
-        android:minHeight="?attr/actionBarSize"/>
+        android:minHeight="?attr/actionBarSize" />
 
-    <FrameLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/bottom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@color/pri"
+        android:minHeight="?attr/actionBarSize" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/add_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_container">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        fab:menu_icon="@drawable/ic_add_white_24dp"
+        fab:menu_animationDelayPerItem="0">
 
-        <TextView
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_library"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CREATE SOUNDSCAPE ACTIVITY"/>
+            android:src="@drawable/ic_my_library_music_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="@string/fab_sound_library" />
 
-    </FrameLayout>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mic_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="@string/fab_rec_sound" />
 
-</LinearLayout>
+    </com.github.clans.fab.FloatingActionMenu>
+</RelativeLayout>

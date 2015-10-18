@@ -23,4 +23,7 @@
     <string name="favorite_btn_description">Toggle favorite status</string>
     <string name="sound_library_preview_description">Preview</string>
 
+    <string name="fab_rec_sound">Record sound</string>
+    <string name="fab_sound_library">Sound library</string>
+
 </resources>
