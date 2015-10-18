@@ -4,10 +4,9 @@ import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -23,7 +22,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundDbHelpe
 public class SoundContentProvider extends ContentProvider {
 
     // Reference to our database
-    private DAMSoundDbHelper database;
+    private DAMSoundDbHelper dbHelper;
+    private SQLiteDatabase database;
 
     // Used for the UriMacher
     private static final int SOUNDS = 10;
@@ -48,8 +48,11 @@ public class SoundContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        this.database = DAMSoundDbHelper.getInstance(getContext());
-        return false;
+        Context context = getContext();
+        this.dbHelper = DAMSoundDbHelper.getInstance(context);
+        this.database = this.dbHelper.getWritableDatabase();
+
+        return this.database != null;
     }
 
     @Nullable
@@ -78,8 +81,7 @@ public class SoundContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        SQLiteDatabase db = database.getWritableDatabase();
-        Cursor cursor = queryBuilder.query(db, projection, selection,
+        Cursor cursor = queryBuilder.query(this.database, projection, selection,
                 selectionArgs, null, null, sortOrder);
 
         // Make sure that potential listeners are getting notified
@@ -98,7 +100,6 @@ public class SoundContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) throws IllegalArgumentException {
         int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
         long id = 0;
 
         // Verify that the proper URI is being accessed
@@ -110,14 +111,19 @@ public class SoundContentProvider extends ContentProvider {
                 };
 
                 // Do an update if the constraints match
-                int rowsAffected = sqlDB.update(DAMSoundEntry.TABLE_NAME, values, selection, selectionArgs);
+                int rowsAffected = this.database.update(
+                        DAMSoundEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
 
                 if (rowsAffected == 0) {
                     // No such row already existed, do an actual insert
-                    id = sqlDB.insert(DAMSoundEntry.TABLE_NAME, null, values);
+                    id = this.database.insert(DAMSoundEntry.TABLE_NAME, null, values);
                 } else {
                     // Find the ID of the already existing sound (to return)
-                    Cursor cursor = sqlDB.query(
+                    Cursor cursor = this.database.query(
                             DAMSoundEntry.TABLE_NAME,
                             new String[] {DAMSoundEntry._ID},
                             selection,
@@ -144,24 +150,21 @@ public class SoundContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
 
-        // Get access to the writable DB
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
-
         int rowsDeleted;
         switch (uriType) {
             case SOUNDS:
-                rowsDeleted = sqlDB.delete(DAMSoundEntry.TABLE_NAME, selection,
+                rowsDeleted = this.database.delete(DAMSoundEntry.TABLE_NAME, selection,
                         selectionArgs);
                 break;
             case SOUND_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsDeleted = sqlDB.delete(DAMSoundEntry.TABLE_NAME,
+                    rowsDeleted = this.database.delete(DAMSoundEntry.TABLE_NAME,
                             DAMSoundEntry._ID + "=" + id,
                             null);
                 } else {
                     // In case there are some additional selections, add them to the delete-call
-                    rowsDeleted = sqlDB.delete(DAMSoundEntry.TABLE_NAME,
+                    rowsDeleted = this.database.delete(DAMSoundEntry.TABLE_NAME,
                             DAMSoundEntry._ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
@@ -177,11 +180,11 @@ public class SoundContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
+
         int rowsUpdated;
         switch (uriType) {
             case SOUNDS:
-                rowsUpdated = sqlDB.update(DAMSoundEntry.TABLE_NAME,
+                rowsUpdated = this.database.update(DAMSoundEntry.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
@@ -189,12 +192,12 @@ public class SoundContentProvider extends ContentProvider {
             case SOUND_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = sqlDB.update(DAMSoundEntry.TABLE_NAME,
+                    rowsUpdated = this.database.update(DAMSoundEntry.TABLE_NAME,
                             values,
                             DAMSoundEntry._ID + "=" + id,
                             null);
                 } else {
-                    rowsUpdated = sqlDB.update(DAMSoundEntry.TABLE_NAME,
+                    rowsUpdated = this.database.update(DAMSoundEntry.TABLE_NAME,
                             values,
                             DAMSoundEntry._ID + "=" + id
                                     + " and "
@@ -212,6 +215,7 @@ public class SoundContentProvider extends ContentProvider {
     @Override
     public void shutdown() {
         this.database.close();
+        this.dbHelper.close();
         super.shutdown();
     }
 
@@ -239,33 +243,6 @@ public class SoundContentProvider extends ContentProvider {
             // Check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
-            }
-        }
-    }
-
-    /**
-     * In case of a conflict when inserting the values, another update query is sent.
-     *
-     * @param db     Database to insert to.
-     * @param uri    Content provider uri.
-     * @param table  Table to insert to.
-     * @param values The values to insert to.
-     * @param column Column to identify the object.
-     * @throws android.database.SQLException
-     */
-    private void insertOrUpdateById(SQLiteDatabase db, Uri uri, String table,
-                                    ContentValues values, String column) throws SQLException {
-
-        try {
-            db.insertOrThrow(table, null, values);
-        } catch (SQLiteConstraintException e) {
-            int nrRows = update(uri,
-                    values,
-                    column + "=?",
-                    new String[]{values.getAsString(column)}
-            );
-            if (nrRows == 0) {
-                throw e;
             }
         }
     }
