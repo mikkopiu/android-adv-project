@@ -25,5 +25,7 @@
 
     <string name="fab_rec_sound">Record sound</string>
     <string name="fab_sound_library">Sound library</string>
+    <string name="create_play_btn_description">Play soundscape</string>
+    <string name="create_save_btn">Save</string>
 
 </resources>

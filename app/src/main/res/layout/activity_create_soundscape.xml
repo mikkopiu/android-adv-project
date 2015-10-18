@@ -14,42 +14,67 @@
         android:background="@color/pri"
         android:minHeight="?attr/actionBarSize" />
 
-    <android.support.v7.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/bottom_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_margin="0dp"
         android:background="@color/pri"
-        android:minHeight="?attr/actionBarSize" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/create_save_btn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/create_save_btn"
+            android:textColor="@color/abc_primary_text_material_light" />
+
+        <ImageButton
+            android:id="@+id/create_play_btn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/create_play_btn_description"
+            android:src="@drawable/ic_play_arrow_48dp" />
+
+    </RelativeLayout>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/add_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="20dp"
-        fab:menu_icon="@drawable/ic_add_white_24dp"
-        fab:menu_animationDelayPerItem="0">
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        fab:menu_animationDelayPerItem="0"
+        fab:menu_icon="@drawable/ic_add_white_24dp">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_library"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_my_library_music_white_24dp"
-            fab:fab_size="mini"
-            fab:fab_label="@string/fab_sound_library" />
+            fab:fab_label="@string/fab_sound_library"
+            fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_mic_white_24dp"
-            fab:fab_size="mini"
-            fab:fab_label="@string/fab_rec_sound" />
+            fab:fab_label="@string/fab_rec_sound"
+            fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>

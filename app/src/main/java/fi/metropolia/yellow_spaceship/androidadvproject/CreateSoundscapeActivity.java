@@ -2,13 +2,12 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
 
 public class CreateSoundscapeActivity extends AppCompatActivity {
@@ -21,12 +20,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
 
-        Toolbar bottomToolbar = (Toolbar) findViewById(R.id.bottom_toolbar);
-        ViewCompat.setElevation(bottomToolbar, 4.0f);
-
-        FloatingActionMenu menu = (FloatingActionMenu) findViewById(R.id.add_menu);
-        ViewCompat.setElevation(menu, 6.0f);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -38,10 +31,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fabRecBtn = (FloatingActionButton) findViewById(R.id.menu_item_record);
-        FloatingActionButton fabLibBtn = (FloatingActionButton) findViewById(R.id.menu_item_library);
-
-        fabRecBtn.setOnClickListener(new View.OnClickListener() {
+        // Set FAB listeners
+        findViewById(R.id.menu_item_record).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: open library with Intent for Recordings
@@ -49,7 +40,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
 
-        fabLibBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_item_library).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: open library with Intent for sounds
@@ -57,6 +48,21 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.create_play_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: playback toggle
+                Toast.makeText(getApplicationContext(), "Play button clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.create_save_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: saving
+                Toast.makeText(getApplicationContext(), "Save button clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
