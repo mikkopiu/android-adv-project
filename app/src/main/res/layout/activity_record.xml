@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        android:elevation="8dp"
+        android:background="@color/pri"
+        android:minHeight="?attr/actionBarSize"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:gravity="center_horizontal|center_vertical"
+        android:weightSum="4"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
+            android:layout_weight="1"
+            android:textSize="96dp"
+            android:text="00:00"
+            android:id="@+id/record_timer"/>
+
+        <ImageButton
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:background="@drawable/record_button"
+            android:id="@+id/record_button"
+            android:src="@drawable/ic_mic_white_64dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/bottom_toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="0dp"
+        android:background="@color/pri"
+        android:orientation="horizontal"
+        android:minHeight="?attr/actionBarSize"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/play_btn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="0.5"
+            android:textSize="26dp"
+            android:text="@string/record_play_btn"
+            android:textColor="@color/abc_primary_text_material_light" />
+
+        <Button
+            android:id="@+id/save_btn"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_weight="0.5"
+            android:textSize="26dp"
+            android:text="@string/record_save_btn"
+            android:textColor="@color/abc_primary_text_material_light" />
+
+    </LinearLayout>
+
+</RelativeLayout>

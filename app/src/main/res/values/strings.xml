@@ -16,6 +16,7 @@
     <string name="sound_library_title">Sound Library</string>
     <string name="your_soundscapes_title">Your Soundscapes</string>
     <string name="museum_tour_title">Museum Tour</string>
+    <string name="record_title">Recording</string>
 
     <string name="login_main_action">Login</string>
     <string name="login_username">Username</string>
@@ -30,5 +31,8 @@
     <string name="volume_slider_description">Volume slider</string>
     <string name="create_loop_btn">Loop</string>
     <string name="create_random_btn">Random</string>
+
+    <string name="record_save_btn">SAVE</string>
+    <string name="record_play_btn">PLAY</string>
 
 </resources>

@@ -3,6 +3,7 @@
     package="fi.metropolia.yellow_spaceship.androidadvproject" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +39,11 @@
         <activity
             android:name=".LoginActivity"
             android:label="User Login" >
+        </activity>
+
+        <activity
+            android:name=".RecordActivity"
+            android:label="@string/app_name">
         </activity>
 
         <provider

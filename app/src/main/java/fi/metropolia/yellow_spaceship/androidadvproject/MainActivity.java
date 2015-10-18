@@ -42,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
         // Incontext navigation click events
         View incontextCreateSoundscape = findViewById(R.id.incontext_create_soundscape);
         View incontextSoundLibrary = findViewById(R.id.incontext_sound_library);
+        View incontextMuseumTour = findViewById(R.id.incontext_museum_tour);
 
         incontextCreateSoundscape.setOnClickListener(incontextButtonListener);
         incontextSoundLibrary.setOnClickListener(incontextButtonListener);
+        incontextMuseumTour.setOnClickListener(incontextButtonListener);
 
     }
 
@@ -61,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.incontext_sound_library:
                     intent = new Intent(MainActivity.this, SoundLibraryActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.incontext_museum_tour:
+                    intent = new Intent(MainActivity.this, RecordActivity.class);
                     startActivity(intent);
                     break;
             }
