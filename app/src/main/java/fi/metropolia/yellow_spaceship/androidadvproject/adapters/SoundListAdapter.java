@@ -102,9 +102,9 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         textView.setText(item.getTitle());
 
         if (item.getIsFavorite()) {
-            holder.favBtn.setImageResource(R.drawable.ic_favorite_48dp);
+            holder.favBtn.setImageResource(R.drawable.ic_star_48dp);
         } else {
-            holder.favBtn.setImageResource(R.drawable.ic_favorite_outline_48dp);
+            holder.favBtn.setImageResource(R.drawable.ic_star_outline_48dp);
         }
     }
 
