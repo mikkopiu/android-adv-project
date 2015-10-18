@@ -2,8 +2,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject.api;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 
 import com.squareup.okhttp.Call;
@@ -142,16 +140,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
         if(result) {
 
             setFileMetaData();
-
-            MediaPlayer mp = new MediaPlayer();
-            try {
-                mp.setDataSource(mFile.getAbsolutePath());
-                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mp.prepare();
-                mp.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         }
 
