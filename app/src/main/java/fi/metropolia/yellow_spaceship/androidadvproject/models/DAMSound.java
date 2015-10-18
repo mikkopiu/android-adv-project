@@ -28,6 +28,7 @@ public class DAMSound {
     // Additional local properties
     private transient boolean isFavorite;
     private transient String fileName;
+    private transient String soundId;
 
     /**
      * Title of the sound
@@ -269,8 +270,16 @@ public class DAMSound {
      * @return Unique ID for this sound
      */
     public String getFormattedSoundId() {
-        return String.valueOf(getCollectionID()) +
-                getTitle() +
-                String.valueOf(getCreationDate().getTime());
+        if (this.soundId == null) {
+            this.setFormattedSoundId(
+                    String.valueOf(getCollectionID()) +
+                    getTitle() +
+                    String.valueOf(getCreationDate().getTime()));
+        }
+        return this.soundId;
+    }
+
+    public void setFormattedSoundId(String soundId) {
+        this.soundId = soundId;
     }
 }

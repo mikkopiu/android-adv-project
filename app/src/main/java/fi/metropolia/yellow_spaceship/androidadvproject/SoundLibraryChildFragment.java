@@ -32,6 +32,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContrac
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
 import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -46,6 +47,8 @@ public class SoundLibraryChildFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private String mSearchQuery;
     private ProgressBar mSpinner;
+
+    private boolean isFavoritesView;
 
     private SessionManager session;
     private MediaPlayer mediaPlayer;
@@ -76,21 +79,23 @@ public class SoundLibraryChildFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
 
         session = new SessionManager(getActivity());
 
-        if(getArguments().getString("category") != null) {
+        if (getArguments().getString("category") != null) {
             this.mCategory = SoundCategory.fromApi(getArguments().getString("category"));
         } else {
             this.mCategory = null;
         }
 
-        if(getArguments().getString("search-query") != null) {
+        if (getArguments().getString("search-query") != null) {
             this.mSearchQuery = getArguments().getString("search-query");
         } else {
             this.mSearchQuery = null;
         }
+
+        this.isFavoritesView = getArguments().getBoolean("isFavorites");
 
         // Data for RecycleView
         data = new ArrayList<>();
@@ -148,10 +153,10 @@ public class SoundLibraryChildFragment extends Fragment {
                 }
             }
         });
-        mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(!this.isFavoritesView);
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -168,22 +173,26 @@ public class SoundLibraryChildFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Set onClickListener for back button
-        ((Toolbar)getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
             }
         });
 
-        this.mSpinner = (ProgressBar)getActivity().findViewById(R.id.progressBar);
+        this.mSpinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
         mSpinner.setVisibility(View.GONE);
 
 
-        if(this.mCategory != null)
+        if (this.mCategory != null)
             loadData();
 
-        if(this.mSearchQuery != null) {
+        if (this.mSearchQuery != null) {
             loadSearchData();
+        }
+
+        if (this.isFavoritesView) {
+            loadFavoritesData();
         }
     }
 
@@ -198,7 +207,11 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-                        setSoundData(lists);
+                        ArrayList<DAMSound> d = new ArrayList<>();
+                        for (List<DAMSound> s : lists) {
+                            d.add(s.get(0));
+                        }
+                        setSoundData(d);
                     }
 
                     @Override
@@ -223,7 +236,11 @@ public class SoundLibraryChildFragment extends Fragment {
                 new Callback<List<List<DAMSound>>>() {
                     @Override
                     public void success(List<List<DAMSound>> lists, Response response) {
-                        setSoundData(lists);
+                        ArrayList<DAMSound> d = new ArrayList<>();
+                        for (List<DAMSound> s : lists) {
+                            d.add(s.get(0));
+                        }
+                        setSoundData(d);
                     }
 
                     @Override
@@ -237,25 +254,66 @@ public class SoundLibraryChildFragment extends Fragment {
                 });
     }
 
+    private void loadFavoritesData() {
+        mSpinner.setVisibility(View.VISIBLE);
+
+        ArrayList<DAMSound> d = new ArrayList<>();
+
+        Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
+                SoundContentProvider.CONTENT_URI,
+                new String[]{
+                        DAMSoundEntry.COLUMN_NAME_TITLE,
+                        DAMSoundEntry.COLUMN_NAME_CATEGORY,
+                        DAMSoundEntry.COLUMN_NAME_TYPE,
+                        DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
+                        DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                        DAMSoundEntry.COLUMN_NAME_FILE_NAME,
+                        DAMSoundEntry.COLUMN_NAME_SOUND_ID
+                },
+                DAMSoundEntry.COLUMN_NAME_IS_FAVORITE + "=?",
+                new String[]{"1"},
+                null
+        );
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                DAMSound s = new DAMSound();
+                s.setTitle(cursor.getString(0));
+                s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
+                s.setSoundType(SoundType.fromApi(cursor.getString(2)));
+                s.setLengthSec(cursor.getInt(3));
+                s.setIsFavorite(cursor.getInt(4) == 1);
+                s.setFileName(cursor.getString(5));
+                s.setFormattedSoundId(cursor.getString(6));
+                d.add(s);
+            }
+
+            cursor.close();
+        }
+
+        setSoundData(d);
+    }
+
     /**
      * Set new data for sound list
-     * @param lists New data
+     *
+     * @param list New data
      */
-    private void setSoundData(List<List<DAMSound>> lists) {
+    private void setSoundData(ArrayList<DAMSound> list) {
         this.data.clear();
-        for (List<DAMSound> d : lists) {
-            DAMSound s = d.get(0);
+        System.out.println(list.size());
+        for (DAMSound s : list) {
 
             // We are only interested in sounds with working download links
             if (!TextUtils.isEmpty(s.getDownloadLink())) {
                 Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
                         SoundContentProvider.CONTENT_URI,
-                        new String[] {
+                        new String[]{
                                 DAMSoundContract.DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
                                 DAMSoundContract.DAMSoundEntry.COLUMN_NAME_FILE_NAME
                         },
                         DAMSoundContract.DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
-                        new String[] {s.getFormattedSoundId()},
+                        new String[]{s.getFormattedSoundId()},
                         null
                 );
 
@@ -270,9 +328,14 @@ public class SoundLibraryChildFragment extends Fragment {
                     cursor.close();
                 }
 
-                this.data.add(d.get(0));
+                this.data.add(s);
+            } else if (this.isFavoritesView) {
+                // Favorites data has already been fetched from the ContentProvider, no need
+                // to re-fetch it (and they don't have downloadLinks).
+                this.data.add(s);
             }
         }
+
         this.mRecyclerView.getAdapter().notifyDataSetChanged();
         this.mSpinner.setVisibility(View.GONE);
     }
@@ -280,7 +343,8 @@ public class SoundLibraryChildFragment extends Fragment {
     /**
      * Set item's favorite status.
      * Saves the state in our ContentProvider
-     * @param isFavorite New favorite-status
+     *
+     * @param isFavorite     New favorite-status
      * @param layoutPosition Index of the item
      */
     private void setItemFavorite(boolean isFavorite, int layoutPosition) {
@@ -301,12 +365,17 @@ public class SoundLibraryChildFragment extends Fragment {
             // in the database.
             getActivity().getContentResolver().insert(SoundContentProvider.CONTENT_URI, values);
 
-            mRecyclerView.getAdapter().notifyDataSetChanged();
+            if (this.isFavoritesView) {
+                loadFavoritesData();
+            } else {
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+            }
         }
     }
 
     /**
      * Start preview playback when nothing is currently playing/previous audio has finished
+     *
      * @param layoutPosition
      */
     private void startPreviewPlayback(int layoutPosition) {
@@ -335,6 +404,7 @@ public class SoundLibraryChildFragment extends Fragment {
 
     /**
      * Update playback status
+     *
      * @param playing Is audio playing
      */
     private void setPlaybackStatus(boolean playing) {

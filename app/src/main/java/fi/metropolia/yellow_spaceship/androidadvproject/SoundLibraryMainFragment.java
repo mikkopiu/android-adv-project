@@ -15,9 +15,6 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundLibraryListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 
-/**
- * Created by Petri on 19.9.2015.
- */
 public class SoundLibraryMainFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView.LayoutManager layoutManager;
@@ -97,9 +94,25 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
         int itemPosition = recyclerView.getChildAdapterPosition(v);
-        ListRowData data = adapter.getDataWithPosition(itemPosition);
         Bundle bundle = new Bundle();
-        bundle.putString("category", data.getCategory().toString());
+
+        switch (itemPosition) {
+            case 0:
+                // TODO: implement your soundscapes view
+                break;
+            case 1:
+                // TODO: implement recordings view
+                break;
+            case 2:
+                // TODO: implement favorites view
+                bundle.putBoolean("isFavorites", true);
+                break;
+            default:
+                ListRowData data = adapter.getDataWithPosition(itemPosition);
+                bundle.putBoolean("isFavorites", false);
+                bundle.putString("category", data.getCategory().toString());
+        }
+
         fragment.setArguments(bundle);
         ((SoundLibraryActivity)getActivity()).swapFragment(fragment);
     }
