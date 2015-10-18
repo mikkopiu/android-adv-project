@@ -93,7 +93,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
     @Override
     public void onBindViewHolder(final SoundListAdapter.ViewHolder holder, int position) {
-        final DAMSound item = mDataSet.get(position);
+        DAMSound item = mDataSet.get(position);
 
         // Find the views in the layout
         TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_library_list_text);

@@ -14,8 +14,17 @@
         android:background="@color/pri"
         android:minHeight="?attr/actionBarSize" />
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/toolbar"
+        android:layout_above="@+id/bottom_toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_recycler_view">
+
+    </android.support.v7.widget.RecyclerView>
+
     <RelativeLayout
-        android:id="@+id/bottom_toolbar"
+        android:id="@id/bottom_toolbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -54,7 +63,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         fab:menu_animationDelayPerItem="0"
