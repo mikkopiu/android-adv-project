@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -49,6 +48,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
         this.recyclerView.setHasFixedSize(false);
 
+        // TODO: replace data with actual content
         this.mData = new ArrayList<>();
         Cursor cursor = getApplicationContext().getContentResolver().query(
                 SoundContentProvider.CONTENT_URI,

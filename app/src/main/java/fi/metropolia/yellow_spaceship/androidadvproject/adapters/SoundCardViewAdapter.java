@@ -18,6 +18,8 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(final View itemView) {
             super(itemView);
+
+            // TODO: click handlers etc
         }
     }
 
