@@ -1,5 +1,8 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +10,7 @@ import java.util.Map;
 /**
  * A single sound from the DAM.
  */
-public class DAMSound {
+public class DAMSound implements Parcelable {
 
     // Properties found in DAM
     private String Title;
@@ -29,6 +32,27 @@ public class DAMSound {
     private transient boolean isFavorite;
     private transient String fileName;
     private transient String soundId;
+
+    /**
+     * Necessary empty constructor, to not conflict with the Parcelable implementation
+     */
+    public DAMSound() {
+        // NOTE: Intentionally empty
+    }
+
+    /**
+     * Constructor for the Parcelable interface
+     * @param in
+     */
+    public DAMSound(Parcel in) {
+        this.Title = in.readString();
+        this.Category = SoundCategory.fromApi(in.readString());
+        this.SoundType = fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType.fromApi(in.readString());
+        this.LengthSec = in.readInt();
+        this.isFavorite = in.readByte() == (byte) 1;
+        this.fileName = in.readString();
+        this.soundId = in.readString();
+    }
 
     /**
      * Title of the sound
@@ -282,4 +306,44 @@ public class DAMSound {
     public void setFormattedSoundId(String soundId) {
         this.soundId = soundId;
     }
+
+    /**
+     * PARCELABLE IMPLEMENTATIONS
+     * See the constructor above
+     */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Implementation for Parcelable interface.
+     * Only write the necessary fields for SoundScapes,
+     * no need for anything else (might not even exist, when handling favorites).
+     * @param dest
+     * @param flags
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getTitle());
+        dest.writeString(getCategory().toString());
+        dest.writeString(getSoundType().toString());
+        dest.writeInt(getLengthSec());
+        dest.writeByte((byte) (getIsFavorite() ? 1 : 0));
+        dest.writeString(getFileName());
+        dest.writeString(getFormattedSoundId());
+    }
+
+    public static final Parcelable.Creator<DAMSound> CREATOR
+            = new Parcelable.Creator<DAMSound>() {
+
+        public DAMSound createFromParcel(Parcel in) {
+            return new DAMSound(in);
+        }
+
+        public DAMSound[] newArray(int size) {
+            return new DAMSound[size];
+        }
+    };
 }

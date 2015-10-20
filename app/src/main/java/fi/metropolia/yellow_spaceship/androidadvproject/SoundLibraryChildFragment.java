@@ -1,7 +1,9 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -113,7 +115,21 @@ public class SoundLibraryChildFragment extends Fragment {
             @Override
             public void onRowSelect(View view, int layoutPosition) {
                 // TODO: do something here
-                new AsyncDownloader(data.get(layoutPosition), getActivity()).execute();
+                DAMSound selectedSound = data.get(layoutPosition);
+
+                // Return the selection results if necessary
+                Intent intent = getActivity().getIntent();
+                if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
+                    // No need to download any time the user clicks a row, just when getting a sound
+                    new AsyncDownloader(selectedSound, getActivity()).execute();
+
+                    // Create the return Intent to send the selected sound
+                    // to the create-view.
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", selectedSound);
+                    getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                    getActivity().finish();
+                }
             }
 
             @Override

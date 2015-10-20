@@ -2,10 +2,9 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,13 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
-
-/**
- * Created by Petri on 15.9.2015.
- */
 public class SoundLibraryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView.LayoutManager layoutManager;
@@ -94,12 +87,8 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
                 swapFragment(fragment);
 
             } else {
-
-                if(f instanceof SoundLibraryChildFragment) {
-                    ((SoundLibraryChildFragment) f).setSearchQuery(query);
-                    ((SoundLibraryChildFragment) f).loadSearchData();
-                }
-
+                ((SoundLibraryChildFragment) f).setSearchQuery(query);
+                ((SoundLibraryChildFragment) f).loadSearchData();
             }
 
         }

@@ -1,5 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 
@@ -20,10 +24,15 @@ import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentPr
 
 public class CreateSoundscapeActivity extends AppCompatActivity {
 
+    public final static int GET_LIBRARY_SOUND = 1;
+    public final static int RECORD_SOUND = 2;
+
     private ArrayList<DAMSound> mData;
     private RecyclerView recyclerView;
     private SoundCardViewAdapter adapter;
     private GridLayoutManager layoutManager;
+
+    private FloatingActionMenu fabMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +106,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO: open library with Intent for sounds
                 Toast.makeText(getApplicationContext(), "Sound library clicked", Toast.LENGTH_SHORT).show();
+                addLibrarySound();
             }
         });
+
+        this.fabMenu = (FloatingActionMenu) findViewById(R.id.add_menu);
 
         // Play/pause button
         findViewById(R.id.create_play_btn).setOnClickListener(new View.OnClickListener() {
@@ -117,6 +129,54 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Save button clicked", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Start an Intent to add a new sound from the Sound Library
+     */
+    private void addLibrarySound() {
+        Intent intent = new Intent(getApplicationContext(), SoundLibraryActivity.class);
+        intent.putExtra("requestCode", GET_LIBRARY_SOUND);
+        startActivityForResult(intent, GET_LIBRARY_SOUND);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == GET_LIBRARY_SOUND) {
+            if(resultCode == Activity.RESULT_OK){
+                DAMSound result = data.getExtras().getParcelable("result");
+                try {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            result.getTitle() + " selected",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    // TODO: actually do something, add to project
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Something went wrong, please try another sound",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Sound Library Activity cancelled",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+
+            fabMenu.close(false);
+        } else if (requestCode == RECORD_SOUND) {
+            // TODO: react to new sound recordings
+        }
     }
 
 }
