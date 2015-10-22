@@ -54,7 +54,6 @@ public class DAMSound implements Parcelable {
         this.isRecording = in.readByte() == (byte) 1;
         this.fileName = in.readString();
         this.soundId = in.readString();
-        System.out.println("parcel in: " + this.soundId);
     }
 
     /**
