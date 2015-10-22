@@ -54,7 +54,7 @@ public class DAMSound implements Parcelable {
         this.isRecording = in.readByte() == (byte) 1;
         this.fileName = in.readString();
         this.soundId = in.readString();
-        this.CreationDate = new Date(in.readLong());
+        System.out.println("parcel in: " + this.soundId);
     }
 
     /**
@@ -314,16 +314,19 @@ public class DAMSound implements Parcelable {
      */
     public String getFormattedSoundId() {
         if (this.soundId == null) {
-            this.setFormattedSoundId(
-                    String.valueOf(getCollectionID()) +
-                    getTitle() +
-                    String.valueOf(getCreationDate().getTime()));
+            this.setFormattedSoundId(this.generateFormattedSoundId());
         }
         return this.soundId;
     }
 
     public void setFormattedSoundId(String soundId) {
         this.soundId = soundId;
+    }
+
+    public String generateFormattedSoundId() {
+        return String.valueOf(getCollectionID()) +
+                getTitle() +
+                String.valueOf(getCreationDate().getTime());
     }
 
     /**
@@ -350,9 +353,9 @@ public class DAMSound implements Parcelable {
         dest.writeString(getSoundType().toString());
         dest.writeInt(getLengthSec());
         dest.writeByte((byte) (getIsFavorite() ? 1 : 0));
+        dest.writeByte((byte) (getIsRecording() ? 1 : 0));
         dest.writeString(getFileName());
         dest.writeString(getFormattedSoundId());
-        dest.writeLong(getCreationDate().getTime());
     }
 
     public static final Parcelable.Creator<DAMSound> CREATOR

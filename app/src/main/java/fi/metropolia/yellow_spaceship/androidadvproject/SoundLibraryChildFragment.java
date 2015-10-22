@@ -389,13 +389,20 @@ public class SoundLibraryChildFragment extends Fragment {
 
                     cursor.close();
                 }
-
-                this.data.add(s);
-            } else if (this.isFavoritesView || this.isRecordingsView) {
-                // Favorites data has already been fetched from the ContentProvider, no need
-                // to re-fetch it (and they don't have downloadLinks).
-                this.data.add(s);
+            } else if (!this.isFavoritesView && !this.isRecordingsView) {
+                // Skip items that don't have download links (and if we aren't in the favorites-
+                // or recordings-view).
+                continue;
             }
+
+            // If in favorites- or recordings-view data has already been fetched from the
+            // ContentProvider, no need to re-fetch it (and they don't have downloadLinks).
+
+            if (s.getFormattedSoundId() == null) {
+                s.setFormattedSoundId(s.generateFormattedSoundId());
+            }
+
+            this.data.add(s);
         }
 
         this.mRecyclerView.getAdapter().notifyDataSetChanged();
@@ -446,7 +453,6 @@ public class SoundLibraryChildFragment extends Fragment {
         if (!TextUtils.isEmpty(url)) {
             url = getActivity().getApplicationContext().getFilesDir() + LOCAL_SOUND_FOLDER +
                     "/" + url;
-            System.out.println(url);
         } else {
             // Stream from the DAM, if no local file is available
             url = this.data.get(layoutPosition).getDownloadLink();
