@@ -56,6 +56,10 @@ public class SoundScapeProject {
         this.name = name;
     }
 
+    public ArrayList<ProjectSound> getSounds() {
+        return this.sounds;
+    }
+
     /**
      * Get a sound by its index
      * @param ind Index to find
