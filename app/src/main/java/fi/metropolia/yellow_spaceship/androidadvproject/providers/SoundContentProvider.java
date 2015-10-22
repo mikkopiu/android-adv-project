@@ -233,6 +233,7 @@ public class SoundContentProvider extends ContentProvider {
                 DAMSoundEntry.COLUMN_NAME_TYPE,
                 DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
                 DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                DAMSoundEntry.COLUMN_NAME_IS_RECORDING,
                 DAMSoundEntry.COLUMN_NAME_FILE_NAME,
         };
 

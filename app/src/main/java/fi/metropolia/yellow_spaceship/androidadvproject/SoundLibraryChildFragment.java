@@ -51,6 +51,7 @@ public class SoundLibraryChildFragment extends Fragment {
     private ProgressBar mSpinner;
 
     private boolean isFavoritesView;
+    private boolean isRecordingsView;
 
     private SessionManager session;
     private MediaPlayer mediaPlayer;
@@ -98,6 +99,7 @@ public class SoundLibraryChildFragment extends Fragment {
         }
 
         this.isFavoritesView = getArguments().getBoolean("isFavorites");
+        this.isRecordingsView = getArguments().getBoolean("isRecordings");
 
         // Data for RecycleView
         data = new ArrayList<>();
@@ -210,6 +212,10 @@ public class SoundLibraryChildFragment extends Fragment {
         if (this.isFavoritesView) {
             loadFavoritesData();
         }
+
+        if (this.isRecordingsView) {
+            loadRecordingsData();
+        }
     }
 
     private void loadData() {
@@ -310,6 +316,46 @@ public class SoundLibraryChildFragment extends Fragment {
         setSoundData(d);
     }
 
+    private void loadRecordingsData() {
+        mSpinner.setVisibility(View.VISIBLE);
+
+        ArrayList<DAMSound> d = new ArrayList<>();
+
+        Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
+                SoundContentProvider.CONTENT_URI,
+                new String[]{
+                        DAMSoundEntry.COLUMN_NAME_TITLE,
+                        DAMSoundEntry.COLUMN_NAME_CATEGORY,
+                        DAMSoundEntry.COLUMN_NAME_TYPE,
+                        DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
+                        DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                        DAMSoundEntry.COLUMN_NAME_FILE_NAME,
+                        DAMSoundEntry.COLUMN_NAME_SOUND_ID
+                },
+                DAMSoundEntry.COLUMN_NAME_IS_RECORDING + "=?",
+                new String[]{"1"},
+                null
+        );
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                DAMSound s = new DAMSound();
+                s.setTitle(cursor.getString(0));
+                s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
+                s.setSoundType(SoundType.fromApi(cursor.getString(2)));
+                s.setLengthSec(cursor.getInt(3));
+                s.setIsFavorite(cursor.getInt(4) == 1);
+                s.setFileName(cursor.getString(5));
+                s.setFormattedSoundId(cursor.getString(6));
+                d.add(s);
+            }
+
+            cursor.close();
+        }
+
+        setSoundData(d);
+    }
+
     /**
      * Set new data for sound list
      *
@@ -344,7 +390,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 }
 
                 this.data.add(s);
-            } else if (this.isFavoritesView) {
+            } else if (this.isFavoritesView || this.isRecordingsView) {
                 // Favorites data has already been fetched from the ContentProvider, no need
                 // to re-fetch it (and they don't have downloadLinks).
                 this.data.add(s);
@@ -399,6 +445,7 @@ public class SoundLibraryChildFragment extends Fragment {
         if (!TextUtils.isEmpty(url)) {
             url = getActivity().getApplicationContext().getFilesDir() + LOCAL_SOUND_FOLDER +
                     "/" + url;
+            System.out.println(url);
         } else {
             // Stream from the DAM, if no local file is available
             url = this.data.get(layoutPosition).getDownloadLink();

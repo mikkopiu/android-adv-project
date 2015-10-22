@@ -99,6 +99,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO: open library with Intent for Recordings
                 Toast.makeText(getApplicationContext(), "Record sound clicked", Toast.LENGTH_SHORT).show();
+                addRecording();
             }
         });
         findViewById(R.id.menu_item_library).setOnClickListener(new View.OnClickListener() {
@@ -138,6 +139,15 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), SoundLibraryActivity.class);
         intent.putExtra("requestCode", GET_LIBRARY_SOUND);
         startActivityForResult(intent, GET_LIBRARY_SOUND);
+    }
+
+    /**
+     * Start an Intent to add a new recording from the Recording view
+     */
+    private void addRecording() {
+        Intent intent = new Intent(getApplicationContext(), RecordActivity.class);
+        intent.putExtra("requestCode", RECORD_SOUND);
+        startActivityForResult(intent, RECORD_SOUND);
     }
 
     @Override

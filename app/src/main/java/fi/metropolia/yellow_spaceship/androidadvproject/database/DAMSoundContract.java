@@ -19,6 +19,7 @@ public final class DAMSoundContract {
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_LENGTH_SEC = "length_sec";
         public static final String COLUMN_NAME_IS_FAVORITE = "is_favorite";
+        public static final String COLUMN_NAME_IS_RECORDING = "is_recording";
         public static final String COLUMN_NAME_FILE_NAME = "filename";
     }
 }

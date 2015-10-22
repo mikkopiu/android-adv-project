@@ -30,6 +30,7 @@ public class DAMSound implements Parcelable {
 
     // Additional local properties
     private transient boolean isFavorite;
+    private transient boolean isRecording;
     private transient String fileName;
     private transient String soundId;
 
@@ -50,6 +51,7 @@ public class DAMSound implements Parcelable {
         this.SoundType = fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType.fromApi(in.readString());
         this.LengthSec = in.readInt();
         this.isFavorite = in.readByte() == (byte) 1;
+        this.isRecording = in.readByte() == (byte) 1;
         this.fileName = in.readString();
         this.soundId = in.readString();
     }
@@ -271,6 +273,22 @@ public class DAMSound implements Parcelable {
      */
     public void setIsFavorite(boolean favorite) {
         this.isFavorite = favorite;
+    }
+
+    /**
+     * Is this sound recorded by the user
+     * @return Is this sound a recording
+     */
+    public boolean getIsRecording() {
+        return isRecording;
+    }
+
+    /**
+     * Set recorded-status for this sound
+     * @param recording True if this is a recording
+     */
+    public void setIsRecording(boolean recording) {
+        this.isRecording = recording;
     }
 
     /**

@@ -13,7 +13,7 @@ public class DAMSoundDbHelper extends SQLiteOpenHelper {
     private static DAMSoundDbHelper sInstance;
 
     // NOTE: Increment DATABASE_VERSION if changing the schema
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "DAMSound.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -29,6 +29,7 @@ public class DAMSoundDbHelper extends SQLiteOpenHelper {
                     DAMSoundEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_LENGTH_SEC + INTEGER_TYPE + COMMA_SEP +   // TODO: check is this actually an int, or can it be a float?
                     DAMSoundEntry.COLUMN_NAME_IS_FAVORITE + INTEGER_TYPE + COMMA_SEP +  // SQLite doesn't have booleans, so this needs to be an int
+                    DAMSoundEntry.COLUMN_NAME_IS_RECORDING + INTEGER_TYPE + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_FILE_NAME + TEXT_TYPE + COMMA_SEP +
                     " UNIQUE(" + DAMSoundEntry.COLUMN_NAME_SOUND_ID + ")" +
                     " )";
