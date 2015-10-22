@@ -1,14 +1,25 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Enumeration for DAM's "Category" property.
  */
 public enum SoundCategory {
+    @SerializedName("nature")
     NATURE,
+
+    @SerializedName("human")
     HUMAN,
+
+    @SerializedName("machine")
     MACHINE,
+
+    @SerializedName("story")
     STORY,
-    UNKNOWN,;
+
+    @SerializedName("")
+    UNKNOWN;
 
     public static SoundCategory fromApi(String category) {
         if ("nature".equals(category)) {

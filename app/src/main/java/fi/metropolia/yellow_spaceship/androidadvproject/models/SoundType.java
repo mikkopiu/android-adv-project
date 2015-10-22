@@ -1,13 +1,23 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Enumeration for DAM's "Sound type" property
  */
 public enum SoundType {
+
+    @SerializedName("soundscapes")
     SOUNDSCAPE,
+
+    @SerializedName("ambience")
     AMBIENCE,
+
+    @SerializedName("effects")
     EFFECT,
-    UNKNOWN,;
+
+    @SerializedName("")
+    UNKNOWN;
 
     public static SoundType fromApi(String typeString) {
         if ("soundscapes".equals(typeString)) {
