@@ -54,6 +54,7 @@ public class DAMSound implements Parcelable {
         this.isRecording = in.readByte() == (byte) 1;
         this.fileName = in.readString();
         this.soundId = in.readString();
+        this.CreationDate = new Date(in.readLong());
     }
 
     /**
@@ -351,6 +352,7 @@ public class DAMSound implements Parcelable {
         dest.writeByte((byte) (getIsFavorite() ? 1 : 0));
         dest.writeString(getFileName());
         dest.writeString(getFormattedSoundId());
+        dest.writeLong(getCreationDate().getTime());
     }
 
     public static final Parcelable.Creator<DAMSound> CREATOR
