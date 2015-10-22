@@ -4,27 +4,51 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 
 public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdapter.ViewHolder> {
 
-    private ArrayList<DAMSound> mDataSet;
+    private ArrayList<ProjectSound> mDataSet;
+    private ViewHolder.IProjectSoundViewHolderClicks listener;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(final View itemView) {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public IProjectSoundViewHolderClicks mListener;
+
+        public ImageButton closeBtn;
+
+        public ViewHolder(View itemView, IProjectSoundViewHolderClicks listener) {
             super(itemView);
 
-            // TODO: click handlers etc
+            this.mListener = listener;
+
+            this.closeBtn = (ImageButton) itemView.findViewById(R.id.close_btn);
+
+            this.closeBtn.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.close_btn) {
+                this.mListener.onCloseClicked(v, getLayoutPosition());
+            }
+        }
+
+        // TODO: add more (loop, random, volume control)
+        public interface IProjectSoundViewHolderClicks {
+            void onCloseClicked(View view, int layoutPosition);
         }
     }
 
-    public SoundCardViewAdapter(ArrayList<DAMSound> dataSet) {
+    public SoundCardViewAdapter(ArrayList<ProjectSound> dataSet,
+                                SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks listener) {
         this.mDataSet = dataSet;
+        this.listener = listener;
     }
 
     @Override
@@ -34,12 +58,12 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
                 .inflate(R.layout.create_soundscape_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        return new ViewHolder(v);
+        return new ViewHolder(v, this.listener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        DAMSound item = mDataSet.get(position);
+        ProjectSound item = mDataSet.get(position);
 
         // Find the views in the layout
         TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_title);

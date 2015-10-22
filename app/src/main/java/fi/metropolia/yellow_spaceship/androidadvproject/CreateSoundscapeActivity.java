@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
 import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 
@@ -27,7 +29,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     public final static int GET_LIBRARY_SOUND = 1;
     public final static int RECORD_SOUND = 2;
 
-    private ArrayList<DAMSound> mData;
+    private SoundScapeProject mProject;
     private RecyclerView recyclerView;
     private SoundCardViewAdapter adapter;
     private GridLayoutManager layoutManager;
@@ -57,39 +59,29 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
         this.recyclerView.setHasFixedSize(false);
 
-        // TODO: replace data with actual content
-        this.mData = new ArrayList<>();
-        Cursor cursor = getApplicationContext().getContentResolver().query(
-                SoundContentProvider.CONTENT_URI,
-                new String[]{
-                        DAMSoundEntry.COLUMN_NAME_TITLE,
-                        DAMSoundEntry.COLUMN_NAME_CATEGORY,
-                        DAMSoundEntry.COLUMN_NAME_TYPE,
-                        DAMSoundEntry.COLUMN_NAME_FILE_NAME
-                },
-                null,
-                null,
-                null
-        );
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                DAMSound s = new DAMSound();
-                s.setTitle(cursor.getString(0));
-                s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
-                s.setSoundType(SoundType.fromApi(cursor.getString(2)));
-                s.setFileName(cursor.getString(3));
-                this.mData.add(s);
-                this.mData.add(s);
-                this.mData.add(s);
-            }
-
-            cursor.close();
-        }
+        // TODO: load previous project automatically?
+        this.mProject = new SoundScapeProject();
 
         this.layoutManager = new GridLayoutManager(this, 2);
         this.recyclerView.setLayoutManager(this.layoutManager);
 
-        this.adapter = new SoundCardViewAdapter(this.mData);
+        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), new SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks() {
+
+            @Override
+            public void onCloseClicked(View view, int layoutPosition) {
+                try {
+                    mProject.removeSound(layoutPosition);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Something went wrong, please try again",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+        });
         this.recyclerView.setAdapter(adapter);
 
 
@@ -97,7 +89,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         findViewById(R.id.menu_item_record).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: open library with Intent for Recordings
                 Toast.makeText(getApplicationContext(), "Record sound clicked", Toast.LENGTH_SHORT).show();
                 addRecording();
             }
@@ -105,7 +96,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         findViewById(R.id.menu_item_library).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: open library with Intent for sounds
                 Toast.makeText(getApplicationContext(), "Sound library clicked", Toast.LENGTH_SHORT).show();
                 addLibrarySound();
             }
@@ -155,6 +145,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
         if (requestCode == GET_LIBRARY_SOUND) {
             if(resultCode == Activity.RESULT_OK){
+                // TODO: handle multi-select
                 DAMSound result = data.getExtras().getParcelable("result");
                 try {
                     Toast.makeText(
@@ -163,7 +154,19 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT
                     ).show();
 
-                    // TODO: actually do something, add to project
+                    this.mProject.addSound(new ProjectSound(
+                            result.getFormattedSoundId(),
+                            result.getTitle(),
+                            result.getCategory(),
+                            result.getSoundType(),
+                            result.getFileName(),
+                            true,       // By default on loop
+                            false,
+                            1.0f        // By default on full volume
+                    ));
+
+                    // Refresh card view list
+                    this.recyclerView.getAdapter().notifyDataSetChanged();
 
                 } catch (NullPointerException e) {
                     e.printStackTrace();

@@ -123,6 +123,7 @@ public class SoundLibraryChildFragment extends Fragment {
                 Intent intent = getActivity().getIntent();
                 if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                     // No need to download any time the user clicks a row, just when getting a sound
+                    // TODO: show a spinner while this is going (and prevent intent from finishing)
                     new AsyncDownloader(selectedSound, getActivity()).execute();
 
                     // Create the return Intent to send the selected sound
