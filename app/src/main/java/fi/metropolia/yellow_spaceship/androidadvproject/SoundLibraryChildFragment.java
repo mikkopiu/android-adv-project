@@ -317,7 +317,6 @@ public class SoundLibraryChildFragment extends Fragment {
      */
     private void setSoundData(ArrayList<DAMSound> list) {
         this.data.clear();
-        System.out.println(list.size());
         for (DAMSound s : list) {
 
             // We are only interested in sounds with working download links
