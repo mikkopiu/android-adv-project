@@ -64,6 +64,7 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
     }
 
     private void loadData() {
+        // TODO: move this out of the UI thread
         if (this.mData != null) {
             this.mData.clear();
         } else {
