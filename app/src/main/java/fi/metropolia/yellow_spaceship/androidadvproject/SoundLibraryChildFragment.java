@@ -50,6 +50,7 @@ public class SoundLibraryChildFragment extends Fragment {
     private String mSearchQuery;
     private ProgressBar mSpinner;
 
+    private boolean isSoundScapesView;
     private boolean isFavoritesView;
     private boolean isRecordingsView;
 
@@ -98,6 +99,7 @@ public class SoundLibraryChildFragment extends Fragment {
             this.mSearchQuery = null;
         }
 
+        this.isSoundScapesView = getArguments().getBoolean("isSoundScapes");
         this.isFavoritesView = getArguments().getBoolean("isFavorites");
         this.isRecordingsView = getArguments().getBoolean("isRecordings");
 
@@ -217,7 +219,31 @@ public class SoundLibraryChildFragment extends Fragment {
         if (this.isRecordingsView) {
             loadRecordingsData();
         }
+
+        if (this.isSoundScapesView) {
+            loadSoundScapesData();
+        }
     }
+
+    private Callback<List<List<DAMSound>>> webDataCallback = new Callback<List<List<DAMSound>>>() {
+        @Override
+        public void success(List<List<DAMSound>> lists, Response response) {
+            ArrayList<DAMSound> d = new ArrayList<>();
+            for (List<DAMSound> s : lists) {
+                d.add(s.get(0));
+            }
+            setSoundData(d);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            error.printStackTrace();
+
+            mSpinner.setVisibility(View.GONE);
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    };
 
     private void loadData() {
         session.checkLogin();
@@ -227,25 +253,7 @@ public class SoundLibraryChildFragment extends Fragment {
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.mCategory,
                 true,
-                new Callback<List<List<DAMSound>>>() {
-                    @Override
-                    public void success(List<List<DAMSound>> lists, Response response) {
-                        ArrayList<DAMSound> d = new ArrayList<>();
-                        for (List<DAMSound> s : lists) {
-                            d.add(s.get(0));
-                        }
-                        setSoundData(d);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-
-                        mSpinner.setVisibility(View.GONE);
-                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                });
+                webDataCallback);
     }
 
     public void loadSearchData() {
@@ -256,25 +264,7 @@ public class SoundLibraryChildFragment extends Fragment {
         ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
                 this.mSearchQuery,
                 true,
-                new Callback<List<List<DAMSound>>>() {
-                    @Override
-                    public void success(List<List<DAMSound>> lists, Response response) {
-                        ArrayList<DAMSound> d = new ArrayList<>();
-                        for (List<DAMSound> s : lists) {
-                            d.add(s.get(0));
-                        }
-                        setSoundData(d);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        error.printStackTrace();
-
-                        mSpinner.setVisibility(View.GONE);
-                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                });
+                webDataCallback);
     }
 
     private void loadFavoritesData() {
@@ -355,6 +345,10 @@ public class SoundLibraryChildFragment extends Fragment {
         }
 
         setSoundData(d);
+    }
+
+    private void loadSoundScapesData() {
+        mSpinner.setVisibility(View.VISIBLE);
     }
 
     /**
