@@ -1,49 +1,48 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/pri_dark"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:background="@color/pri_dark">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:id="@+id/toolbar"
-            android:elevation="8dp"
             android:background="@color/pri"
-            android:minHeight="?attr/actionBarSize"/>
+            android:elevation="8dp"
+            android:minHeight="?attr/actionBarSize" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
+            android:orientation="horizontal"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
-            android:orientation="horizontal">
+            android:paddingTop="6dp">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/incontext_create_soundscape"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:id="@+id/incontext_create_soundscape">
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textSize="24dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:text="@string/create_soundscape_title"/>
+                        android:text="@string/create_soundscape_title"
+                        android:textSize="24dp" />
 
                 </RelativeLayout>
 
@@ -54,39 +53,40 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
+            android:orientation="horizontal"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
-            android:weightSum="1"
-            android:orientation="horizontal">
+            android:paddingTop="6dp"
+            android:weightSum="1">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/incontext_sound_library"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
+                android:layout_marginRight="6dp"
                 android:layout_weight="0.5"
                 android:clickable="true"
-                android:layout_marginRight="6dp"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:id="@+id/incontext_sound_library">
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textSize="20dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:text="@string/sound_library_title"/>
+                        android:text="@string/sound_library_title"
+                        android:textSize="20dp" />
 
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/incontext_your_soundscapes"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_weight="0.5"
@@ -98,13 +98,13 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textSize="20dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:text="@string/your_soundscapes_title"/>
+                        android:text="@string/your_soundscapes_title"
+                        android:textSize="20dp" />
 
                 </RelativeLayout>
 
@@ -115,30 +115,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
+            android:orientation="horizontal"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"
-            android:orientation="horizontal">
+            android:paddingTop="6dp">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/incontext_museum_tour"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:id="@+id/incontext_museum_tour">
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textSize="24dp"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:text="@string/museum_tour_title"/>
+                        android:text="@string/museum_tour_title"
+                        android:textSize="24dp" />
 
                 </RelativeLayout>
 
