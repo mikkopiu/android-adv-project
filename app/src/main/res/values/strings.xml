@@ -38,4 +38,7 @@
     <string name="record_dialog_cancel_btn">Cancel</string>
     <string name="record_dialog_save_btn">Save</string>
 
+    <string name="create_dialog_name_hint">Name</string>
+    <string name="create_dialog_cancel_btn">Cancel</string>
+
 </resources>

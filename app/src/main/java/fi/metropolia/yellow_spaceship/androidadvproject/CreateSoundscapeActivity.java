@@ -1,28 +1,28 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.util.ArrayList;
-
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
-import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
-import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
-import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
 public class CreateSoundscapeActivity extends AppCompatActivity {
 
@@ -33,8 +33,29 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SoundCardViewAdapter adapter;
     private GridLayoutManager layoutManager;
+    private Dialog mDialog;
+    private EditText mDialogEditText;
+    private ProgressDialog mProgress;
 
     private FloatingActionMenu fabMenu;
+
+    private boolean mIsSaving = false;
+
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case R.id.dialog_cancel_btn:
+                    mDialog.dismiss();
+                    break;
+                case R.id.dialog_save_btn:
+                    save();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +137,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         findViewById(R.id.create_save_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: saving
-                Toast.makeText(getApplicationContext(), "Save button clicked", Toast.LENGTH_SHORT).show();
+                if (mDialog == null) {
+                    setupDialog();
+                }
+                mDialog.show();
             }
         });
     }
@@ -190,6 +213,46 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         } else if (requestCode == RECORD_SOUND) {
             // TODO: react to new sound recordings
         }
+    }
+
+    /**
+     * Save the current project to file
+     */
+    private void save() {
+        System.out.println("saving project");
+        if(!mIsSaving) {
+            mIsSaving = true;
+            this.mProgress = new ProgressDialog(this);
+            this.mProgress.setMessage("Saving...");
+            this.mProgress.show();
+            this.mProject.setName(mDialogEditText.getText().toString());
+            new ProjectSaveTask(this.getApplicationContext(), new SaveListener() {
+                @Override
+                public void onSaveComplete() {
+                    Toast.makeText(getApplicationContext(), "Project saved successfully", Toast.LENGTH_SHORT)
+                            .show();
+                    mIsSaving = false;
+                    if (mProgress.isShowing()) {
+                        mProgress.cancel();
+                    }
+
+                    mDialog.dismiss();
+                }
+            }).execute(this.mProject);
+        }
+    }
+
+    private void setupDialog() {
+        mDialog = new Dialog(CreateSoundscapeActivity.this);
+        mDialog.setContentView(R.layout.create_save_dialog);
+        mDialog.setTitle("Save");
+        Button mDialogSaveBtn = (Button)mDialog.findViewById(R.id.dialog_save_btn);
+        Button mDialogCancelBtn = (Button)mDialog.findViewById(R.id.dialog_cancel_btn);
+        mDialogEditText = (EditText)mDialog.findViewById(R.id.input_name);
+        mDialogSaveBtn.setOnClickListener(clickListener);
+        mDialogCancelBtn.setOnClickListener(clickListener);
+
+        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
 }
