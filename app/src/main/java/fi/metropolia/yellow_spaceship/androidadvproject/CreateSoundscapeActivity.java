@@ -219,13 +219,14 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      * Save the current project to file
      */
     private void save() {
-        System.out.println("saving project");
         if(!mIsSaving) {
+            String fileName = mDialogEditText.getText().toString().trim();
+
             mIsSaving = true;
             this.mProgress = new ProgressDialog(this);
             this.mProgress.setMessage("Saving...");
             this.mProgress.show();
-            this.mProject.setName(mDialogEditText.getText().toString());
+            this.mProject.setName(fileName);
             new ProjectSaveTask(this.getApplicationContext(), new SaveListener() {
                 @Override
                 public void onSaveComplete() {
