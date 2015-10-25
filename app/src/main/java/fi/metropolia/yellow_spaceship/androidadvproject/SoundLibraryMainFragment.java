@@ -29,7 +29,6 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         return new SoundLibraryMainFragment();
     }
 
-    private static final String YOUR_SOUNDSCAPES_CAPTION = "Your soundscapes";
     private static final String RECORDINGS_CAPTION = "Recordings";
     private static final String FAVOURITES_CAPTION = "Favourite Sounds";
 
@@ -52,10 +51,6 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
         // Data for RecycleView
         this.data = new ArrayList<>();
-        if (getActivity().getIntent().getIntExtra("requestCode", 0) != CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
-            // Soundscapes can't be added to soundscapes, so don't show it on the list
-            data.add(new ListRowData(YOUR_SOUNDSCAPES_CAPTION, R.drawable.ic_audiotrack_black_48dp, null));
-        }
         data.add(new ListRowData(RECORDINGS_CAPTION, R.drawable.ic_mic_black_48dp, null));
         data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_outline_48dp, null));
 
@@ -108,9 +103,6 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         Bundle bundle = new Bundle();
 
         switch (d.getCaption()) {
-            case YOUR_SOUNDSCAPES_CAPTION:
-                bundle.putBoolean("isSoundScapes", true);
-                break;
             case RECORDINGS_CAPTION:
                 bundle.putBoolean("isRecordings", true);
                 break;

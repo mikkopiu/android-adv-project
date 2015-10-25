@@ -50,7 +50,6 @@ public class SoundLibraryChildFragment extends Fragment {
     private String mSearchQuery;
     private ProgressBar mSpinner;
 
-    private boolean isSoundScapesView;
     private boolean isFavoritesView;
     private boolean isRecordingsView;
 
@@ -99,7 +98,6 @@ public class SoundLibraryChildFragment extends Fragment {
             this.mSearchQuery = null;
         }
 
-        this.isSoundScapesView = getArguments().getBoolean("isSoundScapes");
         this.isFavoritesView = getArguments().getBoolean("isFavorites");
         this.isRecordingsView = getArguments().getBoolean("isRecordings");
 
@@ -218,10 +216,6 @@ public class SoundLibraryChildFragment extends Fragment {
 
         if (this.isRecordingsView) {
             loadRecordingsData();
-        }
-
-        if (this.isSoundScapesView) {
-            loadSoundScapesData();
         }
     }
 
@@ -345,10 +339,6 @@ public class SoundLibraryChildFragment extends Fragment {
         }
 
         setSoundData(d);
-    }
-
-    private void loadSoundScapesData() {
-        mSpinner.setVisibility(View.VISIBLE);
     }
 
     /**
