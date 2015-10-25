@@ -1,10 +1,13 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * A simplified representation of a DAMSound in a SoundScapeProject.
  * Can be serialized using GSON to JSON format.
  */
-public class ProjectSound {
+public class ProjectSound implements Parcelable {
     private String id;
     private String title;
     private SoundCategory category;
@@ -20,6 +23,19 @@ public class ProjectSound {
      */
     public ProjectSound(String id) {
         this(id, null, null, null, null, false, false, 1.0f);
+    }
+
+    public ProjectSound(Parcel in) {
+        this(
+                in.readString(),
+                in.readString(),
+                SoundCategory.fromApi(in.readString()),
+                SoundType.fromApi(in.readString()),
+                in.readString(),
+                in.readByte() == 1,
+                in.readByte() == 1,
+                in.readFloat()
+        );
     }
 
     /**
@@ -84,7 +100,7 @@ public class ProjectSound {
         this.fileName = fileName;
     }
 
-    public boolean isOnLoop() {
+    public boolean getIsOnLoop() {
         return isOnLoop;
     }
 
@@ -92,7 +108,7 @@ public class ProjectSound {
         this.isOnLoop = isOnLoop;
     }
 
-    public boolean isRandom() {
+    public boolean getIsRandom() {
         return isRandom;
     }
 
@@ -114,4 +130,33 @@ public class ProjectSound {
 
         this.volume = volume;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getId());
+        dest.writeString(this.getTitle());
+        dest.writeString(this.getCategory().toString());
+        dest.writeString(this.getSoundType().toString());
+        dest.writeString(this.getFileName());
+        dest.writeByte((byte) (this.getIsOnLoop() ? 1 : 0));
+        dest.writeByte((byte) (this.getIsRandom() ? 1 : 0));
+        dest.writeFloat(this.getVolume());
+    }
+
+    public static final Parcelable.Creator<ProjectSound> CREATOR
+            = new Parcelable.Creator<ProjectSound>() {
+
+        public ProjectSound createFromParcel(Parcel in) {
+            return new ProjectSound(in);
+        }
+
+        public ProjectSound[] newArray(int size) {
+            return new ProjectSound[size];
+        }
+    };
 }

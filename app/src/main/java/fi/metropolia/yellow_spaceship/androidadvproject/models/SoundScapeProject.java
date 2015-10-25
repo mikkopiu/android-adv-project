@@ -1,13 +1,16 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * SoundsScapeProject represents the contents of the Create-view.
  * It contains a list of sounds to use and its name.
  */
-public class SoundScapeProject {
+public class SoundScapeProject implements Parcelable {
     private ArrayList<ProjectSound> sounds;
     private String name;
 
@@ -24,6 +27,12 @@ public class SoundScapeProject {
      */
     public SoundScapeProject(String name) {
         this(name, null);
+    }
+
+    public SoundScapeProject(Parcel in) {
+        this(in.readString());
+
+        in.readTypedList(this.sounds, ProjectSound.CREATOR);
     }
 
     /**
@@ -110,4 +119,27 @@ public class SoundScapeProject {
         this.clearSounds();
         this.addSounds(sounds);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getName());
+        dest.writeTypedList(this.getSounds());
+    }
+
+    public static final Parcelable.Creator<SoundScapeProject> CREATOR
+            = new Parcelable.Creator<SoundScapeProject>() {
+
+        public SoundScapeProject createFromParcel(Parcel in) {
+            return new SoundScapeProject(in);
+        }
+
+        public SoundScapeProject[] newArray(int size) {
+            return new SoundScapeProject[size];
+        }
+    };
 }

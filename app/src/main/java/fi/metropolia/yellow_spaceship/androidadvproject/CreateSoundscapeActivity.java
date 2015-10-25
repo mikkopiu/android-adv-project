@@ -81,7 +81,12 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.recyclerView.setHasFixedSize(false);
 
         // TODO: load previous project automatically?
-        this.mProject = new SoundScapeProject();
+        if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
+            this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
+            System.out.println(this.mProject.getName() + "=========================" + this.mProject.getSounds().size());
+        } else {
+            this.mProject = new SoundScapeProject();
+        }
 
         this.layoutManager = new GridLayoutManager(this, 2);
         this.recyclerView.setLayoutManager(this.layoutManager);

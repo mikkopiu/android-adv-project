@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,7 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
@@ -49,7 +57,10 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
     public void onClick(View v) {
         int itemPosition = recyclerView.getChildAdapterPosition(v);
         SoundScapeProject d = this.mData.get(itemPosition);
-        System.out.println("Selected project: " + d.getName());
+
+        Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
+        intent.putExtra("loadedSoundscape", d);
+        startActivity(intent);
     }
 
     private void loadData() {
@@ -60,15 +71,28 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
         }
 
         String path = getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER;
-        File f = new File(path);
-        File file[] = f.listFiles();
+        File dir = new File(path);
+        File file[] = dir.listFiles();
         for (File aFile : file) {
-            String fname = aFile.getName();
-            int pos = fname.lastIndexOf(".");
-            if (pos > 0) {
-                fname = fname.substring(0, pos);
+            Gson gson = new GsonBuilder().create();
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(aFile.getAbsolutePath()));
+                SoundScapeProject p = gson.fromJson(br, SoundScapeProject.class);
+                this.mData.add(p);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
             }
-            this.mData.add(new SoundScapeProject(fname));
+
         }
     }
 
