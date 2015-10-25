@@ -14,7 +14,7 @@ import java.io.IOException;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 
 public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean> {
-    private final static String PROJECT_FOLDER = "projects";
+    public final static String PROJECT_FOLDER = "projects";
 
     private SaveListener listener;
     private Context context;

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 
 public class YourSoundscapesActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -58,7 +59,7 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
             this.mData = new ArrayList<>();
         }
 
-        String path = getFilesDir() + "/" + "projects";
+        String path = getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER;
         File f = new File(path);
         File file[] = f.listFiles();
         for (File aFile : file) {
