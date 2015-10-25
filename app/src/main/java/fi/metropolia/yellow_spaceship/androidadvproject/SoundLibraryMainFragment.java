@@ -18,6 +18,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 
 public class SoundLibraryMainFragment extends Fragment implements View.OnClickListener {
 
+    private ArrayList<ListRowData> data;
+
     private RecyclerView.LayoutManager layoutManager;
     private View fragmentView;
     private RecyclerView recyclerView;
@@ -26,6 +28,10 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public static SoundLibraryMainFragment newInstance() {
         return new SoundLibraryMainFragment();
     }
+
+    private static final String YOUR_SOUNDSCAPES_CAPTION = "Your soundscapes";
+    private static final String RECORDINGS_CAPTION = "Recordings";
+    private static final String FAVOURITES_CAPTION = "Favourite Sounds";
 
     public SoundLibraryMainFragment() {
         // Required empty public constructor
@@ -45,10 +51,13 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
 
         // Data for RecycleView
-        ArrayList<ListRowData> data = new ArrayList<>();
-        data.add(new ListRowData("Your Soundscapes", R.drawable.ic_audiotrack_black_48dp, null));
-        data.add(new ListRowData("Recordings", R.drawable.ic_mic_black_48dp, null));
-        data.add(new ListRowData("Favourite Sounds", R.drawable.ic_star_outline_48dp, null));
+        this.data = new ArrayList<>();
+        if (getActivity().getIntent().getIntExtra("requestCode", 0) != CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
+            // Soundscapes can't be added to soundscapes, so don't show it on the list
+            data.add(new ListRowData(YOUR_SOUNDSCAPES_CAPTION, R.drawable.ic_audiotrack_black_48dp, null));
+        }
+        data.add(new ListRowData(RECORDINGS_CAPTION, R.drawable.ic_mic_black_48dp, null));
+        data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_outline_48dp, null));
 
         for(SoundCategory cat : SoundCategory.values()) {
             // No need to show the unknown category in the list
@@ -95,18 +104,17 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
         int itemPosition = recyclerView.getChildAdapterPosition(v);
+        ListRowData d = this.data.get(itemPosition);
         Bundle bundle = new Bundle();
 
-        switch (itemPosition) {
-            case 0:
-                // TODO: implement your soundscapes view
+        switch (d.getCaption()) {
+            case YOUR_SOUNDSCAPES_CAPTION:
+                bundle.putBoolean("isSoundScapes", true);
                 break;
-            case 1:
-                // TODO: implement recordings view
+            case RECORDINGS_CAPTION:
                 bundle.putBoolean("isRecordings", true);
                 break;
-            case 2:
-                // TODO: implement favorites view
+            case FAVOURITES_CAPTION:
                 bundle.putBoolean("isFavorites", true);
                 break;
             default:
