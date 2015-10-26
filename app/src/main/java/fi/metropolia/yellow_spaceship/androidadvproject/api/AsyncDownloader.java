@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
+import javazoom.jl.converter.Converter;
+import javazoom.jl.decoder.Decoder;
 
 /**
  * Downloads a sound asyncronously
@@ -85,7 +87,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                         if (isCancelled())
                             return false;
 
-
                     }
 
                     return downloaded == totalSize;
@@ -139,7 +140,22 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
         // Playing the sound after download (for now)
         if(result) {
 
-            setFileMetaData();
+            if(mFile.getName().toLowerCase().contains(".mp3")) {
+
+                System.out.println("OLEN MP3");
+                // Convert to wav
+                try {
+                    Converter converter = new Converter();
+                    String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+                    converter.convert(mContext.getFilesDir().getAbsolutePath() + "/sounds/" + mFile.getName(),
+                            mContext.getFilesDir().getAbsolutePath() + "/sounds/" + withoutExtension + ".wav");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            //setFileMetaData();
 
         }
 

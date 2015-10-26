@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -34,6 +33,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContrac
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
 import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundRecorder;
 
 /**
  * Activity for recording sounds.
@@ -48,6 +48,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     private boolean mRecording = false;
     private boolean mPlaying = false;
     private MediaRecorder mRecorder = null;
+    private SoundRecorder mSoundRecorder = null;
     private MediaPlayer mPlayer = null;
 
     private Dialog mDialog = null;
@@ -56,15 +57,12 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     private AppCompatSpinner mDialogSpinner = null;
     private EditText mDialogEditText = null;
 
-    private String mDefaultFileName = "untitled-recording.mp3";
+    private String mDefaultFileName = "untitled-recording.wav";
     private String mDefaultFolder = "sounds";
     private final int mDefaultCollectionId = 11;
     private boolean mIsSaving = false;
     private boolean mTempFileExists = false;
     private int mLatestSeconds = 0;
-
-    private Drawable mStopDrawable;
-    private Drawable mMicDrawable;
 
     /**
      * Handler and runnable for recording timer
@@ -108,7 +106,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             damSound.setSoundType(SoundType.EFFECT);
             damSound.setIsFavorite(false);
             damSound.setIsRecording(true);
-            damSound.setFileExtension("mp3");
+            damSound.setFileExtension("wav");
             damSound.setCollectionID(mDefaultCollectionId);
             damSound.setCreationDate(new Date());
             damSound.setFileName(damSound.getFormattedSoundId() + "." + damSound.getFileExtension());
@@ -156,7 +154,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
             mRecordTimer.setText("00:00");
 
-            deleteFileRunnable.run();
+            deleteTempFile();
 
             // Return damSound if we have a intent from CreateSoundScapeActivity.
             Intent intent = RecordActivity.this.getIntent();
@@ -174,27 +172,20 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     };
 
-    Runnable deleteFileRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-
-            File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + mDefaultFolder + "/" + mDefaultFileName);
-            if(file.exists()) {
-                file.delete();
-                mTempFileExists = false;
-            }
-
+    private void deleteTempFile() {
+        File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + mDefaultFolder + "/" + mDefaultFileName);
+        if(file.exists()) {
+            file.delete();
+            mTempFileExists = false;
         }
-
-    };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        deleteFileRunnable.run();
+        deleteTempFile();
 
         setContentView(R.layout.activity_record);
 
@@ -272,11 +263,14 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
         if(!mIsSaving) {
             mIsSaving = true;
-            copyFileRunnable.run();
+            new Thread(copyFileRunnable).start();
         }
 
     }
 
+    /**
+     * Setups the save dialog view.
+     */
     private void setupDialog() {
 
         mDialog = new Dialog(RecordActivity.this);
@@ -328,8 +322,8 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     private void startRecording() {
 
-        if(mRecorder != null) {
-            mRecorder.release();
+        if(mSoundRecorder != null) {
+            mSoundRecorder = null;
         }
 
         mLatestSeconds = 0;
@@ -345,11 +339,16 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             defaultFile.delete();
         }
 
+        mSoundRecorder = new SoundRecorder(defaultFile);
+
+        mSoundRecorder.startRecording();
+
+        /*
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         mRecorder.setOutputFile(folder.getAbsolutePath() + "/" + mDefaultFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
             mRecorder.prepare();
@@ -358,14 +357,14 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         }
 
         mRecorder.start();
+        */
 
     }
 
     private void stopRecording() {
 
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        mSoundRecorder.stopRecording();
+        mSoundRecorder = null;
 
     }
 
