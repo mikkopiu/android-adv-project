@@ -7,27 +7,25 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 
-public class YourSoundscapesActivity extends AppCompatActivity implements View.OnClickListener {
+public class YourSoundscapesActivity extends AppCompatActivity implements View.OnClickListener,
+        ProjectLoadListener {
 
     private ArrayList<SoundScapeProject> mData;
     private RecyclerView recyclerView;
     private SoundscapesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private ProgressBar mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +46,17 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
             }
         });
 
-        loadData();
+        this.mSpinner = (ProgressBar) findViewById(R.id.progressBar);
+        this.mSpinner.setVisibility(View.GONE);
 
         initRecyclerView();
+
+        loadData();
     }
 
     @Override
     public void onClick(View v) {
-        int itemPosition = recyclerView.getChildAdapterPosition(v);
+        int itemPosition = this.recyclerView.getChildAdapterPosition(v);
         SoundScapeProject d = this.mData.get(itemPosition);
 
         Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
@@ -64,41 +65,12 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
     }
 
     private void loadData() {
-        // TODO: move this out of the UI thread
-        if (this.mData != null) {
-            this.mData.clear();
-        } else {
-            this.mData = new ArrayList<>();
-        }
+        this.mSpinner.setVisibility(View.VISIBLE);
 
-        String path = getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER;
-        File dir = new File(path);
-        File file[] = dir.listFiles();
-        for (File aFile : file) {
-            Gson gson = new GsonBuilder().create();
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new FileReader(aFile.getAbsolutePath()));
-                SoundScapeProject p = gson.fromJson(br, SoundScapeProject.class);
-                this.mData.add(p);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (br != null) {
-                        br.close();
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-            }
-
-        }
+        new ProjectLoadTask(this).execute(getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER);
     }
 
     private void initRecyclerView() {
-        adapter = new SoundscapesAdapter(mData, this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         recyclerView.setHasFixedSize(true);
@@ -106,6 +78,26 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        initRecyclerViewAdapter();
+    }
+
+    private void initRecyclerViewAdapter() {
+        mData = new ArrayList<>();
+        adapter = new SoundscapesAdapter(mData, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onLoadFinished(ArrayList<SoundScapeProject> data) {
+        if (this.mData != null) {
+            this.mData.clear();
+        } else {
+            // A new adapter needs to be set if mData hasn't been initialized yet
+            initRecyclerViewAdapter();
+        }
+
+        this.mData.addAll(data);
+        this.mSpinner.setVisibility(View.GONE);
+        this.recyclerView.getAdapter().notifyDataSetChanged();
     }
 }
