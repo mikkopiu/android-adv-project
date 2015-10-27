@@ -342,6 +342,7 @@ public class ProjectSound implements Parcelable {
 
                         if(isOnLoop) {
                             // Start in the beginning of the file if we are looping.
+                            bis.close();
                             bis = new BufferedInputStream(new FileInputStream(mFile));
                             bis.skip(44);
                         } else {
