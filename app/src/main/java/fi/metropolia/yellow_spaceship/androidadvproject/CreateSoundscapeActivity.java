@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -105,9 +106,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 if(mIsPlaying) {
                     soundPlayer.stopAll();
                     mIsPlaying = false;
+                    ((ImageButton)v).setImageResource(R.drawable.ic_play_arrow_48dp);
                 } else {
                     soundPlayer.playAll();
                     mIsPlaying = true;
+                    ((ImageButton)v).setImageResource(R.drawable.ic_stop_black_48dp);
                 }
 
             }
