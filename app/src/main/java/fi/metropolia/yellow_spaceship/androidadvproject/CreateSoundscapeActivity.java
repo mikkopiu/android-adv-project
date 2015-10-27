@@ -83,7 +83,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         // TODO: load previous project automatically?
         if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
             this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
-            System.out.println(this.mProject.getName() + "=========================" + this.mProject.getSounds().size());
         } else {
             this.mProject = new SoundScapeProject();
         }
