@@ -245,58 +245,52 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == GET_LIBRARY_SOUND) {
+        if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
             if(resultCode == Activity.RESULT_OK){
                 // TODO: handle multi-select
                 DAMSound result = data.getExtras().getParcelable("result");
-                try {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            result.getTitle() + " selected",
-                            Toast.LENGTH_SHORT
-                    ).show();
-
-                    ProjectSound ps = new ProjectSound(
-                            result.getFormattedSoundId(),
-                            result.getTitle(),
-                            result.getCategory(),
-                            result.getSoundType(),
-                            result.getFileName(),
-                            true,       // By default on loop
-                            false,
-                            1.0f        // By default on full volume
-                    );
-
-                    ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
-
-                    this.mProject.addSound(ps);
-
-                    soundPlayer.addSound(ps);
-
-                    // Refresh card view list
-                    this.recyclerView.getAdapter().notifyDataSetChanged();
-
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Something went wrong, please try another sound",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Sound Library Activity cancelled",
-                        Toast.LENGTH_SHORT
-                ).show();
+                addSelectedSound(result);
             }
 
             fabMenu.close(false);
-        } else if (requestCode == RECORD_SOUND) {
-            // TODO: react to new sound recordings
+        }
+    }
+
+    private void addSelectedSound(DAMSound result) {
+        try {
+            Toast.makeText(
+                    getApplicationContext(),
+                    result.getTitle() + " selected",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            ProjectSound ps = new ProjectSound(
+                    result.getFormattedSoundId(),
+                    result.getTitle(),
+                    result.getCategory(),
+                    result.getSoundType(),
+                    result.getFileName(),
+                    true,       // By default on loop
+                    false,
+                    1.0f        // By default on full volume
+            );
+
+            ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+
+            this.mProject.addSound(ps);
+
+            soundPlayer.addSound(ps);
+
+            // Refresh card view list
+            this.recyclerView.getAdapter().notifyDataSetChanged();
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Something went wrong, please try another sound",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     }
 
