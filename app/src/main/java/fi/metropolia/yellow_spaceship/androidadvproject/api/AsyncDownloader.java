@@ -179,6 +179,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
             if(filename != null) {
                 System.out.println("File has been already downloaded!");
+                ((AsyncDownloaderListener)mContextFragment).onDownloadFinished(mDAMSound);
                 this.cancel(true);
             }
 
