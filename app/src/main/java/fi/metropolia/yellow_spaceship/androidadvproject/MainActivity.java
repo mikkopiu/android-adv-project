@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 
@@ -69,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, YourSoundscapesActivity.class);
                     break;
                 case R.id.incontext_museum_tour:
-                    intent = new Intent(MainActivity.this, RecordActivity.class);
-                    break;
+//                    intent = new Intent(MainActivity.this, RecordActivity.class); // TODO: set correct Activity
+//                    break;
+                    Toast.makeText(getApplicationContext(), "Coming soon", Toast.LENGTH_SHORT).show();
+                    return;
             }
 
             if (intent != null) {
