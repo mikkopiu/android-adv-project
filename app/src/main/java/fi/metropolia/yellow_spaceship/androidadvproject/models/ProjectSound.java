@@ -270,8 +270,10 @@ public class ProjectSound implements Parcelable {
      */
     public void stop() {
         isPlaying = false;
-        mTrackThread.interrupt();
-        mTrackThread = null;
+        if (mTrackThread != null) {
+            mTrackThread.interrupt();
+            mTrackThread = null;
+        }
     }
 
     /**
