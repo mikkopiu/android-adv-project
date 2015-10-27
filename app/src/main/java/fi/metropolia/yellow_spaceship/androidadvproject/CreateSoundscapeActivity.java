@@ -13,14 +13,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
@@ -105,24 +106,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.layoutManager = new GridLayoutManager(this, 2);
         this.recyclerView.setLayoutManager(this.layoutManager);
 
-        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), new SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks() {
-
-            @Override
-            public void onCloseClicked(View view, int layoutPosition) {
-                try {
-                    mProject.removeSound(layoutPosition);
-                    soundPlayer.removeSound(layoutPosition);
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                } catch (IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Something went wrong, please try again",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            }
-        });
+        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
         this.recyclerView.setAdapter(adapter);
 
         // Set FAB listeners
@@ -172,6 +156,35 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
     }
+
+    private IProjectSoundViewHolderClicks adapterOnClickListener =
+            new IProjectSoundViewHolderClicks() {
+
+                @Override
+                public void onCloseClicked(View view, int layoutPosition) {
+                    try {
+                        mProject.removeSound(layoutPosition);
+                        soundPlayer.removeSound(layoutPosition);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Something went wrong, please try again",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+
+                @Override
+                public void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress) {
+                    float newVol = (float)progress / 100.0f; // SeekBar has values from 0-100 (int)
+
+                    // soundPlayer, mProject and recyclerView should have matching indexes
+                    // for the sound items.
+                    soundPlayer.setVolume(layoutPosition, newVol);
+                }
+            };
 
     /**
      * Start an Intent to add a new sound from the Sound Library

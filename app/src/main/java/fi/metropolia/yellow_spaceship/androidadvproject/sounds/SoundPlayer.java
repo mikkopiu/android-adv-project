@@ -103,11 +103,20 @@ public class SoundPlayer {
 
     /**
      * Set volume of a specific sound.
-     * @param sps SoundPlayerSound object, which sounds volume you want to change.
+     * @param sps ProjectSound object, which sounds volume you want to change.
      * @param volume volume as floating point (0f - 1.0f, other values get clamped)
      */
-    public void setVolume(SoundPlayerSound sps, float volume) {
+    public void setVolume(ProjectSound sps, float volume) {
         mSounds.get(mSounds.indexOf(sps)).setVolume(volume);
+    }
+
+    /**
+     * Set volume of a specific sound at index n.
+     * @param index Index of the sound
+     * @param volume volume as floating point (0f - 1.0f, other values get clamped)
+     */
+    public void setVolume(int index, float volume) {
+        mSounds.get(index).setVolume(volume);
     }
 
     /**

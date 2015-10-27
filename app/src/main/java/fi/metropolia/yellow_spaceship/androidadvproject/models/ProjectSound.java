@@ -286,11 +286,13 @@ public class ProjectSound implements Parcelable {
         else
             mVolume = volume;
 
-        mVolume = volume;
-        if(Build.VERSION.SDK_INT < 21) {
-            mAudioTrack.setStereoVolume(mVolume, mVolume);
-        } else {
-            mAudioTrack.setVolume(mVolume);
+        // mAudioTrack is null until the playback actually starts
+        if (isPlaying) {
+            if(Build.VERSION.SDK_INT < 21) {
+                mAudioTrack.setStereoVolume(mVolume, mVolume);
+            } else {
+                mAudioTrack.setVolume(mVolume);
+            }
         }
     }
 
