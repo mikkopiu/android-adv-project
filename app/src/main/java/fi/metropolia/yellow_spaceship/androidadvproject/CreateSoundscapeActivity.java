@@ -17,10 +17,14 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
@@ -40,6 +44,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     private FloatingActionMenu fabMenu;
 
     private boolean mIsSaving = false;
+    private boolean mIsPlaying = false;
+
+    private SoundPlayer soundPlayer;
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         public void onClick(View v) {
@@ -62,6 +69,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_soundscape);
 
+        soundPlayer = new SoundPlayer(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
 
@@ -83,7 +92,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         // TODO: load previous project automatically?
         if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
             this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
-            System.out.println(this.mProject.getName() + "=========================" + this.mProject.getSounds().size());
+            for(ProjectSound ps : mProject.getSounds()) {
+                ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+                soundPlayer.addSound(ps);
+            }
         } else {
             this.mProject = new SoundScapeProject();
         }
@@ -97,6 +109,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             public void onCloseClicked(View view, int layoutPosition) {
                 try {
                     mProject.removeSound(layoutPosition);
+                    soundPlayer.removeSound(layoutPosition);
                     recyclerView.getAdapter().notifyDataSetChanged();
                 } catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
@@ -109,7 +122,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
         this.recyclerView.setAdapter(adapter);
-
 
         // Set FAB listeners
         findViewById(R.id.menu_item_record).setOnClickListener(new View.OnClickListener() {
@@ -135,6 +147,12 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO: playback toggle
                 Toast.makeText(getApplicationContext(), "Play button clicked", Toast.LENGTH_SHORT).show();
+
+                if(mIsPlaying)
+                    soundPlayer.stopAll();
+                else
+                    soundPlayer.playAll();
+
             }
         });
 
@@ -182,7 +200,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT
                     ).show();
 
-                    this.mProject.addSound(new ProjectSound(
+                    ProjectSound ps = new ProjectSound(
                             result.getFormattedSoundId(),
                             result.getTitle(),
                             result.getCategory(),
@@ -191,7 +209,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                             true,       // By default on loop
                             false,
                             1.0f        // By default on full volume
-                    ));
+                    );
+
+                    ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+
+                    this.mProject.addSound(ps);
+
+                    soundPlayer.addSound(ps);
 
                     // Refresh card view list
                     this.recyclerView.getAdapter().notifyDataSetChanged();

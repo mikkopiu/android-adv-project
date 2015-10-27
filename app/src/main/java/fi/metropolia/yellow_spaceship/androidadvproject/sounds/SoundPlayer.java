@@ -13,13 +13,15 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
+
 /**
  * SoundPlayer
  */
 public class SoundPlayer {
 
     private Context mContext;
-    private ArrayList<SoundPlayerSound> mSounds;
+    private ArrayList<ProjectSound> mSounds;
     private AudioTrack mAudioTrack;
 
     private boolean mIsPlaying = false;
@@ -29,15 +31,15 @@ public class SoundPlayer {
     public SoundPlayer(Context context) {
 
         mContext = context;
-        mSounds = new ArrayList<SoundPlayerSound>();
+        mSounds = new ArrayList<ProjectSound>();
 
     }
 
     /**
      * Add a new sound to Sound Player
-     * @param soundPlayerSound SoundPlayerSound object
+     * @param projectSound ProjectSound object
      */
-    public void addSound(SoundPlayerSound soundPlayerSound) {
+    public void addSound(ProjectSound projectSound) {
 
         ByteBuffer buffer = ByteBuffer.allocate(HEADER_SIZE);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -51,7 +53,7 @@ public class SoundPlayer {
 
         try {
 
-            FileInputStream fis = new FileInputStream(soundPlayerSound.getFile());
+            FileInputStream fis = new FileInputStream(projectSound.getFile());
             fis.read(buffer.array(), buffer.arrayOffset(), buffer.capacity());
             buffer.rewind();
             buffer.position(buffer.position() + 20);
@@ -61,11 +63,11 @@ public class SoundPlayer {
             buffer.position(buffer.position() + 6);
             bits = buffer.getShort();
 
-            soundPlayerSound.setSampleRate(rate);
-            soundPlayerSound.setChannels(channels);
-            soundPlayerSound.setBits(bits);
+            projectSound.setSampleRate(rate);
+            projectSound.setChannels(channels);
+            projectSound.setBits(bits);
 
-            mSounds.add(soundPlayerSound);
+            mSounds.add(projectSound);
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -73,8 +75,8 @@ public class SoundPlayer {
 
     }
 
-    public void removeSound(File soundFile) {
-        //mSounds.remove(soundFile);
+    public void removeSound(int index) {
+        mSounds.remove(index);
     }
 
     /**
