@@ -102,13 +102,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mProject.getSounds().size() > 0) {
                     if(mIsPlaying) {
-                        soundPlayer.stopAll();
-                        mIsPlaying = false;
-                        ((ImageButton)v).setImageResource(R.drawable.ic_play_arrow_48dp);
+                        stopPlayback();
                     } else {
-                        soundPlayer.playAll();
-                        mIsPlaying = true;
-                        ((ImageButton)v).setImageResource(R.drawable.ic_stop_black_48dp);
+                        startPlayback();
                     }
                 } else {
                     Toast.makeText(
@@ -130,6 +126,36 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 mDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mIsPlaying && soundPlayer != null) {
+            stopPlayback();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mIsPlaying && soundPlayer != null) {
+            stopPlayback();
+        }
+    }
+
+    private void stopPlayback() {
+        soundPlayer.stopAll();
+        mIsPlaying = false;
+        ((ImageButton)findViewById(R.id.create_play_btn))
+                .setImageResource(R.drawable.ic_play_arrow_48dp);
+    }
+
+    private void startPlayback() {
+        soundPlayer.playAll();
+        mIsPlaying = true;
+        ((ImageButton)findViewById(R.id.create_play_btn))
+                .setImageResource(R.drawable.ic_stop_black_48dp);
     }
 
     /**
@@ -166,9 +192,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
                         if (mProject.getSounds().size() == 0 && mIsPlaying) {
                             // No more sounds to play, stop playback
-                            mIsPlaying = false;
-                            ((ImageButton)findViewById(R.id.create_play_btn))
-                                    .setImageResource(R.drawable.ic_play_arrow_48dp);
+                            stopPlayback();
                         }
 
                     } catch (IndexOutOfBoundsException e) {
