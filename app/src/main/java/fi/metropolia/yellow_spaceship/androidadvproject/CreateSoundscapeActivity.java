@@ -70,8 +70,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_soundscape);
 
-        soundPlayer = new SoundPlayer(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.create_soundscape_title));
 
@@ -86,44 +84,14 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
 
-        // RecyclerView setup
-        this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
-        this.recyclerView.setHasFixedSize(false);
+        soundPlayer = new SoundPlayer(this);
 
-        // TODO: load previous project automatically?
-        if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
-            this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
-
-            for(ProjectSound ps : mProject.getSounds()) {
-                ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
-                soundPlayer.addSound(ps);
-            }
-
-        } else {
-            this.mProject = new SoundScapeProject();
-        }
-
-        this.layoutManager = new GridLayoutManager(this, 2);
-        this.recyclerView.setLayoutManager(this.layoutManager);
-
-        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
-        this.recyclerView.setAdapter(adapter);
+        initProject();
+        initRecyclerView();
 
         // Set FAB listeners
-        findViewById(R.id.menu_item_record).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Record sound clicked", Toast.LENGTH_SHORT).show();
-                addRecording();
-            }
-        });
-        findViewById(R.id.menu_item_library).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Sound library clicked", Toast.LENGTH_SHORT).show();
-                addLibrarySound();
-            }
-        });
+        findViewById(R.id.menu_item_record).setOnClickListener(fabItemClickListener);
+        findViewById(R.id.menu_item_library).setOnClickListener(fabItemClickListener);
 
         this.fabMenu = (FloatingActionMenu) findViewById(R.id.add_menu);
 
@@ -157,6 +125,28 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Listener for FAB menu-item clicks
+     */
+    private View.OnClickListener fabItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.menu_item_library:
+                    addLibrarySound();
+                    break;
+                case R.id.menu_item_record:
+                    addRecording();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    /**
+     * Listener for ProjectSound ViewHolder clicks
+     */
     private IProjectSoundViewHolderClicks adapterOnClickListener =
             new IProjectSoundViewHolderClicks() {
 
@@ -185,6 +175,39 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     soundPlayer.setVolume(layoutPosition, newVol);
                 }
             };
+
+    /**
+     * Initialize the SoundScapeProject, either from a loaded SoundScapeProject or a new one
+     * TODO: auto-load previous project
+     */
+    private void initProject() {
+        if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
+            this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
+
+            for(ProjectSound ps : mProject.getSounds()) {
+                ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+                soundPlayer.addSound(ps);
+            }
+
+        } else {
+            this.mProject = new SoundScapeProject();
+        }
+    }
+
+    /**
+     * Initialize the RecyclerView with data.
+     * Assumes mProject has been initialized.
+     */
+    private void initRecyclerView() {
+        this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
+        this.recyclerView.setHasFixedSize(false);
+
+        this.layoutManager = new GridLayoutManager(this, 2);
+        this.recyclerView.setLayoutManager(this.layoutManager);
+
+        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
+        this.recyclerView.setAdapter(adapter);
+    }
 
     /**
      * Start an Intent to add a new sound from the Sound Library
