@@ -146,12 +146,17 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                 try {
                     Converter converter = new Converter();
                     String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+                    mDAMSound.setFileName(withoutExtension + ".wav");
                     converter.convert(mContext.getFilesDir().getAbsolutePath() + "/sounds/" + mFile.getName(),
                             mContext.getFilesDir().getAbsolutePath() + "/sounds/" + withoutExtension + ".wav");
+                    mFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+            } else if(mFile.getName().toLowerCase().contains(".wav")) {
+                String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+                mDAMSound.setFileName(withoutExtension + ".wav");
             }
 
             setFileMetaData();
@@ -183,7 +188,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     private void setFileMetaData() {
 
         if (mDAMSound != null) {
-            mDAMSound.setFileName(mFile.getName());
 
             ContentValues values = new ContentValues();
             values.put(DAMSoundEntry.COLUMN_NAME_SOUND_ID, mDAMSound.getFormattedSoundId());

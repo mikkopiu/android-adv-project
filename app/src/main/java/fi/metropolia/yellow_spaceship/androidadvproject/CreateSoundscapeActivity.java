@@ -150,10 +150,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 // TODO: playback toggle
                 Toast.makeText(getApplicationContext(), "Play button clicked", Toast.LENGTH_SHORT).show();
 
-                if(mIsPlaying)
+                if(mIsPlaying) {
                     soundPlayer.stopAll();
-                else
+                    mIsPlaying = false;
+                } else {
                     soundPlayer.playAll();
+                    mIsPlaying = true;
+                }
 
             }
         });
