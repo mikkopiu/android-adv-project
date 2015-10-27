@@ -76,6 +76,7 @@ public class SoundPlayer {
     }
 
     public void removeSound(int index) {
+        stop(index);
         mSounds.remove(index);
     }
 
@@ -121,10 +122,14 @@ public class SoundPlayer {
 
     /**
      * Stop a specific sound from playing.
-     * @param sps SoundPlayerSound object, which sound to stop.
+     * @param sps ProjectSound object, which sound to stop.
      */
-    public void stop(SoundPlayerSound sps) {
+    public void stop(ProjectSound sps) {
         mSounds.get(mSounds.indexOf(sps)).stop();
+    }
+
+    public void stop(int index) {
+        mSounds.get(index).stop();
     }
 
     /**
