@@ -142,7 +142,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
             if(mFile.getName().toLowerCase().contains(".mp3")) {
 
-                System.out.println("OLEN MP3");
                 // Convert to wav
                 try {
                     Converter converter = new Converter();
@@ -155,7 +154,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
             }
 
-            //setFileMetaData();
+            setFileMetaData();
 
         }
 
