@@ -100,19 +100,23 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         findViewById(R.id.create_play_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: playback toggle
-                Toast.makeText(getApplicationContext(), "Play button clicked", Toast.LENGTH_SHORT).show();
-
-                if(mIsPlaying) {
-                    soundPlayer.stopAll();
-                    mIsPlaying = false;
-                    ((ImageButton)v).setImageResource(R.drawable.ic_play_arrow_48dp);
+                if (mProject.getSounds().size() > 0) {
+                    if(mIsPlaying) {
+                        soundPlayer.stopAll();
+                        mIsPlaying = false;
+                        ((ImageButton)v).setImageResource(R.drawable.ic_play_arrow_48dp);
+                    } else {
+                        soundPlayer.playAll();
+                        mIsPlaying = true;
+                        ((ImageButton)v).setImageResource(R.drawable.ic_stop_black_48dp);
+                    }
                 } else {
-                    soundPlayer.playAll();
-                    mIsPlaying = true;
-                    ((ImageButton)v).setImageResource(R.drawable.ic_stop_black_48dp);
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Add at least one sound to your soundscape",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
-
             }
         });
 
