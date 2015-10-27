@@ -159,6 +159,14 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                         mProject.removeSound(layoutPosition);
                         soundPlayer.removeSound(layoutPosition);
                         recyclerView.getAdapter().notifyDataSetChanged();
+
+                        if (mProject.getSounds().size() == 0 && mIsPlaying) {
+                            // No more sounds to play, stop playback
+                            mIsPlaying = false;
+                            ((ImageButton)findViewById(R.id.create_play_btn))
+                                    .setImageResource(R.drawable.ic_play_arrow_48dp);
+                        }
+
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                         Toast.makeText(
