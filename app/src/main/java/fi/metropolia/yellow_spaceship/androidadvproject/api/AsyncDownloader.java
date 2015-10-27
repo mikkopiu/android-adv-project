@@ -3,6 +3,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.api;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -28,6 +29,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
     private DAMSound mDAMSound;
     private Context mContext;
+    private Fragment mContextFragment;
     private File mFile;
     private File mFolder;
 
@@ -36,10 +38,11 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
      * @param damSound DAMSound for the file we are downloading
      * @param context Activity context
      */
-    public AsyncDownloader(DAMSound damSound, Context context) {
+    public AsyncDownloader(DAMSound damSound, Context context, Fragment contextFragment) {
 
         mDAMSound = damSound;
         mContext = context;
+        mContextFragment = contextFragment;
 
     }
 
@@ -160,6 +163,8 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
             }
 
             setFileMetaData();
+
+            ((AsyncDownloaderListener)mContextFragment).onDownloadFinished(mDAMSound);
 
         }
 

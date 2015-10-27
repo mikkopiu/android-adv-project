@@ -29,6 +29,7 @@ import java.util.List;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
+import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloaderListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
@@ -40,7 +41,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class SoundLibraryChildFragment extends Fragment {
+public class SoundLibraryChildFragment extends Fragment implements AsyncDownloaderListener {
 
     ArrayList<DAMSound> data;
     private SoundCategory mCategory;
@@ -124,14 +125,9 @@ public class SoundLibraryChildFragment extends Fragment {
                 if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                     // No need to download any time the user clicks a row, just when getting a sound
                     // TODO: show a spinner while this is going (and prevent intent from finishing)
-                    new AsyncDownloader(selectedSound, getActivity()).execute();
+                    new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
 
-                    // Create the return Intent to send the selected sound
-                    // to the create-view.
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", selectedSound);
-                    getActivity().setResult(Activity.RESULT_OK, returnIntent);
-                    getActivity().finish();
+
                 }
             }
 
@@ -183,6 +179,18 @@ public class SoundLibraryChildFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         return fragmentView;
+
+    }
+
+    @Override
+    public void onDownloadFinished(DAMSound damSound) {
+
+        // Create the return Intent to send the selected sound
+        // to the create-view.
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result", damSound);
+        getActivity().setResult(Activity.RESULT_OK, returnIntent);
+        getActivity().finish();
 
     }
 
