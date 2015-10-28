@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 public class SoundRecorder {
 
     public static final int SAMPLE_RATE = 44100;
+    public static final int CHANNELS = 1;
 
     private File mFile;
     private File mTempFile;
@@ -75,7 +76,7 @@ public class SoundRecorder {
                 long subChunk1Size = 16;
                 int bitsPerSample = 16;
                 int format = 1;
-                long channels = 1;
+                long channels = (long)CHANNELS;
                 long sampleRate = (long)SAMPLE_RATE;
                 long byteRate = sampleRate * channels * bitsPerSample / 8;
                 int blockAlign = (int)(channels * bitsPerSample / 8);
