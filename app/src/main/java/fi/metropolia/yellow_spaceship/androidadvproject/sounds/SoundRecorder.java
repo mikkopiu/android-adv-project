@@ -75,7 +75,7 @@ public class SoundRecorder {
                 long subChunk1Size = 16;
                 int bitsPerSample = 16;
                 int format = 1;
-                long channels = 2;
+                long channels = 1;
                 long sampleRate = (long)SAMPLE_RATE;
                 long byteRate = sampleRate * channels * bitsPerSample / 8;
                 int blockAlign = (int)(channels * bitsPerSample / 8);
