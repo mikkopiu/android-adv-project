@@ -11,8 +11,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayerSound;
-
 /**
  * A simplified representation of a DAMSound in a SoundScapeProject.
  * Can be serialized using GSON to JSON format.
