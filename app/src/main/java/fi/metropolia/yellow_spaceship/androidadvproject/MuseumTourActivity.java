@@ -6,11 +6,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.menu.DrawerMenu;
-
-/**
- * Created by Petri on 15.9.2015.
- */
 public class MuseumTourActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -29,7 +24,7 @@ public class MuseumTourActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.museum_tour_title));
 
-        DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
-        drawerMenu.createMenu();
+//        DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
+//        drawerMenu.createMenu();
     }
 }
