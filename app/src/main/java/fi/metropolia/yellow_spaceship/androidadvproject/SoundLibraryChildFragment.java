@@ -117,7 +117,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
             @Override
             public void onRowSelect(View view, int layoutPosition) {
-                // TODO: do something here
                 DAMSound selectedSound = data.get(layoutPosition);
 
                 // Return the selection results if necessary
@@ -133,39 +132,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
             @Override
             public void onPlayPauseToggle(View view, int layoutPosition) {
-                // No need to instantiate this on onCreate, only when we first need it
-                if (mediaPlayer == null) {
-                    initMediaPlayer();
-                }
-
-                if (layoutPosition != playingInd) {
-                    // Play was clicked in some other position than which was playing earlier
-                    mediaPlayer.stop();
-                    mediaPlayer.reset();
-
-                    if (playingInd != -1) {
-                        setPlaybackStatus(false);
-                    }
-
-                    startPreviewPlayback(layoutPosition);
-                } else {
-                    if (!playingAudio) {
-                        // No sound has played before, or the earlier one has already completed
-                        if (initialStage) {
-                            startPreviewPlayback(layoutPosition);
-                        } else {
-                            if (!mediaPlayer.isPlaying()) {
-                                mediaPlayer.start();
-                                setPlaybackStatus(true);
-                            }
-                        }
-                    } else {
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();
-                            setPlaybackStatus(false);
-                        }
-                    }
-                }
+                togglePlayPause(layoutPosition);
             }
         });
         mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
@@ -227,6 +194,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Unified callback for retrieving data from the DAM API
+     */
     private Callback<List<List<DAMSound>>> webDataCallback = new Callback<List<List<DAMSound>>>() {
         @Override
         public void success(List<List<DAMSound>> lists, Response response) {
@@ -242,11 +212,17 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             error.printStackTrace();
 
             mSpinner.setVisibility(View.GONE);
-            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Downloading sounds failed, please try again", Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(
+                    getActivity().getApplicationContext(),
+                    "Downloading sounds failed, please try again",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     };
 
+    /**
+     * Load a sound category's data
+     */
     private void loadData() {
         session.checkLogin();
 
@@ -258,6 +234,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 webDataCallback);
     }
 
+    /**
+     * Load data for a search query
+     */
     public void loadSearchData() {
         session.checkLogin();
 
@@ -269,49 +248,43 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 webDataCallback);
     }
 
+    /**
+     * Load data for the favorites-category
+     */
     private void loadFavoritesData() {
         mSpinner.setVisibility(View.VISIBLE);
 
-        ArrayList<DAMSound> d = new ArrayList<>();
-
-        Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
-                SoundContentProvider.CONTENT_URI,
-                new String[]{
-                        DAMSoundEntry.COLUMN_NAME_TITLE,
-                        DAMSoundEntry.COLUMN_NAME_CATEGORY,
-                        DAMSoundEntry.COLUMN_NAME_TYPE,
-                        DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
-                        DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
-                        DAMSoundEntry.COLUMN_NAME_FILE_NAME,
-                        DAMSoundEntry.COLUMN_NAME_SOUND_ID
-                },
+        ArrayList<DAMSound> d = getSoundContentWithSelection(
                 DAMSoundEntry.COLUMN_NAME_IS_FAVORITE + "=?",
-                new String[]{"1"},
-                null
+                new String[]{"1"}
         );
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                DAMSound s = new DAMSound();
-                s.setTitle(cursor.getString(0));
-                s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
-                s.setSoundType(SoundType.fromApi(cursor.getString(2)));
-                s.setLengthSec(cursor.getInt(3));
-                s.setIsFavorite(cursor.getInt(4) == 1);
-                s.setFileName(cursor.getString(5));
-                s.setFormattedSoundId(cursor.getString(6));
-                d.add(s);
-            }
-
-            cursor.close();
-        }
 
         setSoundData(d);
     }
 
+    /**
+     * Load data for the recordings-category
+     */
     private void loadRecordingsData() {
         mSpinner.setVisibility(View.VISIBLE);
 
+        ArrayList<DAMSound> d = getSoundContentWithSelection(
+                DAMSoundEntry.COLUMN_NAME_IS_RECORDING + "=?",
+                new String[]{"1"}
+        );
+
+        setSoundData(d);
+    }
+
+    /**
+     * Get sounds from SoundContentProvider with a given selection.
+     * Used with favorites & recordings.
+     * @param selection Selection String
+     * @param selectionArgs Arguments for the selection
+     * @return Found ArrayList<DAMSound>
+     */
+    private ArrayList<DAMSound> getSoundContentWithSelection(String selection,
+                                                             String[] selectionArgs) {
         ArrayList<DAMSound> d = new ArrayList<>();
 
         Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(
@@ -325,28 +298,37 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         DAMSoundEntry.COLUMN_NAME_FILE_NAME,
                         DAMSoundEntry.COLUMN_NAME_SOUND_ID
                 },
-                DAMSoundEntry.COLUMN_NAME_IS_RECORDING + "=?",
-                new String[]{"1"},
+                selection,
+                selectionArgs,
                 null
         );
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                DAMSound s = new DAMSound();
-                s.setTitle(cursor.getString(0));
-                s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
-                s.setSoundType(SoundType.fromApi(cursor.getString(2)));
-                s.setLengthSec(cursor.getInt(3));
-                s.setIsFavorite(cursor.getInt(4) == 1);
-                s.setFileName(cursor.getString(5));
-                s.setFormattedSoundId(cursor.getString(6));
-                d.add(s);
+                d.add(parseDamSoundFromCursor(cursor));
             }
 
             cursor.close();
         }
 
-        setSoundData(d);
+        return d;
+    }
+
+    /**
+     * Parse necessary data from a SoundContentProvider Cursor into a DAMSound
+     * @param cursor SoundContentProvider's Cursor
+     * @return Parsed DAMSound
+     */
+    private DAMSound parseDamSoundFromCursor(Cursor cursor) {
+        DAMSound s = new DAMSound();
+        s.setTitle(cursor.getString(0));
+        s.setCategory(SoundCategory.fromApi(cursor.getString(1)));
+        s.setSoundType(SoundType.fromApi(cursor.getString(2)));
+        s.setLengthSec(cursor.getInt(3));
+        s.setIsFavorite(cursor.getInt(4) == 1);
+        s.setFileName(cursor.getString(5));
+        s.setFormattedSoundId(cursor.getString(6));
+        return s;
     }
 
     /**
@@ -430,6 +412,42 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 loadFavoritesData();
             } else {
                 mRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void togglePlayPause(int layoutPosition) {
+        // No need to instantiate this on onCreate, only when we first need it
+        if (mediaPlayer == null) {
+            initMediaPlayer();
+        }
+
+        if (layoutPosition != playingInd) {
+            // Play was clicked in some other position than which was playing earlier
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+
+            if (playingInd != -1) {
+                setPlaybackStatus(false);
+            }
+
+            startPreviewPlayback(layoutPosition);
+        } else {
+            if (!playingAudio) {
+                // No sound has played before, or the earlier one has already completed
+                if (initialStage) {
+                    startPreviewPlayback(layoutPosition);
+                } else {
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                        setPlaybackStatus(true);
+                    }
+                }
+            } else {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    setPlaybackStatus(false);
+                }
             }
         }
     }

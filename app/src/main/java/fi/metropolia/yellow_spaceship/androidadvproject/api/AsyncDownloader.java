@@ -20,7 +20,6 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 import javazoom.jl.converter.Converter;
-import javazoom.jl.decoder.Decoder;
 
 /**
  * Downloads a sound asyncronously

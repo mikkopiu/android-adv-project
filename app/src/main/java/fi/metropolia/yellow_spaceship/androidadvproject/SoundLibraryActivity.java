@@ -2,7 +2,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class SoundLibraryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-
-    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
