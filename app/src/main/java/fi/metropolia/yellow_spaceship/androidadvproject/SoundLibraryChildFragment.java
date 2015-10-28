@@ -123,7 +123,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 Intent intent = getActivity().getIntent();
                 if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                     // No need to download any time the user clicks a row, just when getting a sound
-                    // TODO: show a spinner while this is going (and prevent intent from finishing)
+                    mSpinner.setVisibility(View.VISIBLE);
                     new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
 
 
@@ -152,13 +152,22 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     @Override
     public void onDownloadFinished(DAMSound damSound) {
 
-        // Create the return Intent to send the selected sound
-        // to the create-view.
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", damSound);
-        getActivity().setResult(Activity.RESULT_OK, returnIntent);
-        getActivity().finish();
+        mSpinner.setVisibility(View.GONE);
 
+        if (damSound != null && damSound.getFileName() != null) {
+            // Create the return Intent to send the selected sound
+            // to the create-view.
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", damSound);
+            getActivity().setResult(Activity.RESULT_OK, returnIntent);
+            getActivity().finish();
+        } else {
+            Toast.makeText(
+                    getActivity().getApplicationContext(),
+                    "Something went wrong when downloading the sound, please select another sound",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
     @Override
