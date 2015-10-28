@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.util.Date;
 import java.util.List;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.BuildConfig;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.deserializers.DAMSoundDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.deserializers.DateDeserializer;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.deserializers.IntegerDeserializer;
@@ -32,7 +33,7 @@ import retrofit.http.Query;
  */
 public class ApiClient {
     private static DAMApiInterface sDAMService;
-    private static final String BASE_URL = "http://dev.mw.metropolia.fi/dianag/AudioResourceSpace/plugins";
+    private static final String BASE_URL = BuildConfig.API_URL;
 
     public static DAMApiInterface getDAMApiClient() {
         if (sDAMService == null) {

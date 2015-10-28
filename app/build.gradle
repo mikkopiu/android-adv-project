@@ -12,6 +12,9 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        applicationVariants.all { variant ->
+            variant.buildConfigField "String", "API_URL", "\""+getApiUrl()+"\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -30,4 +33,10 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.github.clans:fab:1.6.1'
     compile files('libs/jl1.0.1.jar')
+}
+
+def getApiUrl(){
+    def Properties props = new Properties()
+    props.load(new FileInputStream(new File('secrets.properties')))
+    return props['API_URL']
 }
