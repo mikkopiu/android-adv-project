@@ -297,7 +297,7 @@ public class ProjectSound implements Parcelable {
     }
 
     /**
-     * Cleans up the SoundPlayerSound.
+     * Cleans up the ProjectSound
      */
     public void clear() {
         mAudioTrack.stop();
