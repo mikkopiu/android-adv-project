@@ -1,9 +1,5 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
-import android.graphics.drawable.Drawable;
-
-import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
-
 /**
  * Holds data for a single RecyclerView row
  */
