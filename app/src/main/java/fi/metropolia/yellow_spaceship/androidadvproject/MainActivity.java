@@ -16,17 +16,14 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
-    private SessionManager session;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        session = new SessionManager(getApplicationContext());
+        SessionManager session = new SessionManager(getApplicationContext());
 
         // Check login status and redirect to LoginActivity if necessary
-        // TODO: is this the best place?
         session.checkLogin();
 
         // Toolbar and menus + menu click events
@@ -34,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         //navigationView = (NavigationView)findViewById(R.id.navigation_view);
         //navigationView.getMenu().getItem(0).setChecked(true);
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
 
         //DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // OnClickListener for incontext navigation buttons
-    View.OnClickListener incontextButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener incontextButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
 
             Intent intent = null;
@@ -70,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, YourSoundscapesActivity.class);
                     break;
                 case R.id.incontext_museum_tour:
-//                    intent = new Intent(MainActivity.this, RecordActivity.class); // TODO: set correct Activity
+//                    intent = new Intent(MainActivity.this, MuseumTourActivity.class); // TODO: set correct Activity
 //                    break;
                     Toast.makeText(getApplicationContext(), "Coming soon", Toast.LENGTH_SHORT).show();
                     return;

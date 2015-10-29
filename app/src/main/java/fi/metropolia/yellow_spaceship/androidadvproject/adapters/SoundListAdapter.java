@@ -57,7 +57,9 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         public interface ISoundViewHolderClicks {
             void onRowSelect(View view, int layoutPosition);
+
             void onFavorite(View view, int layoutPosition);
+
             void onPlayPauseToggle(View view, int layoutPosition);
         }
 
@@ -65,7 +67,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
     /**
      * Constructor
-     * @param dataSet A reference to the data for the adapter
+     *
+     * @param dataSet  A reference to the data for the adapter
      * @param listener
      */
     public SoundListAdapter(ArrayList<DAMSound> dataSet,
@@ -76,8 +79,9 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
     /**
      * Create new views
-     * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     *
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
      * @param viewType The view type of the new View.
      * @return New ViewHolder
      */

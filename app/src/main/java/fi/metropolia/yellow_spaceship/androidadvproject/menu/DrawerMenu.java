@@ -27,10 +27,11 @@ public class DrawerMenu {
 
     /**
      * Constructor
-     * @param activity The activity that holds the side menu
+     *
+     * @param activity       The activity that holds the side menu
      * @param navigationView NavigationView-object
-     * @param drawerLayout DrawerLayout-object
-     * @param toolbar Toolbar-object
+     * @param drawerLayout   DrawerLayout-object
+     * @param toolbar        Toolbar-object
      */
     public DrawerMenu(AppCompatActivity activity, NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar) {
         this.activity = activity;
@@ -56,7 +57,7 @@ public class DrawerMenu {
                 drawerLayout.closeDrawers();
 
                 // If menu item is for current activity, do nothing
-                if(menuItem.isChecked())
+                if (menuItem.isChecked())
                     return true;
 
                 Object object = null;
@@ -76,8 +77,8 @@ public class DrawerMenu {
                         break;
                 }
 
-                if(object != null) {
-                    Intent intent = new Intent(DrawerMenu.this.activity, (Class)object);
+                if (object != null) {
+                    Intent intent = new Intent(DrawerMenu.this.activity, (Class) object);
                     DrawerMenu.this.activity.startActivity(intent);
                     return true;
                 }

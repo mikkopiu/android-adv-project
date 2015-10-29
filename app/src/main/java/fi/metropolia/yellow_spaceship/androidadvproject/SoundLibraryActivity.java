@@ -20,7 +20,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
         setContentView(R.layout.activity_sound_library);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.sound_library_title));
+        toolbar.setTitle(R.string.sound_library_title);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -34,7 +34,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
         });
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-        if(f == null) {
+        if (f == null) {
             SoundLibraryMainFragment fragment = SoundLibraryMainFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, fragment).commit();
         }
@@ -55,7 +55,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchManager searchManager = (SearchManager)SoundLibraryActivity.this.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) SoundLibraryActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
         SearchView searchView = null;
         if (searchItem != null) {
@@ -73,7 +73,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
         if (query.length() > 0) {
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-            if(f == null || !(f instanceof SoundLibraryChildFragment)) {
+            if (f == null || !(f instanceof SoundLibraryChildFragment)) {
 
                 SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
 

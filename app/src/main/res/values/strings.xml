@@ -32,11 +32,13 @@
     <string name="create_loop_btn">Loop</string>
     <string name="create_random_btn">Random</string>
 
+    <string name="record_stop_btn">Stop</string>
     <string name="record_save_btn">Save</string>
     <string name="record_play_btn">Play</string>
     <string name="record_dialog_filename_hint">Filename</string>
     <string name="record_dialog_cancel_btn">Cancel</string>
     <string name="record_dialog_save_btn">Save</string>
+    <string name="record_default_timer">00:00</string>
 
     <string name="create_dialog_name_hint">Name</string>
     <string name="create_dialog_cancel_btn">Cancel</string>

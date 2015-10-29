@@ -43,9 +43,10 @@ public class DAMSound implements Parcelable {
 
     /**
      * Constructor for the Parcelable interface
-     * @param in
+     *
+     * @param in DAMSound as a Parcel
      */
-    public DAMSound(Parcel in) {
+    private DAMSound(Parcel in) {
         this.Title = in.readString();
         this.Category = SoundCategory.fromApi(in.readString());
         this.SoundType = fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType.fromApi(in.readString());
@@ -58,6 +59,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Title of the sound
+     *
      * @return The Title
      */
     public String getTitle() {
@@ -73,6 +75,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Get a description of the sound
+     *
      * @return A description of the sound
      */
     public String getDescription() {
@@ -88,6 +91,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Original file name
+     *
      * @return The OriginalFilename
      */
     public String getOriginalFilename() {
@@ -103,6 +107,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Category of the sound, e.g. NATURE, HUMAN
+     *
      * @return The Category
      */
     public SoundCategory getCategory() {
@@ -118,6 +123,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * The sound's type, e.g. SOUNDSCAPE, EFFECT
+     *
      * @return The SoundType
      */
     public SoundType getSoundType() {
@@ -133,6 +139,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Length of the sound in full seconds
+     *
      * @return The LengthSec
      */
     public int getLengthSec() {
@@ -148,6 +155,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Date that the sound was created on
+     *
      * @return The CreationDate
      */
     public Date getCreationDate() {
@@ -163,6 +171,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * File extension, without the dot, e.g. "mp3"
+     *
      * @return The FileExtension
      */
     public String getFileExtension() {
@@ -178,6 +187,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * File size in kilobytes
+     *
      * @return The FileSizeKB
      */
     public float getFileSizeKB() {
@@ -193,6 +203,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Username of the user that created this sound
+     *
      * @return The CreatedBy
      */
     public String getCreatedBy() {
@@ -208,6 +219,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Name of the collection where this sound is located
+     *
      * @return The CollectionName
      */
     public String getCollectionName() {
@@ -223,6 +235,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * The ID of the collection where this sound is located
+     *
      * @return The CollectionID
      */
     public int getCollectionID() {
@@ -238,6 +251,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * URL to download the sound
+     *
      * @return Download URL
      */
     public String getDownloadLink() {
@@ -261,6 +275,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Has the local user favorited this sound
+     *
      * @return Is this sound favorited
      */
     public boolean getIsFavorite() {
@@ -269,6 +284,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Set favorite-status for this sound
+     *
      * @param favorite True if this is a favorite
      */
     public void setIsFavorite(boolean favorite) {
@@ -277,6 +293,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Is this sound recorded by the user
+     *
      * @return Is this sound a recording
      */
     public boolean getIsRecording() {
@@ -285,6 +302,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Set recorded-status for this sound
+     *
      * @param recording True if this is a recording
      */
     public void setIsRecording(boolean recording) {
@@ -293,6 +311,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Get local file name
+     *
      * @return {?String} Returns null if file is not saved locally
      */
     public String getFileName() {
@@ -301,6 +320,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Set local file name
+     *
      * @param fileName Local file name for sound
      */
     public void setFileName(String fileName) {
@@ -309,6 +329,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Get a unique identified for the sound
+     *
      * @return Unique ID for this sound
      */
     public String getFormattedSoundId() {
@@ -342,6 +363,7 @@ public class DAMSound implements Parcelable {
      * Implementation for Parcelable interface.
      * Only write the necessary fields for SoundScapes,
      * no need for anything else (might not even exist, when handling favorites).
+     *
      * @param dest
      * @param flags
      */

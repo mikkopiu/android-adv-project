@@ -19,8 +19,6 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
     private ArrayList<ListRowData> data;
 
-    private RecyclerView.LayoutManager layoutManager;
-    private View fragmentView;
     private RecyclerView recyclerView;
     private SoundLibraryListAdapter adapter;
 
@@ -46,14 +44,14 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
 
         // Data for RecycleView
         this.data = new ArrayList<>();
         data.add(new ListRowData(RECORDINGS_CAPTION, R.drawable.ic_mic_black_48dp, null));
         data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_outline_48dp, null));
 
-        for(SoundCategory cat : SoundCategory.values()) {
+        for (SoundCategory cat : SoundCategory.values()) {
             // No need to show the unknown category in the list
             if (cat != SoundCategory.UNKNOWN) {
                 data.add(new ListRowData(cat.menuCaption(), null, cat));
@@ -62,11 +60,11 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
         // Adapter for RecyclerView
         adapter = new SoundLibraryListAdapter(getActivity(), this, data);
-        recyclerView = (RecyclerView)fragmentView.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
@@ -81,7 +79,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         super.onActivityCreated(savedInstanceState);
 
         // Set onClickListener for back button
-        ((Toolbar)getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
@@ -92,6 +90,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
     /**
      * OnClickListener for RecyclerView views.
+     *
      * @param v View object
      */
     @Override
@@ -116,7 +115,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         }
 
         fragment.setArguments(bundle);
-        ((SoundLibraryActivity)getActivity()).swapFragment(fragment);
+        ((SoundLibraryActivity) getActivity()).swapFragment(fragment);
     }
 
 }

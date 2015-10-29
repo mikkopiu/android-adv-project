@@ -16,8 +16,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject
 public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean> {
     public final static String PROJECT_FOLDER = "projects";
 
-    private SaveListener listener;
-    private Context context;
+    private final SaveListener listener;
+    private final Context context;
 
     public ProjectSaveTask(Context context, SaveListener listener) {
         this.listener = listener;
@@ -38,7 +38,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
                     "/" + project.getName() + ".json");
 
             File folder = new File(this.context.getFilesDir() + "/" + PROJECT_FOLDER);
-            if(!folder.exists()) {
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
 

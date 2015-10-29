@@ -35,13 +35,14 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Constructor, at least an ID is required
+     *
      * @param id
      */
     public ProjectSound(String id) {
         this(id, null, null, null, null, false, false, 1.0f);
     }
 
-    public ProjectSound(Parcel in) {
+    private ProjectSound(Parcel in) {
         this(
                 in.readString(),
                 in.readString(),
@@ -56,6 +57,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Full constructor
+     *
      * @param id
      * @param title
      * @param category
@@ -168,6 +170,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set sample rate
+     *
      * @param sampleRate Sample rate as integer value e.g 44100
      */
     public void setSampleRate(int sampleRate) {
@@ -176,6 +179,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Get sample rate
+     *
      * @return Sample rate as integer.
      */
     public int getSampleRate() {
@@ -184,6 +188,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set number of channels (mono = 1, stereo = 2)
+     *
      * @param channels Number of channels
      */
     public void setChannels(int channels) {
@@ -192,10 +197,11 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Get channel informatio for Audio Track
+     *
      * @return Channel information for Audio Track
      */
     public int getChannels() {
-        if(mChannels == 1)
+        if (mChannels == 1)
             return AudioFormat.CHANNEL_OUT_MONO;
         else
             return AudioFormat.CHANNEL_OUT_STEREO;
@@ -203,6 +209,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set bit depth
+     *
      * @param bits Bit depth
      */
     public void setBits(int bits) {
@@ -211,10 +218,11 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Get encoding information for Audio Track
+     *
      * @return Encoding information for Audio Track
      */
     public int getBits() {
-        if(mBits == 8)
+        if (mBits == 8)
             return AudioFormat.ENCODING_PCM_8BIT;
         else
             return AudioFormat.ENCODING_PCM_16BIT;
@@ -222,6 +230,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set File
+     *
      * @param file File handle for audio file.
      */
     public void setFile(File file) {
@@ -230,6 +239,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Get file
+     *
      * @return file handle for audio file.
      */
     public File getFile() {
@@ -238,6 +248,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set looping status
+     *
      * @param looping Set looping to true or false
      */
     public void setLooping(boolean looping) {
@@ -246,6 +257,7 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Get looping status
+     *
      * @return Is the sound looping as boolean
      */
     public boolean getLooping() {
@@ -256,7 +268,7 @@ public class ProjectSound implements Parcelable {
      * Start playing the sound
      */
     public void play() {
-        if(!isPlaying) {
+        if (!isPlaying) {
             isPlaying = true;
             mTrackThread = new Thread(new TrackRunnable());
             mTrackThread.start();
@@ -276,19 +288,20 @@ public class ProjectSound implements Parcelable {
 
     /**
      * Set the sound level of the sound.
+     *
      * @param volume Volume as float (0f - 1.0f, other values get clamped)
      */
     public void setVolume(float volume) {
-        if(volume > 1.0f)
+        if (volume > 1.0f)
             mVolume = 1.0f;
-        else if(volume < 0.0f)
+        else if (volume < 0.0f)
             mVolume = 0.0f;
         else
             mVolume = volume;
 
         // mAudioTrack is null until the playback actually starts
         if (isPlaying) {
-            if(Build.VERSION.SDK_INT < 21) {
+            if (Build.VERSION.SDK_INT < 21) {
                 mAudioTrack.setStereoVolume(mVolume, mVolume);
             } else {
                 mAudioTrack.setVolume(mVolume);
@@ -310,7 +323,7 @@ public class ProjectSound implements Parcelable {
     /**
      * Audio Track in a thread. Sound playing implementation.
      */
-    class TrackRunnable implements Runnable {
+    private class TrackRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -320,7 +333,7 @@ public class ProjectSound implements Parcelable {
             // Create the Audio Track with proper settings.
             mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, mSampleRate, getChannels(), getBits(), minBufferSize, AudioTrack.MODE_STREAM);
 
-            int i = 0;
+            int i;
             // Byte buffer for streaming data into Audio Track.
             byte[] buffer = new byte[minBufferSize];
 
@@ -338,9 +351,9 @@ public class ProjectSound implements Parcelable {
                 while (isPlaying) {
 
                     i = bis.read(buffer, 0, minBufferSize);
-                    if(i == -1) {
+                    if (i == -1) {
 
-                        if(isOnLoop) {
+                        if (isOnLoop) {
                             // Start in the beginning of the file if we are looping.
                             bis.close();
                             bis = new BufferedInputStream(new FileInputStream(mFile));

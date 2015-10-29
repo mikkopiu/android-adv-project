@@ -23,13 +23,14 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Constructor for a project with a name but without pre-existing sounds
+     *
      * @param name Name of the project
      */
     public SoundScapeProject(String name) {
         this(name, null);
     }
 
-    public SoundScapeProject(Parcel in) {
+    private SoundScapeProject(Parcel in) {
         this(in.readString());
 
         in.readTypedList(this.sounds, ProjectSound.CREATOR);
@@ -37,7 +38,8 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Constructor
-     * @param name Name of the project
+     *
+     * @param name   Name of the project
      * @param sounds A list of sounds in the project
      */
     public SoundScapeProject(String name, ArrayList<ProjectSound> sounds) {
@@ -51,6 +53,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Get project's name
+     *
      * @return Name of the project
      */
     public String getName() {
@@ -59,6 +62,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Set project's name
+     *
      * @param name New name
      */
     public void setName(String name) {
@@ -71,6 +75,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Get a sound by its index
+     *
      * @param ind Index to find
      * @return Found sound
      * @throws IndexOutOfBoundsException In case of trying to get a non-existing index
@@ -81,6 +86,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Add a sound to the project
+     *
      * @param sound Sound to add
      */
     public void addSound(ProjectSound sound) {
@@ -89,6 +95,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Add multiple sounds at the same time
+     *
      * @param sounds A list of sounds to add
      */
     public void addSounds(ArrayList<ProjectSound> sounds) {
@@ -97,6 +104,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Remove a specific sounds by index (should match layout position in create-view)
+     *
      * @param ind Index to remove
      * @throws IndexOutOfBoundsException In case of trying to remove a non-existing sound
      */
@@ -113,6 +121,7 @@ public class SoundScapeProject implements Parcelable {
 
     /**
      * Replace all sounds with the specified ones
+     *
      * @param sounds New list of sounds to use
      */
     public void replaceSounds(ArrayList<ProjectSound> sounds) {

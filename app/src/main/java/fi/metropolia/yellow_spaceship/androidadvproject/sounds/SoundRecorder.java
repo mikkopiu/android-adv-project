@@ -49,7 +49,7 @@ public class SoundRecorder {
     public void startRecording() {
 
         mIsRecording = true;
-        if(mBackgroundThread != null) {
+        if (mBackgroundThread != null) {
             mBackgroundThread.interrupt();
             mBackgroundThread = null;
         }
@@ -76,10 +76,10 @@ public class SoundRecorder {
                 long subChunk1Size = 16;
                 int bitsPerSample = 16;
                 int format = 1;
-                long channels = (long)CHANNELS;
-                long sampleRate = (long)SAMPLE_RATE;
+                long channels = (long) CHANNELS;
+                long sampleRate = (long) SAMPLE_RATE;
                 long byteRate = sampleRate * channels * bitsPerSample / 8;
-                int blockAlign = (int)(channels * bitsPerSample / 8);
+                int blockAlign = (int) (channels * bitsPerSample / 8);
 
                 DataInputStream dis = new DataInputStream((new BufferedInputStream(new FileInputStream(mTempFile))));
 
@@ -101,12 +101,12 @@ public class SoundRecorder {
                 dos.write(shortToByteArray((short) blockAlign), 0, 2);          // 32 - # of bytes in one sample for all channels
                 dos.write(shortToByteArray((short) bitsPerSample), 0, 2);       // 34 - how many bits in sample? Usually 16 or 24
                 dos.writeBytes("data");                                         // 36 - data
-                dos.write(intToByteArray((int)dataSize), 0, 4);                 // 40 - how big is the data chunk
+                dos.write(intToByteArray((int) dataSize), 0, 4);                 // 40 - how big is the data chunk
 
                 // Write the actual sound data
                 byte[] dataBuffer = new byte[1024];
 
-                while(dis.available() > 0) {
+                while (dis.available() > 0) {
                     dis.read(dataBuffer);
                     dos.write(dataBuffer, 0, dataBuffer.length);
                 }
@@ -116,7 +116,7 @@ public class SoundRecorder {
                 dis.close();
 
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -125,10 +125,10 @@ public class SoundRecorder {
         private byte[] intToByteArray(int i) {
 
             byte[] b = new byte[4];
-            b[0] = (byte)(i & 0x00FF);
-            b[1] = (byte)((i >> 8) & 0x000000FF);
-            b[2] = (byte)((i >> 16) & 0x000000FF);
-            b[3] = (byte)((i >> 24) & 0x000000FF);
+            b[0] = (byte) (i & 0x00FF);
+            b[1] = (byte) ((i >> 8) & 0x000000FF);
+            b[2] = (byte) ((i >> 16) & 0x000000FF);
+            b[3] = (byte) ((i >> 24) & 0x000000FF);
 
             return b;
 
@@ -136,7 +136,7 @@ public class SoundRecorder {
 
         private byte[] shortToByteArray(short s) {
 
-            return new byte[] { (byte)(s & 0xff), (byte)((s >>> 8) & 0xff) };
+            return new byte[]{(byte) (s & 0xff), (byte) ((s >>> 8) & 0xff)};
 
         }
 
@@ -153,11 +153,11 @@ public class SoundRecorder {
 
             try {
 
-                if(mTempFile.exists()) {
+                if (mTempFile.exists()) {
                     mTempFile.delete();
                 }
 
-                if(mFile.exists()) {
+                if (mFile.exists()) {
                     mFile.delete();
                 }
 
@@ -165,7 +165,7 @@ public class SoundRecorder {
 
                 mAudioRecord.startRecording();
 
-                while(mIsRecording) {
+                while (mIsRecording) {
 
                     int reallySampledBytes = mAudioRecord.read(recBuffer, recBufferBytePtr, sampleBytes);
 
@@ -224,7 +224,7 @@ public class SoundRecorder {
                 // Write WAV-headers to file
                 writeFileWithHeaders();
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

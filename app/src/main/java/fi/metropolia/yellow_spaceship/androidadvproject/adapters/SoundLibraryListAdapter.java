@@ -19,20 +19,20 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
  */
 public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryListAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private ArrayList<ListRowData> dataSet;
-    private View.OnClickListener listener;
+    private final View.OnClickListener listener;
 
     /**
      * Basic ViewHolder inner class
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View view;
+        public final View view;
 
         public ViewHolder(View v, View.OnClickListener listener) {
             super(v);
-            if(listener != null)
+            if (listener != null)
                 v.setOnClickListener(listener);
             this.view = v;
         }
@@ -41,6 +41,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     /**
      * Constructor
+     *
      * @param context The activity
      * @param dataSet Data for the adapter.
      */
@@ -54,18 +55,19 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     /**
      * Get a ListRowData-object with position
+     *
      * @param position index position in the dataSet
      * @return ListRowData object
      */
     public ListRowData getDataWithPosition(int position) {
-        if(dataSet.size() > position)
+        if (dataSet.size() > position)
             return dataSet.get(position);
         else
             return null;
     }
 
     public void swap(ArrayList<ListRowData> data) {
-        if(dataSet != null) {
+        if (dataSet != null) {
             dataSet.clear();
             dataSet.addAll(data);
             notifyDataSetChanged();
@@ -77,7 +79,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         // Inflate the view
         View v = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.sound_library_list_item, parent, false);
+                .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
         return new ViewHolder(v, this.listener);
@@ -87,12 +89,12 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         // Find the views in the layout
-        TextView textView = (TextView)holder.view.findViewById(R.id.sound_library_list_text);
+        TextView textView = (TextView) holder.view.findViewById(R.id.sound_library_list_text);
 
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
         Drawable icon;
-        if (dataSet.get(position).getIcon() != null){
+        if (dataSet.get(position).getIcon() != null) {
             icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
         } else {
             // TODO: There's probably a better way than setting an invisible drawable
@@ -105,7 +107,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     @Override
     public int getItemCount() {
-        if(dataSet != null)
+        if (dataSet != null)
             return dataSet.size();
         else
             return 0;

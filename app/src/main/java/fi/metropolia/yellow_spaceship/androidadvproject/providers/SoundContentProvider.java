@@ -25,7 +25,7 @@ public class SoundContentProvider extends ContentProvider {
     private DAMSoundDbHelper dbHelper;
     private SQLiteDatabase database;
 
-    // Used for the UriMacher
+    // Used for the UriMatcher
     private static final int SOUNDS = 10;
     private static final int SOUND_ID = 20;
 
@@ -41,6 +41,7 @@ public class SoundContentProvider extends ContentProvider {
             + "/sound";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     static {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH, SOUNDS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", SOUND_ID);
@@ -106,7 +107,7 @@ public class SoundContentProvider extends ContentProvider {
         switch (uriType) {
             case SOUNDS:
                 String selection = DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?";
-                String[] selectionArgs = new String[] {
+                String[] selectionArgs = new String[]{
                         values.getAsString(DAMSoundEntry.COLUMN_NAME_SOUND_ID)
                 };
 
@@ -125,7 +126,7 @@ public class SoundContentProvider extends ContentProvider {
                     // Find the ID of the already existing sound (to return)
                     Cursor cursor = this.database.query(
                             DAMSoundEntry.TABLE_NAME,
-                            new String[] {DAMSoundEntry._ID},
+                            new String[]{DAMSoundEntry._ID},
                             selection,
                             selectionArgs,
                             null, null, null
@@ -221,6 +222,7 @@ public class SoundContentProvider extends ContentProvider {
 
     /**
      * Validate that a query only requests valid columns
+     *
      * @param projection Projection to validate
      * @throws IllegalArgumentException In case there are unknown columns in the project
      */

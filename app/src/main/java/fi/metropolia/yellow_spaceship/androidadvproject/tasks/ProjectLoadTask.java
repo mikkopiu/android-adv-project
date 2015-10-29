@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 
 public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScapeProject>> {
-    private ProjectLoadListener listener;
-    private ArrayList<SoundScapeProject> projects = new ArrayList<>();
+    private final ProjectLoadListener listener;
+    private final ArrayList<SoundScapeProject> projects = new ArrayList<>();
 
     public ProjectLoadTask(ProjectLoadListener listener) {
         this.listener = listener;

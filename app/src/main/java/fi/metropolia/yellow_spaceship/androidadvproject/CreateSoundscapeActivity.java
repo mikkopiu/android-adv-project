@@ -37,8 +37,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
     private SoundScapeProject mProject;
     private RecyclerView recyclerView;
-    private SoundCardViewAdapter adapter;
-    private GridLayoutManager layoutManager;
     private Dialog mDialog;
     private EditText mDialogEditText;
     private ProgressDialog mProgress;
@@ -50,7 +48,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
     private SoundPlayer soundPlayer;
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
+    private final View.OnClickListener clickListener = new View.OnClickListener() {
         public void onClick(View v) {
 
             switch (v.getId()) {
@@ -65,6 +63,63 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Listener for FAB menu-item clicks
+     */
+    private final View.OnClickListener fabItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.menu_item_library:
+                    addLibrarySound();
+                    break;
+                case R.id.menu_item_record:
+                    addRecording();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    /**
+     * Listener for ProjectSound ViewHolder clicks
+     */
+    private final IProjectSoundViewHolderClicks adapterOnClickListener =
+            new IProjectSoundViewHolderClicks() {
+
+                @Override
+                public void onCloseClicked(View view, int layoutPosition) {
+                    try {
+                        mProject.removeSound(layoutPosition);
+                        soundPlayer.removeSound(layoutPosition);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+
+                        if (mProject.getSounds().size() == 0 && mIsPlaying) {
+                            // No more sounds to play, stop playback
+                            stopPlayback();
+                        }
+
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Something went wrong, please try again",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+
+                @Override
+                public void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress) {
+                    float newVol = (float) progress / 100.0f; // SeekBar has values from 0-100 (int)
+
+                    // soundPlayer, mProject and recyclerView should have matching indexes
+                    // for the sound items.
+                    soundPlayer.setVolume(layoutPosition, newVol);
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +156,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mProject.getSounds().size() > 0) {
-                    if(mIsPlaying) {
+                    if (mIsPlaying) {
                         stopPlayback();
                     } else {
                         startPlayback();
@@ -147,73 +202,16 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     private void stopPlayback() {
         soundPlayer.stopAll();
         mIsPlaying = false;
-        ((ImageButton)findViewById(R.id.create_play_btn))
+        ((ImageButton) findViewById(R.id.create_play_btn))
                 .setImageResource(R.drawable.ic_play_arrow_48dp);
     }
 
     private void startPlayback() {
         soundPlayer.playAll();
         mIsPlaying = true;
-        ((ImageButton)findViewById(R.id.create_play_btn))
+        ((ImageButton) findViewById(R.id.create_play_btn))
                 .setImageResource(R.drawable.ic_stop_black_48dp);
     }
-
-    /**
-     * Listener for FAB menu-item clicks
-     */
-    private View.OnClickListener fabItemClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.menu_item_library:
-                    addLibrarySound();
-                    break;
-                case R.id.menu_item_record:
-                    addRecording();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    /**
-     * Listener for ProjectSound ViewHolder clicks
-     */
-    private IProjectSoundViewHolderClicks adapterOnClickListener =
-            new IProjectSoundViewHolderClicks() {
-
-                @Override
-                public void onCloseClicked(View view, int layoutPosition) {
-                    try {
-                        mProject.removeSound(layoutPosition);
-                        soundPlayer.removeSound(layoutPosition);
-                        recyclerView.getAdapter().notifyDataSetChanged();
-
-                        if (mProject.getSounds().size() == 0 && mIsPlaying) {
-                            // No more sounds to play, stop playback
-                            stopPlayback();
-                        }
-
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Something went wrong, please try again",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                }
-
-                @Override
-                public void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress) {
-                    float newVol = (float)progress / 100.0f; // SeekBar has values from 0-100 (int)
-
-                    // soundPlayer, mProject and recyclerView should have matching indexes
-                    // for the sound items.
-                    soundPlayer.setVolume(layoutPosition, newVol);
-                }
-            };
 
     /**
      * Initialize the SoundScapeProject, either from a loaded SoundScapeProject or a new one
@@ -223,7 +221,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
             this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
 
-            for(ProjectSound ps : mProject.getSounds()) {
+            for (ProjectSound ps : mProject.getSounds()) {
                 ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
                 soundPlayer.addSound(ps);
             }
@@ -241,10 +239,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
         this.recyclerView.setHasFixedSize(false);
 
-        this.layoutManager = new GridLayoutManager(this, 2);
-        this.recyclerView.setLayoutManager(this.layoutManager);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        this.recyclerView.setLayoutManager(layoutManager);
 
-        this.adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
+        SoundCardViewAdapter adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
         this.recyclerView.setAdapter(adapter);
     }
 
@@ -270,7 +268,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 // TODO: handle multi-select
                 DAMSound result = data.getExtras().getParcelable("result");
                 addSelectedSound(result);
@@ -322,7 +320,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      * Save the current project to file
      */
     private void save() {
-        if(!mIsSaving) {
+        if (!mIsSaving) {
             String fileName = mDialogEditText.getText().toString().trim();
 
             mIsSaving = true;
@@ -350,9 +348,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         mDialog = new Dialog(CreateSoundscapeActivity.this);
         mDialog.setContentView(R.layout.create_save_dialog);
         mDialog.setTitle("Save");
-        Button mDialogSaveBtn = (Button)mDialog.findViewById(R.id.dialog_save_btn);
-        Button mDialogCancelBtn = (Button)mDialog.findViewById(R.id.dialog_cancel_btn);
-        mDialogEditText = (EditText)mDialog.findViewById(R.id.input_name);
+        Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
+        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
+        mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
         mDialogSaveBtn.setOnClickListener(clickListener);
         mDialogCancelBtn.setOnClickListener(clickListener);
 

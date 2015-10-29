@@ -14,14 +14,14 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject
 public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.ViewHolder> {
 
     private ArrayList<SoundScapeProject> mDataSet;
-    private View.OnClickListener listener;
+    private final View.OnClickListener listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private View itemView;
+        private final View itemView;
 
         public ViewHolder(View v, View.OnClickListener listener) {
             super(v);
-            if(listener != null) {
+            if (listener != null) {
                 v.setOnClickListener(listener);
             }
             this.itemView = v;

@@ -5,9 +5,9 @@ package fi.metropolia.yellow_spaceship.androidadvproject.models;
  */
 public class ListRowData {
 
-    private String caption;
-    private Integer icon;
-    private SoundCategory category;
+    private final String caption;
+    private final Integer icon;
+    private final SoundCategory category;
 
     /**
      * Default constructor
@@ -20,8 +20,9 @@ public class ListRowData {
 
     /**
      * Constructor
+     *
      * @param caption Caption for the row.
-     * @param icon R integer for a drawable.
+     * @param icon    R integer for a drawable.
      */
     public ListRowData(String caption, Integer icon, SoundCategory category) {
         this.caption = caption;

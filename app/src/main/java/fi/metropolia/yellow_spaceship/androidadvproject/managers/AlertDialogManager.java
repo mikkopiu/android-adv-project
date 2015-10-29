@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 
 public class AlertDialogManager {
 
-    public void showAlertDialog(Context context, String title, String message) {
+    public static void showAlertDialog(Context context, String title, String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
         alertDialog.setTitle(title);

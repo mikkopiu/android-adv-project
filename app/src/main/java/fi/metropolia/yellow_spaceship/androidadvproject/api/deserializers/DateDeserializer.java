@@ -18,7 +18,7 @@ import java.util.Locale;
 public class DateDeserializer implements JsonDeserializer<Date> {
 
                                                    // "2015-09-01 13:00:05"
-    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     @Override
     public Date deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {

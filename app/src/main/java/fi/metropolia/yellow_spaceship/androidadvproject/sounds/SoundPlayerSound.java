@@ -30,6 +30,7 @@ public class SoundPlayerSound {
 
     /**
      * Set sample rate
+     *
      * @param sampleRate Sample rate as integer value e.g 44100
      */
     public void setSampleRate(int sampleRate) {
@@ -38,6 +39,7 @@ public class SoundPlayerSound {
 
     /**
      * Get sample rate
+     *
      * @return Sample rate as integer.
      */
     public int getSampleRate() {
@@ -46,6 +48,7 @@ public class SoundPlayerSound {
 
     /**
      * Set number of channels (mono = 1, stereo = 2)
+     *
      * @param channels Number of channels
      */
     public void setChannels(int channels) {
@@ -54,10 +57,11 @@ public class SoundPlayerSound {
 
     /**
      * Get channel informatio for Audio Track
+     *
      * @return Channel information for Audio Track
      */
     public int getChannels() {
-        if(mChannels == 1)
+        if (mChannels == 1)
             return AudioFormat.CHANNEL_OUT_MONO;
         else
             return AudioFormat.CHANNEL_OUT_STEREO;
@@ -65,6 +69,7 @@ public class SoundPlayerSound {
 
     /**
      * Set bit depth
+     *
      * @param bits Bit depth
      */
     public void setBits(int bits) {
@@ -73,10 +78,11 @@ public class SoundPlayerSound {
 
     /**
      * Get encoding information for Audio Track
+     *
      * @return Encoding information for Audio Track
      */
     public int getBits() {
-        if(mBits == 8)
+        if (mBits == 8)
             return AudioFormat.ENCODING_PCM_8BIT;
         else
             return AudioFormat.ENCODING_PCM_16BIT;
@@ -84,6 +90,7 @@ public class SoundPlayerSound {
 
     /**
      * Set File
+     *
      * @param file File handle for audio file.
      */
     public void setFile(File file) {
@@ -92,6 +99,7 @@ public class SoundPlayerSound {
 
     /**
      * Get file
+     *
      * @return file handle for audio file.
      */
     public File getFile() {
@@ -100,6 +108,7 @@ public class SoundPlayerSound {
 
     /**
      * Set looping status
+     *
      * @param looping Set looping to true or false
      */
     public void setLooping(boolean looping) {
@@ -108,6 +117,7 @@ public class SoundPlayerSound {
 
     /**
      * Get looping status
+     *
      * @return Is the sound looping as boolean
      */
     public boolean getLooping() {
@@ -118,7 +128,7 @@ public class SoundPlayerSound {
      * Start playing the sound
      */
     public void play() {
-        if(!mPlaying) {
+        if (!mPlaying) {
             mPlaying = true;
             mTrackThread = new Thread(new TrackRunnable());
             mTrackThread.start();
@@ -136,11 +146,12 @@ public class SoundPlayerSound {
 
     /**
      * Set the sound level of the sound.
+     *
      * @param volume Volume as float (0f - 1.0f, other values get clamped)
      */
     public void setVolume(float volume) {
         mVolume = volume;
-        if(Build.VERSION.SDK_INT < 21) {
+        if (Build.VERSION.SDK_INT < 21) {
             mAudioTrack.setStereoVolume(mVolume, mVolume);
         } else {
             mAudioTrack.setVolume(mVolume);
@@ -176,7 +187,7 @@ public class SoundPlayerSound {
             byte[] buffer = new byte[minBufferSize];
 
             // Set the volume
-            if(Build.VERSION.SDK_INT < 21) {
+            if (Build.VERSION.SDK_INT < 21) {
                 mAudioTrack.setStereoVolume(mVolume, mVolume);
             } else {
                 mAudioTrack.setVolume(mVolume);
@@ -193,9 +204,9 @@ public class SoundPlayerSound {
                 while (mPlaying) {
 
                     i = bis.read(buffer, 0, minBufferSize);
-                    if(i == -1) {
+                    if (i == -1) {
 
-                        if(mLooping) {
+                        if (mLooping) {
                             // Start in the beginning of the file if we are looping.
                             bis = new BufferedInputStream(new FileInputStream(mFile));
                             bis.skip(44);

@@ -45,7 +45,6 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     private TextView mRecordTimer;
     private ImageButton mRecordButton;
     private Button mPlayButton;
-    private Button mSaveButton;
     private long mStartTime = 0;
     private boolean mRecording = false;
     private boolean mPlaying = false;
@@ -54,25 +53,23 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     private MediaPlayer mPlayer = null;
 
     private Dialog mDialog = null;
-    private Button mDialogSaveBtn = null;
-    private Button mDialogCancelBtn = null;
     private AppCompatSpinner mDialogSpinner = null;
     private EditText mDialogEditText = null;
 
-    private String mDefaultFileName = "untitled-recording.wav";
-    private String mDefaultFolder = "sounds";
-    private final int mDefaultCollectionId = 11;
+    private final static String DEFAULT_FILE_NAME = "untitled-recording.wav";
+    private final static String DEFAULT_FOLDER = "sounds";
+    private final static int DEFAULT_COLLECTION_ID = 11;
     private boolean mIsSaving = false;
     private boolean mTempFileExists = false;
     private int mLatestSeconds = 0;
 
-    MessageHandler msgHandler;
+    private MessageHandler msgHandler;
 
     /**
      * Handler and runnable for recording timer
      */
-    Handler timerHandler = new Handler();
-    Runnable timerRunnable = new Runnable() {
+    private final Handler timerHandler = new Handler();
+    private final Runnable timerRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -94,7 +91,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     /**
      * Copies temp file in another thread into a new file with a proper filename
      */
-    Runnable copyFileRunnable = new Runnable() {
+    private final Runnable copyFileRunnable = new Runnable() {
 
         @Override
         public void run() {
@@ -111,16 +108,16 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             damSound.setIsFavorite(false);
             damSound.setIsRecording(true);
             damSound.setFileExtension("wav");
-            damSound.setCollectionID(mDefaultCollectionId);
+            damSound.setCollectionID(DEFAULT_COLLECTION_ID);
             damSound.setCreationDate(new Date());
             damSound.setFileName(damSound.getFormattedSoundId() + "." + damSound.getFileExtension());
 
-            File tempFile = new File(getFilesDir() + "/" + mDefaultFolder + "/" + mDefaultFileName);
+            File tempFile = new File(getFilesDir() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
             if (!tempFile.exists()) {
                 return;
             }
 
-            File newFile = new File(getFilesDir() + "/" + mDefaultFolder + "/" + damSound.getFormattedSoundId() + "." + damSound.getFileExtension());
+            File newFile = new File(getFilesDir() + "/" + DEFAULT_FOLDER + "/" + damSound.getFormattedSoundId() + "." + damSound.getFileExtension());
 
             try {
                 FileInputStream is = new FileInputStream(tempFile);
@@ -176,7 +173,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     };
 
     private void deleteTempFile() {
-        File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + mDefaultFolder + "/" + mDefaultFileName);
+        File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
         if (file.exists()) {
             file.delete();
             mTempFileExists = false;
@@ -195,7 +192,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         mRecordTimer = (TextView) findViewById(R.id.record_timer);
         mRecordButton = (ImageButton) findViewById(R.id.record_button);
         mPlayButton = (Button) findViewById(R.id.play_btn);
-        mSaveButton = (Button) findViewById(R.id.save_btn);
+        Button mSaveButton = (Button) findViewById(R.id.save_btn);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.record_title));
@@ -218,18 +215,18 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         msgHandler = new MessageHandler(this);
     }
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
+    private final View.OnClickListener clickListener = new View.OnClickListener() {
         public void onClick(View v) {
 
             switch (v.getId()) {
                 case R.id.record_button:
-                    if (mRecording == false && mPlaying == false) {
+                    if (!mRecording && !mPlaying) {
                         mRecordButton.setImageResource(R.drawable.ic_stop_white_64dp);
                         mRecording = true;
                         startRecording();
                         mStartTime = System.currentTimeMillis();
                         timerHandler.postDelayed(timerRunnable, 0);
-                    } else if (mPlaying == false) {
+                    } else if (!mPlaying) {
                         mRecordButton.setImageResource(R.drawable.ic_mic_white_64dp);
                         mRecording = false;
                         stopRecording();
@@ -237,9 +234,9 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
                     }
                     break;
                 case R.id.play_btn:
-                    if (mRecording == true || mTempFileExists == false)
+                    if (mRecording || !mTempFileExists)
                         break;
-                    if (mPlaying == false)
+                    if (!mPlaying)
                         startPlaying();
                     else
                         stopPlaying();
@@ -279,8 +276,8 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         mDialog = new Dialog(RecordActivity.this);
         mDialog.setContentView(R.layout.recording_save_dialog);
         mDialog.setTitle("Save");
-        mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
-        mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
+        Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
+        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
         mDialogSpinner = (AppCompatSpinner) mDialog.findViewById(R.id.spinner_category);
         mDialogEditText = (EditText) mDialog.findViewById(R.id.input_filename);
         mDialogSaveBtn.setOnClickListener(clickListener);
@@ -295,7 +292,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     private void startPlaying() {
 
-        mPlayButton.setText("Stop");
+        mPlayButton.setText(R.string.record_stop_btn);
         mPlaying = true;
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -305,7 +302,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             }
         });
         try {
-            mPlayer.setDataSource(getFilesDir().getAbsolutePath() + "/" + mDefaultFolder + "/" + mDefaultFileName);
+            mPlayer.setDataSource(getFilesDir().getAbsolutePath() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
@@ -316,7 +313,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     private void stopPlaying() {
 
-        mPlayButton.setText("Play");
+        mPlayButton.setText(R.string.record_play_btn);
         mPlaying = false;
         mPlayer.release();
         mPlayer = null;
@@ -332,12 +329,12 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         mLatestSeconds = 0;
         mTempFileExists = true;
 
-        File folder = new File(getFilesDir() + "/" + mDefaultFolder);
+        File folder = new File(getFilesDir() + "/" + DEFAULT_FOLDER);
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
-        File defaultFile = new File(getFilesDir().getAbsolutePath() + "/" + mDefaultFolder + "/" + mDefaultFileName);
+        File defaultFile = new File(getFilesDir().getAbsolutePath() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
         if (defaultFile.exists()) {
             defaultFile.delete();
         }
@@ -350,7 +347,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        mRecorder.setOutputFile(folder.getAbsolutePath() + "/" + mDefaultFileName);
+        mRecorder.setOutputFile(folder.getAbsolutePath() + "/" + DEFAULT_FILE_NAME);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -400,10 +397,11 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     }
 
-    private static class MessageHandler extends Handler{
+    private static class MessageHandler extends Handler {
         private final WeakReference<RecordActivity> mTarget;
+
         public MessageHandler(RecordActivity context) {
-            mTarget = new WeakReference<RecordActivity>((RecordActivity) context);
+            mTarget = new WeakReference<>(context);
 
         }
 
@@ -414,7 +412,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             Toast toast = Toast.makeText(mTarget.get(), str, Toast.LENGTH_SHORT);
             toast.show();
 
-            mTarget.get().mRecordTimer.setText("00:00");
+            mTarget.get().mRecordTimer.setText(R.string.record_default_timer);
         }
 
     }

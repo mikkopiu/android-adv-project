@@ -11,10 +11,10 @@ import fi.metropolia.yellow_spaceship.androidadvproject.LoginActivity;
  */
 public class SessionManager {
 
-    SharedPreferences preferences;
-    SharedPreferences.Editor editor;
+    private final SharedPreferences preferences;
+    private final SharedPreferences.Editor editor;
 
-    Context mContext;
+    private final Context mContext;
 
     // Preference's file name
     private static final String PREF_NAME = "DamApiLoginPref";
@@ -54,8 +54,7 @@ public class SessionManager {
         editor.clear();
         editor.apply();
 
-        // TODO: Start login activity here?
-        // After logout redirect user to Loing Activity
+        // After logout redirect user to Login Activity
         Intent i = new Intent(mContext, LoginActivity.class);
         // Closing all the Activities
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -67,7 +66,6 @@ public class SessionManager {
         mContext.startActivity(i);
     }
 
-    // TODO: If using activity, create something like this?
     public void checkLogin(){
         // Check login status
         if(!this.isLoggedIn()){
@@ -89,7 +87,7 @@ public class SessionManager {
      * Quick check for login status
      * @return boolean Is user logged in
      */
-    public boolean isLoggedIn() {
+    private boolean isLoggedIn() {
         return preferences.getBoolean(IS_LOGGED_IN, false);
     }
 }

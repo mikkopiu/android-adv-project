@@ -15,7 +15,8 @@ public class TypedByteArrayWithFilename extends TypedByteArray {
         this.fileName = fileName;
     }
 
-    @Override public String fileName() {
+    @Override
+    public String fileName() {
         return fileName;
     }
 }

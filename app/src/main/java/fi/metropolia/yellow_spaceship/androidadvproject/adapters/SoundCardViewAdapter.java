@@ -16,14 +16,14 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdapter.ViewHolder> {
 
     private ArrayList<ProjectSound> mDataSet;
-    private ViewHolder.IProjectSoundViewHolderClicks listener;
+    private final ViewHolder.IProjectSoundViewHolderClicks listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            SeekBar.OnSeekBarChangeListener{
-        public IProjectSoundViewHolderClicks mListener;
+            SeekBar.OnSeekBarChangeListener {
+        private final IProjectSoundViewHolderClicks mListener;
 
-        public ImageButton closeBtn;
-        public SeekBar volBar;
+        public final ImageButton closeBtn;
+        public final SeekBar volBar;
 
         public ViewHolder(View itemView, IProjectSoundViewHolderClicks listener) {
             super(itemView);
@@ -62,6 +62,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         // TODO: add more (loop, random, volume control)
         public interface IProjectSoundViewHolderClicks {
             void onCloseClicked(View view, int layoutPosition);
+
             void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress);
         }
     }
@@ -92,7 +93,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         // And set data to the views
         textView.setText(item.getTitle());
-        volBar.setProgress((int)(item.getVolume() * 100));
+        volBar.setProgress((int) (item.getVolume() * 100));
     }
 
     @Override

@@ -25,7 +25,7 @@ public class DAMSoundDeserializer implements JsonDeserializer<DAMSound> {
         JsonObject json = (JsonObject) jsonElement;
 
         Set<Map.Entry<String, JsonElement>> entrySet = json.entrySet();
-        for(Map.Entry<String,JsonElement> entry : entrySet){
+        for (Map.Entry<String, JsonElement> entry : entrySet) {
             JsonElement val = entry.getValue();
             switch (entry.getKey()) {
                 case "Title":

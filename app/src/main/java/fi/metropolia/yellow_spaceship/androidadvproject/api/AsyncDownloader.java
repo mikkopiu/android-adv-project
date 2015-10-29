@@ -22,20 +22,21 @@ import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentPr
 import javazoom.jl.converter.Converter;
 
 /**
- * Downloads a sound asyncronously
+ * Downloads a sound asynchronously
  */
 public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
-    private DAMSound mDAMSound;
-    private Context mContext;
-    private Fragment mContextFragment;
+    private final DAMSound mDAMSound;
+    private final Context mContext;
+    private final Fragment mContextFragment;
     private File mFile;
     private File mFolder;
 
     /**
      * Constructor, sets the file url.
+     *
      * @param damSound DAMSound for the file we are downloading
-     * @param context Activity context
+     * @param context  Activity context
      */
     public AsyncDownloader(DAMSound damSound, Context context, Fragment contextFragment) {
 
@@ -56,7 +57,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
             Response response = call.execute();
 
-            if(response.code() == 200) {
+            if (response.code() == 200) {
 
                 InputStream inputStream = null;
                 OutputStream outputStream = null;
@@ -64,7 +65,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                 try {
 
                     mFolder = new File(mContext.getFilesDir() + "/sounds");
-                    if(!mFolder.exists()) {
+                    if (!mFolder.exists()) {
                         mFolder.mkdirs();
                     }
 
@@ -78,7 +79,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                     publishProgress(0L, totalSize);
 
                     int len;
-                    while((len = inputStream.read(buffer)) > 0) {
+                    while ((len = inputStream.read(buffer)) > 0) {
 
                         outputStream.write(buffer, 0, len);
 
@@ -93,19 +94,19 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                     return downloaded == totalSize;
 
-                } catch(IOException ioE) {
+                } catch (IOException ioE) {
 
                     return false;
 
                 } finally {
 
-                    if(inputStream != null) {
+                    if (inputStream != null) {
 
                         inputStream.close();
 
                     }
 
-                    if(outputStream != null) {
+                    if (outputStream != null) {
 
                         outputStream.close();
 
@@ -131,7 +132,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     @Override
     protected void onProgressUpdate(Long... values) {
 
-        float percentage = (float)values[0] / (float)values[1] * 100;
+        float percentage = (float) values[0] / (float) values[1] * 100;
         System.out.println(percentage);
 
     }
@@ -140,9 +141,9 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     protected void onPostExecute(Boolean result) {
 
         // Playing the sound after download (for now)
-        if(result) {
+        if (result) {
 
-            if(mFile.getName().toLowerCase().contains(".mp3")) {
+            if (mFile.getName().toLowerCase().contains(".mp3")) {
 
                 // Convert to wav
                 try {
@@ -156,14 +157,14 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                     e.printStackTrace();
                 }
 
-            } else if(mFile.getName().toLowerCase().contains(".wav")) {
+            } else if (mFile.getName().toLowerCase().contains(".wav")) {
                 String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
                 mDAMSound.setFileName(withoutExtension + ".wav");
             }
 
             setFileMetaData();
 
-            ((AsyncDownloaderListener)mContextFragment).onDownloadFinished(mDAMSound);
+            ((AsyncDownloaderListener) mContextFragment).onDownloadFinished(mDAMSound);
 
         }
 
@@ -172,13 +173,13 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     @Override
     protected void onPreExecute() {
 
-        if(mDAMSound != null) {
+        if (mDAMSound != null) {
 
             String filename = mDAMSound.getFileName();
 
-            if(filename != null) {
+            if (filename != null) {
                 System.out.println("File has been already downloaded!");
-                ((AsyncDownloaderListener)mContextFragment).onDownloadFinished(mDAMSound);
+                ((AsyncDownloaderListener) mContextFragment).onDownloadFinished(mDAMSound);
                 this.cancel(true);
             }
 

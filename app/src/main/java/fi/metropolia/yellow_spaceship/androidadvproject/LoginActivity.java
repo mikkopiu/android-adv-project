@@ -21,14 +21,10 @@ import retrofit.client.Response;
 
 public class LoginActivity extends Activity {
 
-    EditText txtUsername;
-    EditText txtPassword;
+    private EditText txtUsername;
+    private EditText txtPassword;
 
-    Button btnLogin;
-
-    AlertDialogManager alertManager = new AlertDialogManager();
-
-    SessionManager sessionManager;
+    private SessionManager sessionManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +39,7 @@ public class LoginActivity extends Activity {
         txtPassword = (EditText) findViewById(R.id.input_password);
 
         // Login button
-        btnLogin = (Button) findViewById(R.id.btn_login);
+        Button btnLogin = (Button) findViewById(R.id.btn_login);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,12 +86,12 @@ public class LoginActivity extends Activity {
                     System.out.println(error.getMessage());
 //                            error.printStackTrace();
                     // TODO: check actual error codes
-                    alertManager.showAlertDialog(LoginActivity.this, "Login failed", "Username or password incorrect");
+                    AlertDialogManager.showAlertDialog(LoginActivity.this, "Login failed", "Username or password incorrect");
                 }
             });
 
         } else {
-            alertManager.showAlertDialog(LoginActivity.this, "Login failed", "Please enter a username and a password");
+            AlertDialogManager.showAlertDialog(LoginActivity.this, "Login failed", "Please enter a username and a password");
         }
     }
 }

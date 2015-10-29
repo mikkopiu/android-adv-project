@@ -74,7 +74,8 @@ public class ApiClient {
 
         /**
          * Login & get an API key to use for other API calls
-         * @param user Temporary DAMUser that has the user's username and password
+         *
+         * @param user     Temporary DAMUser that has the user's username and password
          * @param callback Callback for parsing
          */
         @POST("/api_auth/auth.php")
@@ -84,20 +85,20 @@ public class ApiClient {
         /**
          * Get a list of sounds matching given parameters.
          * Set parameter as null to ignore.
-         *
+         * <p/>
          * String.valueOf(Object) is called for all Query objects, so adding a toString-method
          * to a custom class/enum should be enough.
          *
-         * @param format File format
-         * @param size File size, e.g. "<50KB"
+         * @param format     File format
+         * @param size       File size, e.g. "<50KB"
          * @param collection Collection ID
-         * @param category SoundCategory
-         * @param tag Tag of the sound, e.g. "dog"
-         * @param link Show download link?
-         * @param search Search any metadata field for string
-         * @param soundType SoundType
-         * @param createdBy User that created the sound
-         * @param callback Callback for parsing
+         * @param category   SoundCategory
+         * @param tag        Tag of the sound, e.g. "dog"
+         * @param link       Show download link?
+         * @param search     Search any metadata field for string
+         * @param soundType  SoundType
+         * @param createdBy  User that created the sound
+         * @param callback   Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
         void getSoundsWithParams(@Query("key") String apiKey,
@@ -114,9 +115,10 @@ public class ApiClient {
 
         /**
          * Simplified method for getting all sounds in a single collection
+         *
          * @param collection Collection ID
-         * @param link Show download link?
-         * @param callback Callback for parsing
+         * @param link       Show download link?
+         * @param callback   Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
         void getCollection(@Query("key") String apiKey,
@@ -126,11 +128,11 @@ public class ApiClient {
 
         /**
          * Simplified method for getting all sounds for a single category
-         *
+         * <p/>
          * TODO: Does this search all collections available to the user, or for anyone?
          *
          * @param category SoundCategory
-         * @param link Show download link?
+         * @param link     Show download link?
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
@@ -141,9 +143,10 @@ public class ApiClient {
 
         /**
          * Simplified method for getting all sounds of a single SoundType
+         *
          * @param soundType SoundType
-         * @param link Show download link?
-         * @param callback Callback for parsing
+         * @param link      Show download link?
+         * @param callback  Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
         void getType(@Query("key") String apiKey,
@@ -168,9 +171,10 @@ public class ApiClient {
 
         /**
          * Make a free text search on all available metadata fields
-         * @param apiKey DAM API key
-         * @param search Free text search query
-         * @param link Show download links?
+         *
+         * @param apiKey   DAM API key
+         * @param search   Free text search query
+         * @param link     Show download links?
          * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")

@@ -20,7 +20,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
  */
 public class SoundPlayer {
 
-    private Context mContext;
+    private final Context mContext;
     private ArrayList<ProjectSound> mSounds;
     private AudioTrack mAudioTrack;
 
@@ -31,12 +31,13 @@ public class SoundPlayer {
     public SoundPlayer(Context context) {
 
         mContext = context;
-        mSounds = new ArrayList<ProjectSound>();
+        mSounds = new ArrayList<>();
 
     }
 
     /**
      * Add a new sound to Sound Player
+     *
      * @param projectSound ProjectSound object
      */
     public void addSound(ProjectSound projectSound) {
@@ -69,7 +70,7 @@ public class SoundPlayer {
 
             mSounds.add(projectSound);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -85,7 +86,7 @@ public class SoundPlayer {
      */
     public void playAll() {
 
-        for(int i = 0; i < mSounds.size(); i++) {
+        for (int i = 0; i < mSounds.size(); i++) {
             mSounds.get(i).play();
         }
 
@@ -96,7 +97,7 @@ public class SoundPlayer {
      */
     public void stopAll() {
 
-        for(int i = 0; i < mSounds.size(); i++) {
+        for (int i = 0; i < mSounds.size(); i++) {
             mSounds.get(i).stop();
         }
 
@@ -104,7 +105,8 @@ public class SoundPlayer {
 
     /**
      * Set volume of a specific sound.
-     * @param sps ProjectSound object, which sounds volume you want to change.
+     *
+     * @param sps    ProjectSound object, which sounds volume you want to change.
      * @param volume volume as floating point (0f - 1.0f, other values get clamped)
      */
     public void setVolume(ProjectSound sps, float volume) {
@@ -113,7 +115,8 @@ public class SoundPlayer {
 
     /**
      * Set volume of a specific sound at index n.
-     * @param index Index of the sound
+     *
+     * @param index  Index of the sound
      * @param volume volume as floating point (0f - 1.0f, other values get clamped)
      */
     public void setVolume(int index, float volume) {
@@ -122,6 +125,7 @@ public class SoundPlayer {
 
     /**
      * Stop a specific sound from playing.
+     *
      * @param sps ProjectSound object, which sound to stop.
      */
     public void stop(ProjectSound sps) {
@@ -137,7 +141,7 @@ public class SoundPlayer {
      */
     public void clear() {
 
-        for(int i = 0; i < mSounds.size(); i++) {
+        for (int i = 0; i < mSounds.size(); i++) {
             mSounds.get(i).clear();
         }
 
@@ -148,7 +152,7 @@ public class SoundPlayer {
 
     // This runnable is just for testing. Combining multiple buffers into one and playing in one Audio Track.
     // Leaving the code here for now.
-    class TestPlay implements Runnable {
+    private class TestPlay implements Runnable {
 
         @Override
         public void run() {
@@ -173,13 +177,13 @@ public class SoundPlayer {
                 //DataInputStream dis2 = new DataInputStream(new BufferedInputStream(new FileInputStream(soundFile2)));
 
                 mAudioTrack.play();
-                while(dis.available() > 0) {
+                while (dis.available() > 0) {
 
                     int reallySampledBytes = dis.read(monoData, audioBytePtr, sampleBytes);
                     //int reallySampledBytes2 = dis2.read(audioData2, audioBytePtr, sampleBytes);
 
                     int i = 0;
-                    while(dis.available() > 0 && i < reallySampledBytes) {
+                    while (dis.available() > 0 && i < reallySampledBytes) {
 
                         float sample = (float) (monoData[audioBytePtr + i] & 0xFF
                                 | monoData[audioBytePtr + i + 1] << 8);
@@ -213,10 +217,10 @@ public class SoundPlayer {
 
                     // Mono to stereo
                     for (int j = 0; j < reallySampledBytes; j += 2) {
-                        audioData[j*2+0] = monoData[j];
-                        audioData[j*2+1] = monoData[j+1];
-                        audioData[j*2+2] = monoData[j];
-                        audioData[j*2+3] = monoData[j+1];
+                        audioData[j * 2 + 0] = monoData[j];
+                        audioData[j * 2 + 1] = monoData[j + 1];
+                        audioData[j * 2 + 2] = monoData[j];
+                        audioData[j * 2 + 3] = monoData[j + 1];
                     }
 
                     // Write the buffer to Audio Track
@@ -241,7 +245,7 @@ public class SoundPlayer {
                 mAudioTrack.release();
                 dis.close();
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

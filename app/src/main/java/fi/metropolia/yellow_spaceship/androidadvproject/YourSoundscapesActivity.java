@@ -22,8 +22,6 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
 
     private ArrayList<SoundScapeProject> mData;
     private RecyclerView recyclerView;
-    private SoundscapesAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
 
     private ProgressBar mSpinner;
 
@@ -75,7 +73,7 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
 
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         initRecyclerViewAdapter();
@@ -83,7 +81,7 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
 
     private void initRecyclerViewAdapter() {
         mData = new ArrayList<>();
-        adapter = new SoundscapesAdapter(mData, this);
+        SoundscapesAdapter adapter = new SoundscapesAdapter(mData, this);
         recyclerView.setAdapter(adapter);
     }
 

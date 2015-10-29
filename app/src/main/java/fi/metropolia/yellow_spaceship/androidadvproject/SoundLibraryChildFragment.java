@@ -43,10 +43,8 @@ import retrofit.client.Response;
 
 public class SoundLibraryChildFragment extends Fragment implements AsyncDownloaderListener {
 
-    ArrayList<DAMSound> data;
+    private ArrayList<DAMSound> data;
     private SoundCategory mCategory;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private SoundListAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private String mSearchQuery;
     private ProgressBar mSpinner;
@@ -109,7 +107,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        mAdapter = new SoundListAdapter(data, new SoundListAdapter.ViewHolder.ISoundViewHolderClicks() {
+        SoundListAdapter mAdapter = new SoundListAdapter(data, new SoundListAdapter.ViewHolder.ISoundViewHolderClicks() {
             @Override
             public void onFavorite(View view, int layoutPosition) {
                 setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);
@@ -140,7 +138,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         // Changes in content don't affect the layout size, so set as true to improve performance
         mRecyclerView.setHasFixedSize(!this.isFavoritesView);
 
-        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -206,7 +204,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Unified callback for retrieving data from the DAM API
      */
-    private Callback<List<List<DAMSound>>> webDataCallback = new Callback<List<List<DAMSound>>>() {
+    private final Callback<List<List<DAMSound>>> webDataCallback = new Callback<List<List<DAMSound>>>() {
         @Override
         public void success(List<List<DAMSound>> lists, Response response) {
             ArrayList<DAMSound> d = new ArrayList<>();
@@ -288,7 +286,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Get sounds from SoundContentProvider with a given selection.
      * Used with favorites & recordings.
-     * @param selection Selection String
+     *
+     * @param selection     Selection String
      * @param selectionArgs Arguments for the selection
      * @return Found ArrayList<DAMSound>
      */
@@ -325,6 +324,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     /**
      * Parse necessary data from a SoundContentProvider Cursor into a DAMSound
+     *
      * @param cursor SoundContentProvider's Cursor
      * @return Parsed DAMSound
      */
@@ -536,7 +536,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     class Player extends AsyncTask<String, Void, Boolean> {
 
         // Display a progress dialog when buffering an audio stream
-        private ProgressDialog progress;
+        private final ProgressDialog progress;
 
         @Override
         protected Boolean doInBackground(String... params) {
