@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
 
     private ArrayList<SoundScapeProject> mData;
     private RecyclerView recyclerView;
+    private TextView mEmptyView;
 
     private ProgressBar mSpinner;
 
@@ -46,6 +48,9 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
 
         this.mSpinner = (ProgressBar) findViewById(R.id.progressBar);
         this.mSpinner.setVisibility(View.GONE);
+
+        this.mEmptyView = (TextView) findViewById(R.id.empty_view);
+        this.mEmptyView.setVisibility(View.GONE);
 
         initRecyclerView();
 
@@ -97,5 +102,13 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
         this.mData.addAll(data);
         this.mSpinner.setVisibility(View.GONE);
         this.recyclerView.getAdapter().notifyDataSetChanged();
+
+        if (this.mData.isEmpty()) {
+            this.recyclerView.setVisibility(View.GONE);
+            this.mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            this.recyclerView.setVisibility(View.VISIBLE);
+            this.mEmptyView.setVisibility(View.GONE);
+        }
     }
 }

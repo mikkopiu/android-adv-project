@@ -49,7 +49,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         // Data for RecycleView
         this.data = new ArrayList<>();
         data.add(new ListRowData(RECORDINGS_CAPTION, R.drawable.ic_mic_black_48dp, null));
-        data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_outline_48dp, null));
+        data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_48dp, null));
 
         for (SoundCategory cat : SoundCategory.values()) {
             // No need to show the unknown category in the list

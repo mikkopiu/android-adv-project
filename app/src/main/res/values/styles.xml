@@ -6,7 +6,9 @@
         <item name="colorPrimaryDark">@color/pri_dark</item>
         <item name="colorAccent">@color/acc</item>
         <item name="android:windowBackground">@color/bac</item>
-        <item name="android:textColorPrimary">@color/txt</item>
+        <item name="android:textColorPrimary">@color/txt_light</item>
+
+        <item name="colorControlNormal">@color/txt_light</item>
     </style>
 
     </resources>

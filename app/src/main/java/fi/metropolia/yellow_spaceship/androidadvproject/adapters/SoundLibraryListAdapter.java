@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -90,6 +91,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         // Find the views in the layout
         TextView textView = (TextView) holder.view.findViewById(R.id.sound_library_list_text);
+        ImageButton listIconView = (ImageButton) holder.view.findViewById(R.id.sound_library_preview_button);
 
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
@@ -102,7 +104,8 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
             icon.setAlpha(0);
         }
 
-        textView.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        listIconView.setImageDrawable(icon);
+        listIconView.setClickable(false);
     }
 
     @Override

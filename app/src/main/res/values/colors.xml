@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="pri" type="color">#cddc39</item>
-    <item name="pri_dark" type="color">#9e9d24</item>
-    <item name="acc" type="color">#f8bbd0</item>
-    <item name="bac" type="color">#f9fbe7</item>
-    <item name="txt" type="color">#455a64</item>
-    <item name="nav" type="color">#827717</item>
+    <item name="pri" type="color">#434343</item>
+    <item name="pri_dark" type="color">#272727</item>
+    <item name="acc" type="color">#FAA533</item>
+    <item name="acc_light" type="color">#FDCA81</item>
+    <item name="bac" type="color">#FFFFFF</item>
+    <item name="txt" type="color">#494C5F</item>
+    <item name="txt_light" type="color">#FFFFFF</item>
+    <item name="txt_acc" type="color">#6D707F</item>
+    <item name="separator" type="color">#C4C3C4</item>
 </resources>

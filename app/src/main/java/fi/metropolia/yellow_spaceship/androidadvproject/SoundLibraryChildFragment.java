@@ -20,7 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +51,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private RecyclerView mRecyclerView;
     private String mSearchQuery;
     private ProgressBar mSpinner;
+    private TextView mEmptyView;
 
     private boolean isFavoritesView;
     private boolean isRecordingsView;
@@ -180,6 +184,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 getActivity().onBackPressed();
             }
         });
+
+        this.mEmptyView = (TextView) getActivity().findViewById(R.id.empty_view);
 
         this.mSpinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
         mSpinner.setVisibility(View.GONE);
@@ -390,6 +396,15 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         this.mRecyclerView.getAdapter().notifyDataSetChanged();
         this.mSpinner.setVisibility(View.GONE);
+
+        if (this.data.isEmpty()) {
+            this.mRecyclerView.setVisibility(View.GONE);
+            this.mEmptyView.setVisibility(View.VISIBLE);
+        }
+        else {
+            this.mRecyclerView.setVisibility(View.VISIBLE);
+            this.mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     /**

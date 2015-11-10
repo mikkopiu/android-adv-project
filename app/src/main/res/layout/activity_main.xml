@@ -1,11 +1,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pri_dark">
+    android:background="@color/bac">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="10dp"
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
@@ -29,11 +31,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:elevation="4dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardBackgroundColor="@color/acc">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/acc_light">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -42,6 +48,7 @@
                         android:layout_centerVertical="true"
                         android:gravity="center"
                         android:text="@string/create_soundscape_title"
+                        android:textColor="@color/txt_light"
                         android:textSize="24dp" />
 
                 </RelativeLayout>
@@ -66,11 +73,15 @@
                 android:layout_marginRight="6dp"
                 android:layout_weight="0.5"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:elevation="4dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardBackgroundColor="@color/acc">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/acc_light">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -79,6 +90,7 @@
                         android:layout_centerVertical="true"
                         android:gravity="center"
                         android:text="@string/sound_library_title"
+                        android:textColor="@color/txt_light"
                         android:textSize="20dp" />
 
                 </RelativeLayout>
@@ -91,11 +103,15 @@
                 android:layout_height="150dp"
                 android:layout_weight="0.5"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:elevation="4dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardBackgroundColor="@color/acc">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/acc_light">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -104,6 +120,7 @@
                         android:layout_centerVertical="true"
                         android:gravity="center"
                         android:text="@string/your_soundscapes_title"
+                        android:textColor="@color/txt_light"
                         android:textSize="20dp" />
 
                 </RelativeLayout>
@@ -125,11 +142,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:elevation="4dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardBackgroundColor="@color/acc">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="48dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/acc_light">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -138,6 +159,7 @@
                         android:layout_centerVertical="true"
                         android:gravity="center"
                         android:text="@string/museum_tour_title"
+                        android:textColor="@color/txt_light"
                         android:textSize="24dp" />
 
                 </RelativeLayout>
