@@ -2,11 +2,19 @@
 <resources>
     <item name="pri" type="color">#434343</item>
     <item name="pri_dark" type="color">#272727</item>
+    <item name="pri_light" type="color">#F9FAFB</item>
     <item name="acc" type="color">#FAA533</item>
     <item name="acc_light" type="color">#FDCA81</item>
+    <item name="acc_dark" type="color">#ec9c31</item>
     <item name="bac" type="color">#FFFFFF</item>
     <item name="txt" type="color">#494C5F</item>
     <item name="txt_light" type="color">#FFFFFF</item>
     <item name="txt_acc" type="color">#6D707F</item>
     <item name="separator" type="color">#C4C3C4</item>
+
+    <!-- Create-view random colours -->
+    <item name="acc_card_bac_1" type="color">#FBAA43</item>
+    <item name="acc_card_bac_2" type="color">#65BC6A</item>
+    <item name="acc_card_bac_3" type="color">#13ACC2</item>
+    <item name="acc_card_bac_4" type="color">#F58967</item>
 </resources>

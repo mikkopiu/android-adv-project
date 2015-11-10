@@ -59,7 +59,7 @@
             android:layout_weight="0.5"
             android:textSize="26dp"
             android:text="@string/record_play_btn"
-            android:textColor="@color/abc_primary_text_material_light" />
+            android:textColor="@color/txt_light" />
 
         <Button
             android:id="@+id/save_btn"
@@ -72,7 +72,7 @@
             android:layout_weight="0.5"
             android:textSize="26dp"
             android:text="@string/record_save_btn"
-            android:textColor="@color/abc_primary_text_material_light" />
+            android:textColor="@color/txt_light" />
 
     </LinearLayout>
 

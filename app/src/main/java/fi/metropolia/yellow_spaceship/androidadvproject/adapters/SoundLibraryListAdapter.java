@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View view;
+        public final LinearLayout listItemContainerView;
 
         public ViewHolder(View v, View.OnClickListener listener) {
             super(v);
             if (listener != null)
                 v.setOnClickListener(listener);
             this.view = v;
+            this.listItemContainerView = (LinearLayout) v.findViewById(R.id.list_item_container);
         }
 
     }
@@ -98,6 +101,12 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
         Drawable icon;
         if (dataSet.get(position).getIcon() != null) {
             icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
+
+            // If the row has an icon, that means it is one of the pre-defined categories,
+            // i.e. it needs a different styling.
+            int color = holder.listItemContainerView.getContext().getResources()
+                    .getColor(R.color.pri_light);
+            holder.listItemContainerView.setBackgroundColor(color);
         } else {
             // TODO: There's probably a better way than setting an invisible drawable
             icon = ContextCompat.getDrawable(context, R.drawable.ic_audiotrack_black_48dp);

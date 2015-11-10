@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp">
+    android:layout_margin="20dp"
+    android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp">
-        <EditText android:id="@+id/input_filename"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp">
+
+        <EditText
+            android:id="@+id/input_filename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
             android:hint="@string/record_dialog_filename_hint"
-            android:imeOptions="actionDone"/>
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:textColor="@color/txt" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/spinner_category"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"/>
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="right"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/dialog_cancel_btn"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
             android:text="@string/record_dialog_cancel_btn"
-            android:textColor="@color/abc_primary_text_material_light" />
+            android:textColor="@color/abc_primary_text_material_light"
+            android:textSize="16dp" />
 
         <Button
             android:id="@+id/dialog_save_btn"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
             android:text="@string/record_dialog_save_btn"
-            android:textColor="@color/abc_primary_text_material_light" />
+            android:textColor="@color/abc_primary_text_material_light"
+            android:textSize="16dp" />
 
     </LinearLayout>
 

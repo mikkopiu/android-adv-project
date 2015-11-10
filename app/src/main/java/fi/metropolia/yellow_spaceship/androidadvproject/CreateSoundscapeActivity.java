@@ -203,14 +203,14 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         soundPlayer.stopAll();
         mIsPlaying = false;
         ((ImageButton) findViewById(R.id.create_play_btn))
-                .setImageResource(R.drawable.ic_play_arrow_48dp);
+                .setImageResource(R.drawable.ic_play_arrow_white_48dp);
     }
 
     private void startPlayback() {
         soundPlayer.playAll();
         mIsPlaying = true;
         ((ImageButton) findViewById(R.id.create_play_btn))
-                .setImageResource(R.drawable.ic_stop_black_48dp);
+                .setImageResource(R.drawable.ic_stop_white_48dp);
     }
 
     /**
