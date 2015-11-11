@@ -30,6 +30,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="0dp"
         android:background="@color/pri"
+        android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal">
 
         <Button
