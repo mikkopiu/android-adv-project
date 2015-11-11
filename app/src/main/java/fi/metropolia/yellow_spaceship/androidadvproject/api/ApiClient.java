@@ -154,12 +154,10 @@ public class ApiClient {
                      @Query("link") boolean link,
                      Callback<List<List<DAMSound>>> callback);
 
-        /**
-         * TODO: Should the resourcetype and collection be hard-coded, or not?
-         */
         @Multipart
-        @POST("/api_upload/?resourcetype=4&collection=11")
+        @POST("/api_upload/?resourcetype=4")
         void uploadSound(@Query("key") String apiKey,
+                         @Query("collection") int collectionId,
                          @Query("field8") String title,
                          @Query("field73") String description,
                          @Query("field74") String tags,

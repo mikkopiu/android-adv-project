@@ -3,6 +3,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,6 +24,7 @@ public class LoginActivity extends Activity {
 
     private EditText txtUsername;
     private EditText txtPassword;
+    private EditText txtCollectionId;
 
     private SessionManager sessionManager;
 
@@ -37,6 +39,7 @@ public class LoginActivity extends Activity {
         // Username & password inputs
         txtUsername = (EditText) findViewById(R.id.input_username);
         txtPassword = (EditText) findViewById(R.id.input_password);
+        txtCollectionId = (EditText) findViewById(R.id.input_collection_id);
 
         // Login button
         Button btnLogin = (Button) findViewById(R.id.btn_login);
@@ -48,7 +51,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        txtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        txtCollectionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
@@ -65,15 +68,25 @@ public class LoginActivity extends Activity {
         // Get user input
         String username = txtUsername.getText().toString();
         String password = txtPassword.getText().toString();
+        final int collectionId;
 
-        if (username.trim().length() > 0 && password.trim().length() > 0) {
+        try {
+            collectionId = Integer.parseInt(txtCollectionId.getText().toString());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            showLoginFailMsg("Please enter an integer as the collection ID");
+            return;
+        }
 
-            DAMUser user = new DAMUser(username, password);
+        // NOTE: Probably safe to assume collection IDs are always positive integers
+        if (username.trim().length() > 0 && password.trim().length() > 0 && collectionId >= 0) {
+
+            DAMUser user = new DAMUser(username, password, collectionId);
             ApiClient.getDAMApiClient().login(user, new Callback<DAMApiKey>() {
                 @Override
                 public void success(DAMApiKey apiKey, Response response) {
                     System.out.println("Fetched api key: " + apiKey.getApi_key());
-                    sessionManager.createLoginSession(apiKey.getApi_key());
+                    sessionManager.createLoginSession(apiKey.getApi_key(), collectionId);
 
                     // Start the actual application
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -84,14 +97,34 @@ public class LoginActivity extends Activity {
                 @Override
                 public void failure(RetrofitError error) {
                     System.out.println(error.getMessage());
-//                            error.printStackTrace();
-                    // TODO: check actual error codes
-                    AlertDialogManager.showAlertDialog(LoginActivity.this, "Login failed", "Username or password incorrect");
+                    error.printStackTrace();
+                    showLoginFailMsg();
                 }
             });
 
         } else {
-            AlertDialogManager.showAlertDialog(LoginActivity.this, "Login failed", "Please enter a username and a password");
+            showLoginFailMsg("Please enter a username and password");
         }
+    }
+
+    /**
+     * Show alert dialog with a login failure message (default)
+     */
+    private void showLoginFailMsg() {
+        showLoginFailMsg(null);
+    }
+
+    /**
+     * Show alert dialog with a login failure message, with a custom message
+     * @param msg Nullable message
+     */
+    private void showLoginFailMsg(@Nullable String msg) {
+        String message = msg != null ? msg : "Username or password incorrect";
+
+        AlertDialogManager.showAlertDialog(
+                LoginActivity.this,
+                "Login failed",
+                message
+        );
     }
 }

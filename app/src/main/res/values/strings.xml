@@ -43,5 +43,6 @@
     <string name="create_dialog_name_hint">Name</string>
     <string name="create_dialog_cancel_btn">Cancel</string>
     <string name="no_data_available">No data available</string>
+    <string name="login_collection_id">Collection ID</string>
 
 </resources>

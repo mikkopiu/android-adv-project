@@ -31,6 +31,7 @@ import java.nio.channels.FileChannel;
 import java.util.Date;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
@@ -51,6 +52,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     private MediaRecorder mRecorder = null;
     private SoundRecorder mSoundRecorder = null;
     private MediaPlayer mPlayer = null;
+    private SessionManager session;
 
     private Dialog mDialog = null;
     private AppCompatSpinner mDialogSpinner = null;
@@ -58,7 +60,6 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
     private final static String DEFAULT_FILE_NAME = "untitled-recording.wav";
     private final static String DEFAULT_FOLDER = "sounds";
-    private final static int DEFAULT_COLLECTION_ID = 11;
     private boolean mIsSaving = false;
     private boolean mTempFileExists = false;
     private int mLatestSeconds = 0;
@@ -108,7 +109,7 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
             damSound.setIsFavorite(false);
             damSound.setIsRecording(true);
             damSound.setFileExtension("wav");
-            damSound.setCollectionID(DEFAULT_COLLECTION_ID);
+            damSound.setCollectionID(session.getCollectionID());
             damSound.setCreationDate(new Date());
             damSound.setFileName(damSound.getFormattedSoundId() + "." + damSound.getFileExtension());
 
@@ -184,6 +185,8 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        session = new SessionManager(this);
 
         deleteTempFile();
 

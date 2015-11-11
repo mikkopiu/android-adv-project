@@ -21,6 +21,7 @@ public class SessionManager {
 
     private static final String IS_LOGGED_IN = "userLoggedIn";
     private static final String API_KEY = "damApiKey";
+    private static final String COLLECTION_ID = "collectionId";
 
     public SessionManager(Context context) {
         this.mContext = context;
@@ -39,10 +40,12 @@ public class SessionManager {
     /**
      * Create a new login session
      * @param apiKey New API key for DAM
+     * @param collectionId
      */
-    public void createLoginSession(String apiKey) {
+    public void createLoginSession(String apiKey, int collectionId) {
         editor.putBoolean(IS_LOGGED_IN, true); // True for logged in
         editor.putString(API_KEY, apiKey);
+        editor.putInt(COLLECTION_ID, collectionId);
         editor.apply();
     }
 
@@ -66,6 +69,10 @@ public class SessionManager {
         mContext.startActivity(i);
     }
 
+    /**
+     * Public method for checking login status and opening the LoginActivity in case of
+     * a logged out session.
+     */
     public void checkLogin(){
         // Check login status
         if(!this.isLoggedIn()){
@@ -81,6 +88,18 @@ public class SessionManager {
             mContext.startActivity(i);
         }
 
+        // Invalidate old SessionManager versions
+        if (preferences.getInt(COLLECTION_ID, -1) == -1) {
+            logoutUser();
+        }
+    }
+
+    /**
+     * Get the collection ID setting for this login-session
+     * @return Current collection ID
+     */
+    public int getCollectionID() {
+        return preferences.getInt(COLLECTION_ID, -1);
     }
 
     /**

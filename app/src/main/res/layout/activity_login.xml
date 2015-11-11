@@ -40,8 +40,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password"
-                android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:textColor="@color/txt" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- Collection Id -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/input_collection_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_collection_id"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:textColor="@color/txt" />
         </android.support.design.widget.TextInputLayout>
 
@@ -52,6 +68,7 @@
             android:layout_marginBottom="24dp"
             android:layout_marginTop="24dp"
             android:padding="12dp"
+            android:textColor="@color/txt"
             android:text="@string/login_main_action" />
 
     </LinearLayout>
