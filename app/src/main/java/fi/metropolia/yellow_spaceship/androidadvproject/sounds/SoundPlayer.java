@@ -9,9 +9,11 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 
@@ -33,6 +35,16 @@ public class SoundPlayer {
         mContext = context;
         mSounds = new ArrayList<>();
 
+    }
+
+    /**
+     * Add multiple sounds to the Sound Player at once
+     * @param projectSounds An array of ProjectSounds
+     */
+    public void addSounds(ProjectSound[] projectSounds) {
+        for (ProjectSound p : projectSounds) {
+            addSound(p);
+        }
     }
 
     /**

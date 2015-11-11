@@ -35,6 +35,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     public final static int GET_LIBRARY_SOUND = 1;
     public final static int RECORD_SOUND = 2;
 
+    private final static String UNSAVED_PROJECT_BUNDLE_NAME = "unsaved_project";
+
     private SoundScapeProject mProject;
     private RecyclerView recyclerView;
     private Dialog mDialog;
@@ -48,6 +50,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
     private SoundPlayer soundPlayer;
 
+    /**
+     * Unified click handler for the main UI-buttons
+     */
     private final View.OnClickListener clickListener = new View.OnClickListener() {
         public void onClick(View v) {
 
@@ -56,7 +61,28 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_save_btn:
-                    save();
+                    save(mDialogEditText.getText().toString().trim());
+                    break;
+                case R.id.create_play_btn:
+                    if (mProject.getSounds().size() > 0) {
+                        if (mIsPlaying) {
+                            stopPlayback();
+                        } else {
+                            startPlayback();
+                        }
+                    } else {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Add at least one sound to your soundscape",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                    break;
+                case R.id.create_save_btn:
+                    if (mDialog == null) {
+                        setupDialog();
+                    }
+                    mDialog.show();
                     break;
                 default:
                     break;
@@ -121,9 +147,31 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 }
             };
 
+
+    /**
+     * Unified save-event handler
+     */
+    private final SaveListener saveListener = new SaveListener() {
+        @Override
+        public void onSaveComplete() {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Project saved successfully",
+                    Toast.LENGTH_SHORT
+            ).show();
+            mIsSaving = false;
+            if (mProgress.isShowing()) {
+                mProgress.cancel();
+            }
+
+            mDialog.dismiss();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_create_soundscape);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -142,7 +190,20 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
         soundPlayer = new SoundPlayer(this);
 
-        initProject();
+        if (savedInstanceState != null) {
+            this.mProject = savedInstanceState.getParcelable(UNSAVED_PROJECT_BUNDLE_NAME);
+        }
+
+        if (this.mProject == null) {
+            initProject();
+        } else {
+            // An existing project was found => reload the sounds to the SoundPlayer instance
+            this.soundPlayer.addSounds(
+                    this.mProject.getSounds().toArray(
+                            new ProjectSound[this.mProject.getSounds().size()]
+                    )
+            );
+        }
         initRecyclerView();
 
         // Set FAB listeners
@@ -152,35 +213,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.fabMenu = (FloatingActionMenu) findViewById(R.id.add_menu);
 
         // Play/pause button
-        findViewById(R.id.create_play_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mProject.getSounds().size() > 0) {
-                    if (mIsPlaying) {
-                        stopPlayback();
-                    } else {
-                        startPlayback();
-                    }
-                } else {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Add at least one sound to your soundscape",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            }
-        });
+        findViewById(R.id.create_play_btn).setOnClickListener(clickListener);
 
         // Save button
-        findViewById(R.id.create_save_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDialog == null) {
-                    setupDialog();
-                }
-                mDialog.show();
-            }
-        });
+        findViewById(R.id.create_save_btn).setOnClickListener(clickListener);
     }
 
     @Override
@@ -192,6 +228,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(UNSAVED_PROJECT_BUNDLE_NAME, this.mProject);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mIsPlaying && soundPlayer != null) {
@@ -199,18 +240,24 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         }
     }
 
-    private void stopPlayback() {
-        soundPlayer.stopAll();
-        mIsPlaying = false;
-        ((ImageButton) findViewById(R.id.create_play_btn))
-                .setImageResource(R.drawable.ic_play_arrow_white_48dp);
-    }
-
+    /**
+     * Start project playback
+     */
     private void startPlayback() {
         soundPlayer.playAll();
         mIsPlaying = true;
         ((ImageButton) findViewById(R.id.create_play_btn))
                 .setImageResource(R.drawable.ic_stop_white_48dp);
+    }
+
+    /**
+     * Stop project playback
+     */
+    private void stopPlayback() {
+        soundPlayer.stopAll();
+        mIsPlaying = false;
+        ((ImageButton) findViewById(R.id.create_play_btn))
+                .setImageResource(R.drawable.ic_play_arrow_white_48dp);
     }
 
     /**
@@ -319,28 +366,15 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     /**
      * Save the current project to file
      */
-    private void save() {
+    private void save(String fileName) {
         if (!mIsSaving) {
-            String fileName = mDialogEditText.getText().toString().trim();
 
             mIsSaving = true;
             this.mProgress = new ProgressDialog(this);
             this.mProgress.setMessage("Saving...");
             this.mProgress.show();
             this.mProject.setName(fileName);
-            new ProjectSaveTask(this.getApplicationContext(), new SaveListener() {
-                @Override
-                public void onSaveComplete() {
-                    Toast.makeText(getApplicationContext(), "Project saved successfully", Toast.LENGTH_SHORT)
-                            .show();
-                    mIsSaving = false;
-                    if (mProgress.isShowing()) {
-                        mProgress.cancel();
-                    }
-
-                    mDialog.dismiss();
-                }
-            }).execute(this.mProject);
+            new ProjectSaveTask(this.getApplicationContext(), saveListener).execute(this.mProject);
         }
     }
 
