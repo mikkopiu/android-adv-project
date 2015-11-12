@@ -104,17 +104,26 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
             // If the row has an icon, that means it is one of the pre-defined categories,
             // i.e. it needs a different styling.
-            int color = holder.listItemContainerView.getContext().getResources()
-                    .getColor(R.color.pri_light);
-            holder.listItemContainerView.setBackgroundColor(color);
-        } else {
-            // TODO: There's probably a better way than setting an invisible drawable
-            icon = ContextCompat.getDrawable(context, R.drawable.ic_audiotrack_black_48dp);
-            icon.setAlpha(0);
-        }
+            holder.listItemContainerView.setBackgroundResource(R.drawable.sound_library_select_ripple);
 
-        listIconView.setImageDrawable(icon);
-        listIconView.setClickable(false);
+            // The ImageButtons are just icons here, not meant to be clicked
+            listIconView.setImageDrawable(icon);
+            listIconView.setClickable(false);
+            listIconView.setFocusable(false);
+
+            // In order to show the parent view's ripple effect properly, the button's background
+            // needs to be transparent.
+            int color = listIconView.getContext().getResources()
+                    .getColor(R.color.transparent);
+            listIconView.setBackgroundColor(color);
+        } else {
+            textView.setPadding(
+                    listIconView.getMaxWidth() + listIconView.getPaddingRight(), // Fake the ImageButton as left padding
+                    textView.getPaddingTop(),
+                    textView.getPaddingRight(),
+                    textView.getPaddingBottom()
+            );
+        }
     }
 
     @Override
