@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -85,7 +86,7 @@ public class LoginActivity extends Activity {
             ApiClient.getDAMApiClient().login(user, new Callback<DAMApiKey>() {
                 @Override
                 public void success(DAMApiKey apiKey, Response response) {
-                    System.out.println("Fetched api key: " + apiKey.getApi_key());
+                    Log.d("LoginActivity DEBUG", "Fetched api key: " + apiKey.getApi_key());
                     sessionManager.createLoginSession(apiKey.getApi_key(), collectionId);
 
                     // Start the actual application
@@ -96,7 +97,7 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    System.out.println(error.getMessage());
+                    Log.e("LoginActivity ERROR", error.getMessage());
                     error.printStackTrace();
                     showLoginFailMsg();
                 }

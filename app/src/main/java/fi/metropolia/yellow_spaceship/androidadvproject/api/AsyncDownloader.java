@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -133,7 +134,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     protected void onProgressUpdate(Long... values) {
 
         float percentage = (float) values[0] / (float) values[1] * 100;
-        System.out.println(percentage);
+        Log.d("AsyncDownloader DEBUG", String.valueOf(percentage));
 
     }
 
@@ -178,7 +179,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
             String filename = mDAMSound.getFileName();
 
             if (filename != null) {
-                System.out.println("File has been already downloaded!");
+                Log.d("AsyncDownloader DEBUG", "File has been already downloaded!");
                 ((AsyncDownloaderListener) mContextFragment).onDownloadFinished(mDAMSound);
                 this.cancel(true);
             }
