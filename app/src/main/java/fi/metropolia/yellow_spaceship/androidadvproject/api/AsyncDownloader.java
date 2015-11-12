@@ -31,7 +31,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
     private final Context mContext;
     private final Fragment mContextFragment;
     private File mFile;
-    private File mFolder;
 
     /**
      * Constructor, sets the file url.
@@ -65,35 +64,40 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                 try {
 
-                    mFolder = new File(mContext.getFilesDir() + "/sounds");
-                    if (!mFolder.exists()) {
-                        mFolder.mkdirs();
+                    File folder = new File(mContext.getFilesDir() + "/sounds");
+                    boolean folderExists = folder.exists();
+                    if (!folderExists) {
+                        folderExists = folder.mkdirs();
                     }
 
-                    mFile = new File(mFolder, mDAMSound.getFormattedSoundId() + "." + mDAMSound.getFileExtension());
-                    inputStream = response.body().byteStream();
-                    outputStream = new FileOutputStream(mFile);
+                    if (folderExists) {
+                        mFile = new File(folder, mDAMSound.getFormattedSoundId() + "." + mDAMSound.getFileExtension());
+                        inputStream = response.body().byteStream();
+                        outputStream = new FileOutputStream(mFile);
 
-                    byte[] buffer = new byte[1024 * 4];
-                    long downloaded = 0;
-                    long totalSize = response.body().contentLength();
-                    publishProgress(0L, totalSize);
+                        byte[] buffer = new byte[1024 * 4];
+                        long downloaded = 0;
+                        long totalSize = response.body().contentLength();
+                        publishProgress(0L, totalSize);
 
-                    int len;
-                    while ((len = inputStream.read(buffer)) > 0) {
+                        int len;
+                        while ((len = inputStream.read(buffer)) > 0) {
 
-                        outputStream.write(buffer, 0, len);
+                            outputStream.write(buffer, 0, len);
 
-                        downloaded += len;
-                        publishProgress(downloaded, totalSize);
+                            downloaded += len;
+                            publishProgress(downloaded, totalSize);
 
-                        // Stop the task and return false, if cancel() is called.
-                        if (isCancelled())
-                            return false;
+                            // Stop the task and return false, if cancel() is called.
+                            if (isCancelled())
+                                return false;
 
+                        }
+
+                        return downloaded == totalSize;
+                    } else {
+                        throw new IOException("Folder was not successfully created.");
                     }
-
-                    return downloaded == totalSize;
 
                 } catch (IOException ioE) {
 

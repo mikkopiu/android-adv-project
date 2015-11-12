@@ -13,9 +13,6 @@ import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

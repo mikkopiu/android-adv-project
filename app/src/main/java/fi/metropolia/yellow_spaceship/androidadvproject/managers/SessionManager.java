@@ -40,7 +40,7 @@ public class SessionManager {
     /**
      * Create a new login session
      * @param apiKey New API key for DAM
-     * @param collectionId
+     * @param collectionId The predefined collection ID for this user
      */
     public void createLoginSession(String apiKey, int collectionId) {
         editor.putBoolean(IS_LOGGED_IN, true); // True for logged in

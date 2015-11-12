@@ -182,7 +182,7 @@ public class SoundPlayerSound {
             // Create the Audio Track with proper settings.
             mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, mSampleRate, getChannels(), getBits(), minBufferSize, AudioTrack.MODE_STREAM);
 
-            int i = 0;
+            int i;
             // Byte buffer for streaming data into Audio Track.
             byte[] buffer = new byte[minBufferSize];
 

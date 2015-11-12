@@ -14,19 +14,19 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 
 
 public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
-    private ArrayList<DAMSound> mDataSet;
-    private ViewHolder.ISoundViewHolderClicks listener;
+    private final ArrayList<DAMSound> mDataSet;
+    private final ViewHolder.ISoundViewHolderClicks listener;
 
     /**
      * Basic ViewHolder inner class
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ISoundViewHolderClicks mListener;
+        public final ISoundViewHolderClicks mListener;
 
-        public TextView tvTitle;
-        public ImageButton favBtn;
-        public ImageButton previewBtn;
+        public final TextView tvTitle;
+        public final ImageButton favBtn;
+        public final ImageButton previewBtn;
 
         public ViewHolder(final View itemView, ISoundViewHolderClicks listener) {
             super(itemView);
@@ -69,7 +69,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
      * Constructor
      *
      * @param dataSet  A reference to the data for the adapter
-     * @param listener
+     * @param listener Listener for ViewHolder's click events
      */
     public SoundListAdapter(ArrayList<DAMSound> dataSet,
                             SoundListAdapter.ViewHolder.ISoundViewHolderClicks listener) {

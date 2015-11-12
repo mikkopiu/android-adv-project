@@ -13,7 +13,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject
 
 public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.ViewHolder> {
 
-    private ArrayList<SoundScapeProject> mDataSet;
+    private final ArrayList<SoundScapeProject> mDataSet;
     private final View.OnClickListener listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

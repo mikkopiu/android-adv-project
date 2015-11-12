@@ -38,18 +38,24 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
                     "/" + project.getName() + ".json");
 
             File folder = new File(this.context.getFilesDir() + "/" + PROJECT_FOLDER);
+            boolean folderAndFileCreated = false;
             if (!folder.exists()) {
-                folder.mkdirs();
+                folderAndFileCreated = folder.mkdirs();
             }
 
             // TODO: add logic for handling already existing names
             if (!outputFile.exists()) {
-                outputFile.createNewFile();
+                folderAndFileCreated = outputFile.createNewFile();
             }
 
-            FileWriter writer = new FileWriter(outputFile);
-            bw = new BufferedWriter(writer);
-            bw.write(json);
+            if (!folderAndFileCreated) {
+                throw new IOException("Failed to create folder or file for saving");
+            } else {
+                FileWriter writer = new FileWriter(outputFile);
+                bw = new BufferedWriter(writer);
+                bw.write(json);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

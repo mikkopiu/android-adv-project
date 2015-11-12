@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * It contains a list of sounds to use and its name.
  */
 public class SoundScapeProject implements Parcelable {
-    private ArrayList<ProjectSound> sounds;
+    private final ArrayList<ProjectSound> sounds;
     private String name;
 
     /**
@@ -43,12 +43,12 @@ public class SoundScapeProject implements Parcelable {
      * @param sounds A list of sounds in the project
      */
     public SoundScapeProject(String name, ArrayList<ProjectSound> sounds) {
+        if (sounds == null) {
+            sounds = new ArrayList<>();
+        }
+
         this.name = name;
         this.sounds = sounds;
-
-        if (this.sounds == null) {
-            this.sounds = new ArrayList<>();
-        }
     }
 
     /**

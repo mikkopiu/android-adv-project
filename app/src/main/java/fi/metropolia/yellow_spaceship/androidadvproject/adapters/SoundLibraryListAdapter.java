@@ -22,7 +22,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
 public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryListAdapter.ViewHolder> {
 
     private final Context context;
-    private ArrayList<ListRowData> dataSet;
+    private final ArrayList<ListRowData> dataSet;
     private final View.OnClickListener listener;
 
     /**

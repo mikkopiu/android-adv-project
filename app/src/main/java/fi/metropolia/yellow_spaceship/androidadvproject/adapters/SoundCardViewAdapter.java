@@ -1,15 +1,11 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -18,9 +14,12 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 
+/**
+ * Adapter for a RecyclerView of CardViews for Sounds (e.g. in create-view)
+ */
 public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdapter.ViewHolder> {
 
-    private ArrayList<ProjectSound> mDataSet;
+    private final ArrayList<ProjectSound> mDataSet;
     private final ViewHolder.IProjectSoundViewHolderClicks listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -66,7 +65,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             // Do nothing
         }
 
-        // TODO: add more (loop, random, volume control)
+        // TODO: add more (loop, random)
         public interface IProjectSoundViewHolderClicks {
             void onCloseClicked(View view, int layoutPosition);
 

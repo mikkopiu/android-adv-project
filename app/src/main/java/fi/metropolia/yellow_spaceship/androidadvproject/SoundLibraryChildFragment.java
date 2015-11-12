@@ -23,8 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +73,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     public void setSearchQuery(String query) {
         this.mSearchQuery = query;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
