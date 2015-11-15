@@ -37,7 +37,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             this.favBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
             this.previewBtn = (ImageButton) itemView.findViewById(R.id.sound_library_preview_button);
 
-            this.previewBtn.setImageResource(R.drawable.ic_play_arrow_48dp);
+            this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
 
             itemView.setOnClickListener(this);
             this.favBtn.setOnClickListener(this);

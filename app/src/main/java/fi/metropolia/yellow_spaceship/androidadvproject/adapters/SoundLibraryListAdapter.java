@@ -97,8 +97,6 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
         TextView textView = (TextView) holder.view.findViewById(R.id.sound_library_list_text);
         ImageButton listIconView = (ImageButton) holder.view.findViewById(R.id.sound_library_preview_button);
 
-        listIconView.setMaxWidth(24);
-
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
         Drawable icon;
@@ -128,7 +126,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
             listIconView.setBackgroundColor(color);
         } else {
             textView.setPadding(
-                    listIconView.getMaxWidth() + listIconView.getPaddingRight(), // Fake the ImageButton as left padding
+                    listIconView.getMaxWidth(), // Fake the ImageButton as left padding
                     textView.getPaddingTop(),
                     textView.getPaddingRight(),
                     textView.getPaddingBottom()

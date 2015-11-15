@@ -507,9 +507,13 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         this.playingAudio = playing;
 
         if (!this.playingAudio) {
-            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(this.mRecyclerView.getChildAt(this.playingInd))).previewBtn.setImageResource(R.drawable.ic_play_arrow_48dp);
+            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(
+                    this.mRecyclerView.getChildAt(this.playingInd))
+            ).previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
         } else {
-            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(this.mRecyclerView.getChildAt(this.playingInd))).previewBtn.setImageResource(R.drawable.ic_pause_48dp);
+            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(
+                    this.mRecyclerView.getChildAt(this.playingInd))
+            ).previewBtn.setImageResource(R.drawable.ic_pause_24dp);
         }
     }
 
