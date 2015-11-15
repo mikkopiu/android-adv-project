@@ -43,8 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/record_dialog_cancel_btn"
-            android:textColor="@color/abc_primary_text_material_light"
-            android:textSize="16dp" />
+            android:textColor="@color/txt"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/dialog_save_btn"
@@ -52,8 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/record_dialog_save_btn"
-            android:textColor="@color/abc_primary_text_material_light"
-            android:textSize="16dp" />
+            android:textColor="@color/txt"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

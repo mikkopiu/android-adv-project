@@ -37,7 +37,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="@color/acc_light">
 
@@ -47,9 +47,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
+                        android:padding="@dimen/activity_main_card_title_padding"
                         android:text="@string/create_soundscape_title"
                         android:textColor="@color/txt_light"
-                        android:textSize="24dp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
@@ -79,7 +80,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="@color/acc_light">
 
@@ -89,9 +90,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
+                        android:padding="@dimen/activity_main_card_title_padding"
                         android:text="@string/sound_library_title"
                         android:textColor="@color/txt_light"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
@@ -109,7 +111,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="@color/acc_light">
 
@@ -119,9 +121,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
+                        android:padding="@dimen/activity_main_card_title_padding"
                         android:text="@string/your_soundscapes_title"
                         android:textColor="@color/txt_light"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
@@ -148,7 +151,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:background="@color/acc_light">
 
@@ -158,9 +161,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
+                        android:padding="@dimen/activity_main_card_title_padding"
                         android:text="@string/museum_tour_title"
                         android:textColor="@color/txt_light"
-                        android:textSize="24dp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 

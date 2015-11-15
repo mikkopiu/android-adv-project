@@ -97,6 +97,8 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
         TextView textView = (TextView) holder.view.findViewById(R.id.sound_library_list_text);
         ImageButton listIconView = (ImageButton) holder.view.findViewById(R.id.sound_library_preview_button);
 
+        listIconView.setMaxWidth(24);
+
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
         Drawable icon;
