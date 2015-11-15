@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -113,8 +114,15 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
             // In order to show the parent view's ripple effect properly, the button's background
             // needs to be transparent.
-            int color = listIconView.getContext().getResources()
-                    .getColor(R.color.transparent);
+            int color;
+            if (Build.VERSION.SDK_INT < 23) {
+                color = holder.listItemContainerView.getContext().getResources()
+                        .getColor(R.color.transparent);
+            } else {
+                color = holder.listItemContainerView.getContext().getResources().getColor(
+                        R.color.transparent, holder.listItemContainerView.getContext().getTheme()
+                );
+            }
             listIconView.setBackgroundColor(color);
         } else {
             textView.setPadding(

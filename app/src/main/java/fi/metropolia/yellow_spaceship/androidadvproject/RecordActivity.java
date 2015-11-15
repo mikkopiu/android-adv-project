@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.widget.AdapterViewCompat;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -41,7 +40,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundRecorder;
 /**
  * Activity for recording sounds.
  */
-public class RecordActivity extends AppCompatActivity implements AdapterViewCompat.OnItemSelectedListener {
+public class RecordActivity extends AppCompatActivity {
 
     private TextView mRecordTimer;
     private ImageButton mRecordButton;
@@ -368,17 +367,6 @@ public class RecordActivity extends AppCompatActivity implements AdapterViewComp
 
         mSoundRecorder.stopRecording();
         mSoundRecorder = null;
-
-    }
-
-    /**
-     * OnItemSelectedListener methods
-     */
-    public void onItemSelected(AdapterViewCompat<?> parent, View view, int pos, long id) {
-
-    }
-
-    public void onNothingSelected(AdapterViewCompat<?> parent) {
 
     }
 

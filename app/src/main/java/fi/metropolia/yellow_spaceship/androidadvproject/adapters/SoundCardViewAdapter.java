@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -121,7 +122,15 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
                 cardBackgroundColorId = R.color.acc_card_bac_1;
         }
 
-        int color = holder.cardView.getContext().getResources().getColor(cardBackgroundColorId);
+        int color;
+
+        if (Build.VERSION.SDK_INT < 23) {
+            color = holder.cardView.getContext().getResources().getColor(cardBackgroundColorId);
+        } else {
+            color = holder.cardView.getContext().getResources().getColor(
+                    cardBackgroundColorId, holder.cardView.getContext().getTheme()
+            );
+        }
         holder.cardView.setCardBackgroundColor(color);
     }
 
