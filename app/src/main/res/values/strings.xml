@@ -39,6 +39,7 @@
     <string name="record_dialog_cancel_btn">Cancel</string>
     <string name="record_dialog_save_btn">Save</string>
     <string name="record_default_timer">00:00</string>
+    <string name="record_dialog_title">Save</string>
 
     <string name="create_dialog_name_hint">Name</string>
     <string name="create_dialog_cancel_btn">Cancel</string>

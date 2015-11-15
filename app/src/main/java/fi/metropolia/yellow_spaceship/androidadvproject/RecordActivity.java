@@ -275,9 +275,9 @@ public class RecordActivity extends AppCompatActivity {
      */
     private void setupDialog() {
 
-        mDialog = new Dialog(RecordActivity.this);
+        mDialog = new Dialog(RecordActivity.this, R.style.CustomDialog);
         mDialog.setContentView(R.layout.recording_save_dialog);
-        mDialog.setTitle("Save");
+        mDialog.setTitle(getResources().getString(R.string.record_dialog_title));
         Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
         Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
         mDialogSpinner = (AppCompatSpinner) mDialog.findViewById(R.id.spinner_category);
