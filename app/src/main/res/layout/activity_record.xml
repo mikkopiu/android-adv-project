@@ -24,16 +24,16 @@
             android:id="@+id/record_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
             android:layout_weight="1"
-            android:text="00:00"
-            android:textSize="96dp" />
+            android:text="@string/record_default_timer"
+            android:textSize="96sp" />
 
         <ImageButton
             android:id="@+id/record_button"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:background="@drawable/record_button"
+            android:contentDescription="@string/record_btn_description"
             android:elevation="2dp"
             android:src="@drawable/ic_mic_white_64dp" />
 
@@ -55,26 +55,20 @@
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_weight="0.5"
             android:text="@string/record_play_btn"
             android:textColor="@color/txt_light"
-            android:textSize="26dp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/save_btn"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_weight="0.5"
             android:text="@string/record_save_btn"
             android:textColor="@color/txt_light"
-            android:textSize="26dp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 

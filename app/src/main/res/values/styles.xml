@@ -11,8 +11,4 @@
         <item name="colorControlNormal">@color/txt_light</item>
     </style>
 
-    <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
-        <item name="android:windowNoTitle">false</item>
-    </style>
-
 </resources>

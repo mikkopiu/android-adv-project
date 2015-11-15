@@ -45,5 +45,6 @@
     <string name="create_dialog_cancel_btn">Cancel</string>
     <string name="no_data_available">No data available</string>
     <string name="login_collection_id">Collection ID</string>
+    <string name="record_btn_description">Record sound</string>
 
 </resources>
