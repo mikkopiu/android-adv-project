@@ -327,12 +327,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
     private void addSelectedSound(DAMSound result) {
         try {
-            Toast.makeText(
-                    getApplicationContext(),
-                    result.getTitle() + " selected",
-                    Toast.LENGTH_SHORT
-            ).show();
-
             ProjectSound ps = new ProjectSound(
                     result.getFormattedSoundId(),
                     result.getTitle(),

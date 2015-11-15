@@ -4,7 +4,7 @@
     android:id="@+id/create_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
+    android:layout_margin="4dp"
     android:elevation="2dp"
     card_view:cardBackgroundColor="@color/acc_card_bac_1">
 
@@ -40,7 +40,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/sound_title"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:paddingBottom="16dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="16dp">
 
             <Button
                 android:id="@+id/loop_btn"
@@ -51,9 +54,11 @@
                 android:layout_weight="1"
                 android:background="@color/bac"
                 android:minHeight="32dp"
+                android:padding="6dp"
                 android:text="@string/create_loop_btn"
                 android:textAllCaps="true"
-                android:textColor="@color/txt" />
+                android:textColor="@color/txt"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/random_btn"
@@ -64,9 +69,11 @@
                 android:layout_weight="1"
                 android:background="@color/bac"
                 android:minHeight="32dp"
+                android:padding="6dp"
                 android:text="@string/create_random_btn"
                 android:textAllCaps="true"
-                android:textColor="@color/txt" />
+                android:textColor="@color/txt"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -82,13 +89,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:contentDescription="@string/volume_slider_description"
+                android:padding="16dp"
+                android:paddingRight="0dp"
                 android:src="@drawable/ic_volume_up_white_24dp" />
 
             <SeekBar
@@ -97,8 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:max="100"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp" />
+                android:padding="16dp" />
 
         </LinearLayout>
 

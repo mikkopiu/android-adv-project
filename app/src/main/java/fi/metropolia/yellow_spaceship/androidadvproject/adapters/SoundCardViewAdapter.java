@@ -84,7 +84,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.create_soundscape_list_item, parent, false);
+                .inflate(R.layout.sound_cardview, parent, false);
 
         // Assign the view to ViewHolder and return it
         return new ViewHolder(v, this.listener);
