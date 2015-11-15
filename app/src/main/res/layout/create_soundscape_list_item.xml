@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/create_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/create_card_view"
-    card_view:cardBackgroundColor="@color/acc_card_bac_1"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    android:elevation="2dp"
+    card_view:cardBackgroundColor="@color/acc_card_bac_1">
 
     <RelativeLayout
         android:layout_width="match_parent"

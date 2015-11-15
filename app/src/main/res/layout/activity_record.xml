@@ -34,6 +34,7 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:background="@drawable/record_button"
+            android:elevation="2dp"
             android:src="@drawable/ic_mic_white_64dp" />
 
     </LinearLayout>
