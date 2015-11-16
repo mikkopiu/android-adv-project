@@ -9,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
@@ -114,11 +116,53 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
     @Override
     public void onRowRename(View view, int layoutPosition) {
-        System.out.println("Rename position: " + String.valueOf(layoutPosition));
+        this.renameProject(this.mData.get(layoutPosition));
     }
 
     @Override
     public void onRowDelete(View view, int layoutPosition) {
-        System.out.println("Delete position: " + String.valueOf(layoutPosition));
+        this.deleteProject(this.mData.get(layoutPosition));
+    }
+
+    /**
+     * Rename an existing project (by moving the file).
+     * Reloads data on success.
+     * @param project Existing SoundScapeProject
+     */
+    public void renameProject(SoundScapeProject project) {
+        System.out.println("Rename project: " + getFilesDir() +
+                "/" + ProjectSaveTask.PROJECT_FOLDER +
+                "/" + project.getName() + ProjectSaveTask.FILE_EXT);
+    }
+
+    /**
+     * Delete an existing project from the file systems.
+     * Reloads data on success.
+     * @param project Existing SoundScapeProject
+     */
+    public void deleteProject(SoundScapeProject project) {
+        if (project != null) {
+            File file = new File(getFilesDir() +
+                    "/" + ProjectSaveTask.PROJECT_FOLDER +
+                    "/" + project.getName() + ProjectSaveTask.FILE_EXT);
+            boolean deleted = file.delete();
+
+            if (deleted) {
+                Toast.makeText(
+                        this.getApplicationContext(),
+                        project.getName() + " deleted",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                // Reload data
+                this.loadData();
+            } else {
+                Toast.makeText(
+                        this.getApplicationContext(),
+                        "Couldn't delete " + project.getName() + ". Something went wrong",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        }
     }
 }
