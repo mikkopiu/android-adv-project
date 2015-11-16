@@ -1,5 +1,8 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -123,15 +126,22 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         }
 
         int color;
+        int volBarColor;
+        Context context = holder.cardView.getContext();
+        Resources res = context.getResources();
 
         if (Build.VERSION.SDK_INT < 23) {
-            color = holder.cardView.getContext().getResources().getColor(cardBackgroundColorId);
+            color = res.getColor(cardBackgroundColorId);
+            volBarColor = res.getColor(R.color.volbar_white);
         } else {
-            color = holder.cardView.getContext().getResources().getColor(
-                    cardBackgroundColorId, holder.cardView.getContext().getTheme()
-            );
+            color = res.getColor(cardBackgroundColorId, context.getTheme());
+            volBarColor = res.getColor(R.color.volbar_white, context.getTheme());
         }
         holder.cardView.setCardBackgroundColor(color);
+
+        // Fix volume SeekBar's (and its thumb's) colour
+        holder.volBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
+        holder.volBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
