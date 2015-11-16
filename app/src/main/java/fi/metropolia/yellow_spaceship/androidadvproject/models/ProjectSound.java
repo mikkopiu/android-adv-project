@@ -11,6 +11,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.RandomEngine;
+
 /**
  * A simplified representation of a DAMSound in a SoundScapeProject.
  * Can be serialized using GSON to JSON format.
@@ -32,6 +34,8 @@ public class ProjectSound implements Parcelable {
     private transient int mSampleRate;
     private transient File mFile;
     private transient Thread mTrackThread;
+    private transient RandomEngine mRandomEngine;
+    private transient ProjectSound self = this;
 
     /**
      * Constructor, at least an ID is required
@@ -137,6 +141,10 @@ public class ProjectSound implements Parcelable {
 
     public float getVolume() {
         return mVolume;
+    }
+
+    public void setRandomEngine(RandomEngine re) {
+        mRandomEngine = re;
     }
 
     @Override
@@ -361,6 +369,11 @@ public class ProjectSound implements Parcelable {
                         } else {
                             // Stop playing if we are not looping
                             isPlaying = false;
+
+                            // Tell RandomEngine we are finished
+                            if(mRandomEngine != null) {
+                                mRandomEngine.refresh(self);
+                            }
                         }
 
                     }

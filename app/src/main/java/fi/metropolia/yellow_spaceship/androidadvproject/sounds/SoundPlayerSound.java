@@ -213,6 +213,8 @@ public class SoundPlayerSound {
                         } else {
                             // Stop playing if we are not looping
                             mPlaying = false;
+
+                            // Tell RandomEngine we are finished
                         }
 
                     }

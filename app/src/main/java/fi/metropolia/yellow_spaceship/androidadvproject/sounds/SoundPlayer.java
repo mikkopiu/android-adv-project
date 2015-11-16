@@ -17,7 +17,7 @@ public class SoundPlayer {
 
     private final Context mContext;
     private ArrayList<ProjectSound> mSounds;
-    private AudioTrack mAudioTrack;
+    private RandomEngine mRandomEngine;
 
     private boolean mIsPlaying = false;
 
@@ -27,6 +27,7 @@ public class SoundPlayer {
 
         mContext = context;
         mSounds = new ArrayList<>();
+        mRandomEngine = new RandomEngine(this);
 
     }
 
@@ -75,6 +76,11 @@ public class SoundPlayer {
 
             mSounds.add(projectSound);
 
+            if(!projectSound.getIsOnLoop()) {
+                mRandomEngine.addRandom(mSounds.indexOf(projectSound));
+                projectSound.setRandomEngine(mRandomEngine);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +89,12 @@ public class SoundPlayer {
 
     public void removeSound(int index) {
         stop(index);
+        mRandomEngine.removeRandom(index);
         mSounds.remove(index);
+    }
+
+    public int getSoundIndex(ProjectSound sound) {
+        return mSounds.indexOf(sound);
     }
 
     /**
@@ -92,9 +103,26 @@ public class SoundPlayer {
     public void playAll() {
 
         for (int i = 0; i < mSounds.size(); i++) {
-            mSounds.get(i).play();
+            ProjectSound sound = mSounds.get(i);
+            if(sound.getIsOnLoop()) {
+                // Start looping sounds.
+                sound.play();
+            }
         }
 
+        mRandomEngine.start();
+
+    }
+
+    /**
+     * Plays a single sound.
+     */
+    public void play(int index) {
+        try {
+            mSounds.get(index).play();
+        } catch(IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -105,6 +133,8 @@ public class SoundPlayer {
         for (int i = 0; i < mSounds.size(); i++) {
             mSounds.get(i).stop();
         }
+
+        mRandomEngine.stop();
 
     }
 
