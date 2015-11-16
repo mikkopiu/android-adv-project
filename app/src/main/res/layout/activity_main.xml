@@ -1,29 +1,27 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bac">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="10dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/pri"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/pri"
-            android:elevation="4dp"
-            android:minHeight="?attr/actionBarSize" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bac">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:paddingTop="6dp">
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:padding="6dp">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/incontext_create_soundscape"
@@ -60,99 +58,89 @@
 
             </android.support.v7.widget.CardView>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp"
+                android:weightSum="1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:paddingTop="6dp"
-            android:weightSum="1">
+                <android.support.v7.widget.CardView
+                    android:id="@+id/incontext_sound_library"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="0.5"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/incontext_sound_library"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_marginRight="6dp"
-                android:layout_weight="0.5"
-                android:clickable="true"
-                android:elevation="2dp"
-                android:foreground="?android:attr/selectableItemBackground">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/sound_l_crop" />
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/sound_l_crop" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/main_card_text_bac">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:padding="@dimen/activity_main_card_title_padding"
-                        android:text="@string/sound_library_title"
-                        android:textColor="@color/txt_light"
-                        android:textSize="@dimen/activity_main_card_title_font_size" />
+                        android:layout_gravity="bottom"
+                        android:background="@color/main_card_text_bac">
 
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:padding="@dimen/activity_main_card_title_padding"
+                            android:text="@string/sound_library_title"
+                            android:textColor="@color/txt_light"
+                            android:textSize="@dimen/activity_main_card_title_font_size" />
 
-            </android.support.v7.widget.CardView>
+                    </RelativeLayout>
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/incontext_your_soundscapes"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_weight="0.5"
-                android:clickable="true"
-                android:elevation="2dp"
-                android:foreground="?android:attr/selectableItemBackground">
+                </android.support.v7.widget.CardView>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/your_ss_crop" />
+                <android.support.v7.widget.CardView
+                    android:id="@+id/incontext_your_soundscapes"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="0.5"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/main_card_text_bac">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/your_ss_crop" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:padding="@dimen/activity_main_card_title_padding"
-                        android:text="@string/your_soundscapes_title"
-                        android:textColor="@color/txt_light"
-                        android:textSize="@dimen/activity_main_card_title_font_size" />
+                        android:layout_gravity="bottom"
+                        android:background="@color/main_card_text_bac">
 
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:padding="@dimen/activity_main_card_title_padding"
+                            android:text="@string/your_soundscapes_title"
+                            android:textColor="@color/txt_light"
+                            android:textSize="@dimen/activity_main_card_title_font_size" />
 
-            </android.support.v7.widget.CardView>
+                    </RelativeLayout>
 
-        </LinearLayout>
+                </android.support.v7.widget.CardView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:paddingTop="6dp">
+            </LinearLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/incontext_museum_tour"
@@ -191,6 +179,7 @@
 
         </LinearLayout>
 
-    </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</LinearLayout>
