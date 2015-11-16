@@ -4,4 +4,5 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/pri"
     android:elevation="4dp"
+    android:theme="@style/DarkToolbarStyle"
     android:minHeight="?attr/actionBarSize" />

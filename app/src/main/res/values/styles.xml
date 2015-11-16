@@ -6,9 +6,23 @@
         <item name="colorPrimaryDark">@color/pri_dark</item>
         <item name="colorAccent">@color/acc</item>
         <item name="android:windowBackground">@color/bac</item>
-        <item name="android:textColorPrimary">@color/txt_light</item>
+        <item name="android:textColorPrimary">@color/txt</item>
 
         <item name="colorControlNormal">@color/txt_light</item>
+    </style>
+
+    <style name="DarkToolbarStyle" parent="AppTheme">
+        <!-- Used to for the title of the Toolbar -->
+        <item name="android:textColorPrimary">@color/txt_light</item>
+        <item name="colorPrimary">@color/txt_light</item>
+        <!-- Used to for the title of the Toolbar when parent is Theme.AppCompat.Light -->
+        <item name="android:textColorPrimaryInverse">@color/txt_light</item>
+        <!-- Used to color the text of the action menu icons -->
+        <item name="android:textColorSecondary">@color/txt_light</item>
+        <!-- Used to color the overflow menu icon -->
+        <item name="actionMenuTextColor">@color/txt_light</item>
+        <!-- Color of the Toolbar -->
+        <item name="android:background">@color/pri</item>
     </style>
 
 </resources>
