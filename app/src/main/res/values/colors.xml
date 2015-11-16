@@ -19,7 +19,7 @@
     <item name="acc_card_bac_3" type="color">#13ACC2</item>
     <item name="acc_card_bac_4" type="color">#F58967</item>
 
-    <item name="transparent" type="color">#00000000</item>
+    <item name="volbar_white" type="color">#FFFFFF</item>
 
     <!-- Main menu specific -->
     <item name="main_card_text_bac" type="color">#CCFDCA81</item>

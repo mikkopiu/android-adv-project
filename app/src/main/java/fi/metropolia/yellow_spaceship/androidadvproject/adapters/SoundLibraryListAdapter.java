@@ -117,10 +117,10 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
             int color;
             if (Build.VERSION.SDK_INT < 23) {
                 color = holder.listItemContainerView.getContext().getResources()
-                        .getColor(R.color.transparent);
+                        .getColor(android.R.color.transparent);
             } else {
                 color = holder.listItemContainerView.getContext().getResources().getColor(
-                        R.color.transparent, holder.listItemContainerView.getContext().getTheme()
+                        android.R.color.transparent, holder.listItemContainerView.getContext().getTheme()
                 );
             }
             listIconView.setBackgroundColor(color);
