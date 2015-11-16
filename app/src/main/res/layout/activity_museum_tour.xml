@@ -16,7 +16,8 @@
         android:layout_height="match_parent"
         android:id="@+id/linear_layout">
 
-        <include layout="@layout/toolbar" />
+        <include layout="@layout/toolbar"
+            android:id="@+id/toolbar"/>
 
         <FrameLayout
             android:layout_width="wrap_content"

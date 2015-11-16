@@ -3,7 +3,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
