@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +23,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
 public class YourSoundscapesActivity extends AppCompatActivity
         implements SoundscapesAdapter.ViewHolder.ISoundscapeViewHolderClicks,
@@ -28,7 +33,50 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private TextView mEmptyView;
 
+    private SoundScapeProject mEditedProject;
+
     private ProgressBar mSpinner;
+    private Dialog mDialog;
+    private EditText mDialogEditText;
+
+    /**
+     * Dialog's click listener
+     */
+    private final View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case R.id.dialog_cancel_btn:
+                    mDialog.dismiss();
+                    break;
+                case R.id.dialog_save_btn:
+                    renameProject(mEditedProject, mDialogEditText.getText().toString().trim());
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    /**
+     * SaveListener for renaming projects (they need to be re-saved in order to
+     * serialize the updated name).
+     */
+    private final SaveListener saveListener = new SaveListener() {
+        @Override
+        public void onSaveComplete() {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Project renamed successfully",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            mDialog.dismiss();
+
+            // Reload data
+            loadData();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +164,11 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
     @Override
     public void onRowRename(View view, int layoutPosition) {
-        this.renameProject(this.mData.get(layoutPosition));
+        if (this.mDialog == null) {
+            setupDialog();
+        }
+        this.mEditedProject = this.mData.get(layoutPosition);
+        this.mDialog.show();
     }
 
     @Override
@@ -128,11 +180,30 @@ public class YourSoundscapesActivity extends AppCompatActivity
      * Rename an existing project (by moving the file).
      * Reloads data on success.
      * @param project Existing SoundScapeProject
+     * @param name New name for the project
      */
-    public void renameProject(SoundScapeProject project) {
-        System.out.println("Rename project: " + getFilesDir() +
-                "/" + ProjectSaveTask.PROJECT_FOLDER +
-                "/" + project.getName() + ProjectSaveTask.FILE_EXT);
+    public void renameProject(SoundScapeProject project, String name) {
+        if (project != null && !name.trim().isEmpty() && !name.equals(project.getName())) {
+            String dir = getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER + "/";
+            File newFile = new File(dir + name + ProjectSaveTask.FILE_EXT);
+
+            // Bail out if a project with the same name already exists
+            if (newFile.exists()) {
+                Toast.makeText(
+                        this.getApplicationContext(),
+                        "A soundscape with that name already exists",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            // Delete the old file (synchronous, relatively quick)
+            deleteProject(project);
+
+            // Star a ProjectSaveTask for saving the renamed project (to serialize the new name)
+            project.setName(name);
+            new ProjectSaveTask(this.getApplicationContext(), saveListener).execute(project);
+        }
     }
 
     /**
@@ -148,12 +219,6 @@ public class YourSoundscapesActivity extends AppCompatActivity
             boolean deleted = file.delete();
 
             if (deleted) {
-                Toast.makeText(
-                        this.getApplicationContext(),
-                        project.getName() + " deleted",
-                        Toast.LENGTH_SHORT
-                ).show();
-
                 // Reload data
                 this.loadData();
             } else {
@@ -164,5 +229,21 @@ public class YourSoundscapesActivity extends AppCompatActivity
                 ).show();
             }
         }
+    }
+
+    /**
+     * Setup a renaming dialog
+     */
+    private void setupDialog() {
+        mDialog = new Dialog(YourSoundscapesActivity.this);
+        mDialog.setContentView(R.layout.create_save_dialog);
+        mDialog.setTitle(getResources().getString(R.string.soundscape_rename_dialog_title));
+        Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
+        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
+        mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
+        mDialogSaveBtn.setOnClickListener(clickListener);
+        mDialogCancelBtn.setOnClickListener(clickListener);
+
+        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }
