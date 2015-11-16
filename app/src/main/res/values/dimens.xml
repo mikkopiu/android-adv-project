@@ -3,5 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="activity_main_card_title_padding">14dp</dimen>
+    <dimen name="activity_main_card_title_padding">8dp</dimen>
+    <dimen name="activity_main_card_title_font_size">16sp</dimen>
 </resources>
