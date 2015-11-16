@@ -7,13 +7,7 @@
     android:layout_height="match_parent"
     tools:context="fi.metropolia.yellow_spaceship.androidadvproject.CreateSoundscapeActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/pri"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize" />
+    <include layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/create_recycler_view"
