@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         public final ImageButton closeBtn;
         public final SeekBar volBar;
         public final CardView cardView;
+        public final SwitchCompat randomSwitch;
 
         public ViewHolder(View itemView, IProjectSoundViewHolderClicks listener) {
             super(itemView);
@@ -42,6 +44,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             this.closeBtn = (ImageButton) itemView.findViewById(R.id.close_btn);
             this.volBar = (SeekBar) itemView.findViewById(R.id.volume_slider);
             this.cardView = (CardView) itemView.findViewById(R.id.create_card_view);
+            this.randomSwitch = (SwitchCompat) itemView.findViewById(R.id.randomize_switch);
 
             this.closeBtn.setOnClickListener(this);
             this.volBar.setOnSeekBarChangeListener(this);
@@ -139,7 +142,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         }
         holder.cardView.setCardBackgroundColor(color);
 
-        // Fix volume SeekBar's (and its thumb's) colour
+        // Fix volume SeekBar's (and its thumb's) and Randomize-switch's colours
         holder.volBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
         holder.volBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
     }

@@ -25,4 +25,13 @@
         <item name="android:background">@color/pri</item>
     </style>
 
+    <style name="CustomSwitchStyle" parent="AppTheme">
+        <!-- Active thumb color & Active track color(30% transparency) -->
+        <item name="colorControlActivated">@color/volbar_white</item>
+        <!-- Inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/volbar_white</item>
+        <!-- Inactive track color(30% transparency) -->
+        <item name="android:colorForeground">@color/pri</item>
+    </style>
+
 </resources>

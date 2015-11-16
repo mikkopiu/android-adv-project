@@ -49,5 +49,6 @@
     <string name="soundscape_rename">Rename</string>
     <string name="soundscape_rename_dialog_title">Rename soundscape</string>
     <string name="soundscape_delete">Delete</string>
+    <string name="randomize_switch">Randomize</string>
 
 </resources>

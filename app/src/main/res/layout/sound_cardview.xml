@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:layout_margin="4dp"
     android:clipToPadding="false"
-    android:elevation="2dp"
-    card_view:cardBackgroundColor="@color/acc_card_bac_1">
+    card_view:cardBackgroundColor="@color/acc_card_bac_1"
+    card_view:cardElevation="2dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_toStartOf="@+id/close_btn"
             android:text=""
             android:textColor="@color/txt_light"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <ImageButton
             android:id="@id/close_btn"
@@ -35,54 +35,24 @@
             android:minWidth="24dp"
             android:src="@drawable/ic_clear_24dp" />
 
-        <LinearLayout
-            android:id="@+id/button_row"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/randomize_switch"
             android:layout_below="@id/sound_title"
-            android:orientation="horizontal"
             android:paddingBottom="16dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="16dp">
-
-            <Button
-                android:id="@+id/loop_btn"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@color/bac"
-                android:minHeight="32dp"
-                android:padding="6dp"
-                android:text="@string/create_loop_btn"
-                android:textAllCaps="true"
-                android:textColor="@color/txt"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/random_btn"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:background="@color/bac"
-                android:minHeight="32dp"
-                android:padding="6dp"
-                android:text="@string/create_random_btn"
-                android:textAllCaps="true"
-                android:textColor="@color/txt"
-                android:textSize="14sp" />
-
-        </LinearLayout>
+            android:paddingTop="16dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/randomize_switch"
+            android:textColor="@color/txt_light"
+            android:theme="@style/CustomSwitchStyle" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_below="@id/button_row"
+            android:layout_below="@id/randomize_switch"
             android:orientation="horizontal"
             android:padding="16dp">
 
