@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.support.v7.widget.SwitchCompat;
@@ -28,7 +29,8 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     private final ViewHolder.IProjectSoundViewHolderClicks listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            SeekBar.OnSeekBarChangeListener {
+            SeekBar.OnSeekBarChangeListener,
+            SwitchCompat.OnCheckedChangeListener {
         private final IProjectSoundViewHolderClicks mListener;
 
         public final ImageButton closeBtn;
@@ -48,6 +50,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
             this.closeBtn.setOnClickListener(this);
             this.volBar.setOnSeekBarChangeListener(this);
+            this.randomSwitch.setOnCheckedChangeListener(this);
         }
 
         @Override
@@ -72,11 +75,17 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             // Do nothing
         }
 
-        // TODO: add more (loop, random)
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            this.mListener.onRandomizeCheckedChange(buttonView, getLayoutPosition(), isChecked);
+        }
+
         public interface IProjectSoundViewHolderClicks {
             void onCloseClicked(View view, int layoutPosition);
 
             void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress);
+
+            void onRandomizeCheckedChange(CompoundButton button, int layoutPosition, boolean checked);
         }
     }
 
@@ -102,11 +111,13 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         // Find the views in the layout
         TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_title);
-        SeekBar volBar = (SeekBar) holder.itemView.findViewById(R.id.volume_slider);
+        SeekBar volBar = holder.volBar;
+        SwitchCompat randomizeSwitch = holder.randomSwitch;
 
         // And set data to the views
         textView.setText(item.getTitle());
         volBar.setProgress((int) (item.getVolume() * 100));
+        randomizeSwitch.setChecked(item.getIsRandom());
 
         // TODO: Replace with actual logic (maybe by index?)
         int cardBackgroundColorId;

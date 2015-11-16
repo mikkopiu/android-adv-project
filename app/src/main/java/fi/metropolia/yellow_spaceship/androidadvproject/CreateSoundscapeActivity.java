@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -144,6 +146,21 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     // soundPlayer, mProject and recyclerView should have matching indexes
                     // for the sound items.
                     soundPlayer.setVolume(layoutPosition, newVol);
+                }
+
+                @Override
+                public void onRandomizeCheckedChange(CompoundButton button, int layoutPosition, boolean checked) {
+                    ProjectSound sound = mProject.getSound(layoutPosition);
+
+                    if (sound != null) {
+                        sound.setIsOnLoop(!checked);
+                        sound.setIsRandom(checked);
+                    } else {
+                        Log.e(
+                                "CreateSoundscape DEBUG",
+                                "Lost reference to sound, cannot change random-state!"
+                        );
+                    }
                 }
             };
 
