@@ -18,7 +18,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListene
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 
-public class YourSoundscapesActivity extends AppCompatActivity implements View.OnClickListener,
+public class YourSoundscapesActivity extends AppCompatActivity
+        implements SoundscapesAdapter.ViewHolder.ISoundscapeViewHolderClicks,
         ProjectLoadListener {
 
     private ArrayList<SoundScapeProject> mData;
@@ -55,16 +56,6 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
         initRecyclerView();
 
         loadData();
-    }
-
-    @Override
-    public void onClick(View v) {
-        int itemPosition = this.recyclerView.getChildAdapterPosition(v);
-        SoundScapeProject d = this.mData.get(itemPosition);
-
-        Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
-        intent.putExtra("loadedSoundscape", d);
-        startActivity(intent);
     }
 
     private void loadData() {
@@ -110,5 +101,24 @@ public class YourSoundscapesActivity extends AppCompatActivity implements View.O
             this.recyclerView.setVisibility(View.VISIBLE);
             this.mEmptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onRowSelect(View view, int layoutPosition) {
+        SoundScapeProject d = this.mData.get(layoutPosition);
+
+        Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
+        intent.putExtra("loadedSoundscape", d);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRowRename(View view, int layoutPosition) {
+        System.out.println("Rename position: " + String.valueOf(layoutPosition));
+    }
+
+    @Override
+    public void onRowDelete(View view, int layoutPosition) {
+        System.out.println("Delete position: " + String.valueOf(layoutPosition));
     }
 }
