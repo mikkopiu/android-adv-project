@@ -23,11 +23,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter.ViewHolder.ISoundViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloaderListener;
@@ -62,6 +64,67 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private int playingInd = -1;
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
+
+    /**
+     * Event handling for adapter's events
+     */
+    private ISoundViewHolderClicks listEventHandler = new ISoundViewHolderClicks() {
+        @Override
+        public void onFavorite(View view, int layoutPosition) {
+            setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);
+        }
+
+        @Override
+        public void onRowSelect(View view, int layoutPosition) {
+            DAMSound selectedSound = data.get(layoutPosition);
+
+            // Return the selection results if necessary
+            Intent intent = getActivity().getIntent();
+            if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
+                // No need to download any time the user clicks a row, just when getting a sound
+                mSpinner.setVisibility(View.VISIBLE);
+                new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
+
+
+            }
+        }
+
+        @Override
+        public void onPlayPauseToggle(View view, int layoutPosition) {
+            togglePlayPause(layoutPosition);
+        }
+
+        @Override
+        public void onRowUpload(View view, int layoutPosition) {
+            // TODO
+            Log.d("SoundLibChild DEBUG", "UPLOADING SOUND: " + data.get(layoutPosition).getTitle());
+        }
+
+        @Override
+        public void onRowDelete(View view, int layoutPosition) {
+            Log.d("SoundLibChild DEBUG", "DELETING SOUND: " + data.get(layoutPosition).getTitle());
+            DAMSound s = data.get(layoutPosition);
+
+            if (s != null) {
+                int deletedRows = deleteSound(s);
+
+                if (deletedRows > 0) {
+                    Toast.makeText(
+                            getContext(),
+                            "Sound deleted",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    loadRecordingsData();
+                } else {
+                    Toast.makeText(
+                            getContext(),
+                            "Couldn't delete sound, something went wrong",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+        }
+    };
 
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
@@ -104,38 +167,14 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        SoundListAdapter mAdapter = new SoundListAdapter(data, new SoundListAdapter.ViewHolder.ISoundViewHolderClicks() {
-            @Override
-            public void onFavorite(View view, int layoutPosition) {
-                setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);
-            }
-
-            @Override
-            public void onRowSelect(View view, int layoutPosition) {
-                DAMSound selectedSound = data.get(layoutPosition);
-
-                // Return the selection results if necessary
-                Intent intent = getActivity().getIntent();
-                if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
-                    // No need to download any time the user clicks a row, just when getting a sound
-                    mSpinner.setVisibility(View.VISIBLE);
-                    new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
-
-
-                }
-            }
-
-            @Override
-            public void onPlayPauseToggle(View view, int layoutPosition) {
-                togglePlayPause(layoutPosition);
-            }
-        });
+        SoundListAdapter mAdapter = new SoundListAdapter(data, listEventHandler, isRecordingsView);
         mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
         mRecyclerView.setHasFixedSize(!this.isFavoritesView);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -200,6 +239,26 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        clearMediaPlayer();
+    }
+
+    /**
+     * Load data for a search query
+     */
+    public void loadSearchData() {
+        session.checkLogin();
+
+        mSpinner.setVisibility(View.VISIBLE);
+
+        ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
+                this.mSearchQuery,
+                true,
+                webDataCallback);
+    }
+
     /**
      * Unified callback for retrieving data from the DAM API
      */
@@ -236,20 +295,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.mCategory,
-                true,
-                webDataCallback);
-    }
-
-    /**
-     * Load data for a search query
-     */
-    public void loadSearchData() {
-        session.checkLogin();
-
-        mSpinner.setVisibility(View.VISIBLE);
-
-        ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
-                this.mSearchQuery,
                 true,
                 webDataCallback);
     }
@@ -319,6 +364,31 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         return d;
+    }
+
+    /**
+     * Delete a single sound.
+     * Also deletes the accompanying file, if the sound has a fileName
+     * @param sound Sound to be deleted
+     * @return Amount of sounds deleted
+     */
+    private int deleteSound(DAMSound sound) {
+        if (!sound.getFileName().isEmpty()) {
+            File file = new File(getContext().getFilesDir() +
+                    "/" + AsyncDownloader.SOUNDS_FOLDER +
+                    "/" + sound.getFileName());
+            boolean deleted = file.delete();
+
+            if (!deleted) {
+                return 0; // Bail if a fileName was found but couldn't be deleted
+            }
+        }
+
+        return getActivity().getApplicationContext().getContentResolver().delete(
+                SoundContentProvider.CONTENT_URI,
+                DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
+                new String[] {sound.getFormattedSoundId()}
+        );
     }
 
     /**
@@ -613,12 +683,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             this.progress.setMessage("Buffering...");
             this.progress.show();
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        clearMediaPlayer();
     }
 
 }

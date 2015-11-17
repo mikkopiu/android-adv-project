@@ -48,7 +48,8 @@
     <string name="record_btn_description">Record sound</string>
     <string name="soundscape_rename">Rename</string>
     <string name="soundscape_rename_dialog_title">Rename soundscape</string>
-    <string name="soundscape_delete">Delete</string>
+    <string name="delete">Delete</string>
     <string name="randomize_switch">Randomize</string>
+    <string name="recordings_share">Share</string>
 
 </resources>

@@ -27,6 +27,8 @@ import javazoom.jl.converter.Converter;
  */
 public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
+    public static final String SOUNDS_FOLDER = "sounds";
+
     private final DAMSound mDAMSound;
     private final Context mContext;
     private final Fragment mContextFragment;
@@ -64,7 +66,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                 try {
 
-                    File folder = new File(mContext.getFilesDir() + "/sounds");
+                    File folder = new File(mContext.getFilesDir() + "/" + SOUNDS_FOLDER);
                     boolean folderExists = folder.exists();
                     if (!folderExists) {
                         folderExists = folder.mkdirs();

@@ -1,6 +1,5 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
-import android.os.Build;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,15 +21,16 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
+
         private final View itemView;
         private final ImageButton contextMenuBtn;
-        private final ISoundscapeViewHolderClicks listener;
+        private final ISoundscapeViewHolderClicks mListener;
 
         public ViewHolder(View v, ISoundscapeViewHolderClicks listener) {
             super(v);
             this.itemView = v;
             this.contextMenuBtn = (ImageButton) v.findViewById(R.id.sound_library_fav_button);
-            this.listener = listener;
+            this.mListener = listener;
             v.setOnClickListener(this);
             this.contextMenuBtn.setOnClickListener(this);
         }
@@ -43,17 +43,17 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
                 popup.setOnMenuItemClickListener(this);
                 popup.show();
             } else {
-                this.listener.onRowSelect(v, getLayoutPosition());
+                this.mListener.onRowSelect(v, getLayoutPosition());
             }
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.rename_soundscape) {
-                this.listener.onRowRename(itemView, getLayoutPosition());
+                this.mListener.onRowRename(itemView, getLayoutPosition());
                 return true;
             } else if (item.getItemId() == R.id.delete_soundscape) {
-                this.listener.onRowDelete(itemView, getLayoutPosition());
+                this.mListener.onRowDelete(itemView, getLayoutPosition());
                 return true;
             }
             return false;
@@ -94,16 +94,7 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
         // And set data to the views
         textView.setText(mDataSet.get(position).getName());
 
-        if (Build.VERSION.SDK_INT < 23) {
-            contextMenuBtn.setImageDrawable(holder.itemView.getResources()
-                    .getDrawable(R.drawable.ic_more_vert_24dp));
-        } else {
-            contextMenuBtn.setImageDrawable(holder.itemView.getResources()
-                    .getDrawable(
-                            R.drawable.ic_more_vert_24dp,
-                            holder.itemView.getContext().getTheme()
-                    ));
-        }
+        contextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp);
     }
 
     @Override

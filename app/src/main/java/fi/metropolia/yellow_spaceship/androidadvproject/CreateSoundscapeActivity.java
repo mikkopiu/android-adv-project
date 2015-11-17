@@ -301,7 +301,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      */
     private void initRecyclerView() {
         this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
-        this.recyclerView.setHasFixedSize(false);
+        this.recyclerView.setHasFixedSize(false); // Soundscapes can be deleted & renamed
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         this.recyclerView.setLayoutManager(layoutManager);
