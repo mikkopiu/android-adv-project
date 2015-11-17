@@ -27,6 +27,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 /**
  * The API client for accessing the DAM.
@@ -164,8 +165,9 @@ public class ApiClient {
                          @Query("field75") SoundCategory category,
                          @Query("field76") SoundType soundType,
                          @Query("field78") int lengthInSecs,
-                         @Part("userfile") TypedByteArrayWithFilename file,
-                         Callback<String> callback);
+                         @Part("filename") String filename,
+                         @Part("userfile") TypedFile file,
+                         Callback<Object> callback);
 
         /**
          * Make a free text search on all available metadata fields

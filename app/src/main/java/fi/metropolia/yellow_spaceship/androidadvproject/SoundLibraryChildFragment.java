@@ -43,6 +43,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentPr
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 public class SoundLibraryChildFragment extends Fragment implements AsyncDownloaderListener {
 
@@ -96,8 +97,12 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void onRowUpload(View view, int layoutPosition) {
-            // TODO
             Log.d("SoundLibChild DEBUG", "UPLOADING SOUND: " + data.get(layoutPosition).getTitle());
+            DAMSound s = data.get(layoutPosition);
+
+            if (s != null) {
+                uploadSound(s);
+            }
         }
 
         @Override
@@ -286,6 +291,37 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     };
 
     /**
+     * Unified callback for uploading.
+     * API should respond with a JSON object like: {Success:You have uploaded successfully.}
+     */
+    private final Callback<Object> uploadCallback = new Callback<Object>() {
+        @Override
+        public void success(Object stringResponse, Response response) {
+            Toast.makeText(
+                    getContext(),
+                    "Sound uploaded successfully",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            mSpinner.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            error.printStackTrace();
+
+            mSpinner.setVisibility(View.GONE);
+            Toast.makeText(
+                    getContext(),
+                    "Uploading sound failed, please try again",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            mSpinner.setVisibility(View.GONE);
+        }
+    };
+
+    /**
      * Load a sound category's data
      */
     private void loadData() {
@@ -369,6 +405,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Delete a single sound.
      * Also deletes the accompanying file, if the sound has a fileName
+     *
      * @param sound Sound to be deleted
      * @return Amount of sounds deleted
      */
@@ -387,7 +424,32 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         return getActivity().getApplicationContext().getContentResolver().delete(
                 SoundContentProvider.CONTENT_URI,
                 DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?",
-                new String[] {sound.getFormattedSoundId()}
+                new String[]{sound.getFormattedSoundId()}
+        );
+    }
+
+    private void uploadSound(DAMSound sound) {
+
+        mSpinner.setVisibility(View.VISIBLE);
+
+        // Create a TypedFile of type octet-stream for the API upload
+        File file = new File(getContext().getFilesDir() +
+                "/" + AsyncDownloader.SOUNDS_FOLDER +
+                "/" + sound.getFileName());
+        TypedFile typedSound = new TypedFile("application/octet-stream", file);
+
+        ApiClient.getDAMApiClient().uploadSound(
+                session.getApiKey(),
+                session.getCollectionID(),
+                sound.getTitle(),
+                sound.getDescription(),
+                null,
+                sound.getCategory(),
+                sound.getSoundType(),
+                sound.getLengthSec(),
+                sound.getFileName(),
+                typedSound,
+                uploadCallback
         );
     }
 
@@ -463,8 +525,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         if (this.data.isEmpty()) {
             this.mRecyclerView.setVisibility(View.GONE);
             this.mEmptyView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             this.mRecyclerView.setVisibility(View.VISIBLE);
             this.mEmptyView.setVisibility(View.GONE);
         }
