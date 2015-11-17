@@ -153,8 +153,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     ProjectSound sound = mProject.getSound(layoutPosition);
 
                     if (sound != null) {
-                        sound.setIsOnLoop(!checked);
-                        sound.setIsRandom(checked);
+                        if(!checked) {
+                            soundPlayer.removeRandom(layoutPosition);
+                        } else if(checked) {
+                            soundPlayer.addRandom(layoutPosition);
+                        }
+                        //sound.setIsOnLoop(!checked);
+                        //sound.setIsRandom(checked);
                     } else {
                         Log.e(
                                 "CreateSoundscape DEBUG",

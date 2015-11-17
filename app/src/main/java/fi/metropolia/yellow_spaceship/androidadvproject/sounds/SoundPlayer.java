@@ -76,9 +76,10 @@ public class SoundPlayer {
 
             mSounds.add(projectSound);
 
+            projectSound.setRandomEngine(mRandomEngine);
+
             if(!projectSound.getIsOnLoop()) {
                 mRandomEngine.addRandom(mSounds.indexOf(projectSound));
-                projectSound.setRandomEngine(mRandomEngine);
             }
 
         } catch (Exception e) {
@@ -136,6 +137,20 @@ public class SoundPlayer {
 
         mRandomEngine.stop();
 
+    }
+
+    public void addRandom(int index) {
+        ProjectSound sound = mSounds.get(index);
+        sound.setIsOnLoop(false);
+        sound.setIsRandom(true);
+        mRandomEngine.addRandom(index);
+    }
+
+    public void removeRandom(int index) {
+        ProjectSound sound = mSounds.get(index);
+        sound.setIsOnLoop(true);
+        sound.setIsRandom(false);
+        mRandomEngine.removeRandom(index);
     }
 
     /**

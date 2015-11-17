@@ -371,7 +371,7 @@ public class ProjectSound implements Parcelable {
                             isPlaying = false;
 
                             // Tell RandomEngine we are finished
-                            if(mRandomEngine != null) {
+                            if(mRandomEngine != null && getIsRandom()) {
                                 mRandomEngine.refresh(self);
                             }
                         }
@@ -383,9 +383,24 @@ public class ProjectSound implements Parcelable {
                 }
 
                 // Clean up.
-                mAudioTrack.stop();
+                if(mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+                    try {
+                        mAudioTrack.stop();
+                    } catch(IllegalStateException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 mAudioTrack.release();
                 bis.close();
+
+                /*
+                try {
+                    mTrackThread.join();
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                */
 
             } catch (Exception e) {
                 e.printStackTrace();

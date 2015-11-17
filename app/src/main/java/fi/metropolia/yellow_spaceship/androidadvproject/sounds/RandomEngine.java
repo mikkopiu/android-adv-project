@@ -48,22 +48,52 @@ public class RandomEngine {
     }
 
     public void addRandom(int index) {
+
         short nextPlayback = generateNextPlayback();
         mRandomList.add(new RandomRunnable(nextPlayback, index));
         if(mIsRunning) {
-            randomHandler.postDelayed(mRandomList.get(index), nextPlayback);
+            int localIndex = getLocalIndex(index);
+            //randomHandler.postDelayed(mRandomList.get(localIndex), nextPlayback);
         }
+
     }
 
     public void removeRandom(int index) {
-        randomHandler.removeCallbacks(mRandomList.get(index));
-        mRandomList.remove(index);
 
-        for(RandomRunnable rr : mRandomList) {
-            if(rr.index > index) {
-                rr.index -= 1;
-            }
+        int localIndex = getLocalIndex(index);
+
+        if(localIndex != -1) {
+            randomHandler.removeCallbacks(mRandomList.get(localIndex));
+            mRandomList.remove(localIndex);
+
+            mSoundPlayer.play(index);
         }
+        /*
+        if(index < mRandomList.size()) {
+            randomHandler.removeCallbacks(mRandomList.get(index));
+            mRandomList.remove(index);
+
+            for (RandomRunnable rr : mRandomList) {
+                if (rr.index > index) {
+                    rr.index -= 1;
+                }
+            }
+
+            mSoundPlayer.play(index);
+        }
+        */
+
+    }
+
+    public int getLocalIndex(int spIndex) {
+        int position = 0;
+        for(RandomRunnable rr : mRandomList) {
+            if(rr.index == spIndex) {
+                return position;
+            }
+            position++;
+        }
+        return -1;
     }
 
     private short generateNextPlayback() {
@@ -75,8 +105,12 @@ public class RandomEngine {
     public void refresh(ProjectSound sound) {
         if(mIsRunning) {
             int index = mSoundPlayer.getSoundIndex(sound);
-            short nextPlayback = generateNextPlayback();
-            randomHandler.postDelayed(mRandomList.get(index), nextPlayback);
+
+            int localIndex = getLocalIndex(index);
+            if(localIndex != -1) {
+                short nextPlayback = generateNextPlayback();
+                randomHandler.postDelayed(mRandomList.get(localIndex), nextPlayback);
+            }
         }
     }
 
@@ -92,13 +126,6 @@ public class RandomEngine {
         public RandomRunnable(short nextPlayback, int index) {
             this.nextPlayback = nextPlayback;
             this.index = index;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if(other == null) return false;
-            if((int)other == this.index) return true;
-            return false;
         }
 
         @Override
