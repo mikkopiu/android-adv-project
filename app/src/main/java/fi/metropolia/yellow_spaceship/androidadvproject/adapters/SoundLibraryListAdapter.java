@@ -99,9 +99,8 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
-        Drawable icon;
         if (dataSet.get(position).getIcon() != null) {
-            icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
+            Drawable icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
 
             // If the row has an icon, that means it is one of the pre-defined categories,
             // i.e. it needs a different styling.
