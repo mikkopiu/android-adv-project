@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +36,9 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setTitle(R.string.sound_library_title);
 
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
@@ -92,6 +96,8 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         int itemPosition = recyclerView.getChildAdapterPosition(v);
         ListRowData d = this.data.get(itemPosition);
         Bundle bundle = new Bundle();
+
+        bundle.putString("title", d.getCaption());
 
         switch (d.getCaption()) {
             case RECORDINGS_CAPTION:

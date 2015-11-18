@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -146,7 +147,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(null);
+        ActionBar toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (toolbar != null) {
+            toolbar.setHomeAsUpIndicator(null);
+            toolbar.setTitle(getArguments().getString("title"));
+        }
 
         session = new SessionManager(getActivity());
 
