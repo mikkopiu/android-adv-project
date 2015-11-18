@@ -63,7 +63,12 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_save_btn:
-                    save(mDialogEditText.getText().toString().trim());
+                    String str = mDialogEditText.getText().toString().trim();
+                    if (str.equals("")) {
+                        mDialogEditText.setError("Name is required!");
+                        break;
+                    }
+                    save(str);
                     break;
                 case R.id.create_play_btn:
                     if (mProject.getSounds().size() > 0) {

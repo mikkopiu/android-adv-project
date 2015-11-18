@@ -255,6 +255,11 @@ public class RecordActivity extends AppCompatActivity {
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_save_btn:
+                    if (mDialogEditText.getText().toString().trim().equals("")) {
+                        mDialogEditText.setError("Filename is required!");
+                        break;
+                    }
+
                     saveRecording();
                     break;
                 default:
