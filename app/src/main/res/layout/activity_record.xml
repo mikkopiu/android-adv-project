@@ -47,23 +47,19 @@
 
         <Button
             android:id="@+id/play_btn"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/DarkButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:text="@string/record_play_btn"
-            android:textColor="@color/txt_light"
-            android:textSize="14sp" />
+            android:text="@string/record_play_btn" />
 
         <Button
             android:id="@+id/save_btn"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/DarkButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:text="@string/record_save_btn"
-            android:textColor="@color/txt_light"
-            android:textSize="14sp" />
+            android:text="@string/record_save_btn" />
 
     </LinearLayout>
 

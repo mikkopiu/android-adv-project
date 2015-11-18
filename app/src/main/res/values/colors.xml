@@ -10,6 +10,7 @@
     <item name="bac" type="color">#FFFFFF</item>
     <item name="txt" type="color">#494C5F</item>
     <item name="txt_light" type="color">#FFFFFF</item>
+    <item name="txt_light_disabled" type="color">#6F6F6F</item>
     <item name="txt_acc" type="color">#6D707F</item>
     <item name="separator" type="color">#C4C3C4</item>
 

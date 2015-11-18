@@ -34,4 +34,10 @@
         <item name="android:colorForeground">@color/pri</item>
     </style>
 
+    <style name="DarkButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/btn_dark_text_color</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

@@ -34,7 +34,7 @@
 
         <Button
             android:id="@+id/create_save_btn"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/DarkButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -42,8 +42,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="@string/create_save_btn"
-            android:textColor="@color/txt_light" />
+            android:text="@string/create_save_btn" />
 
         <ImageButton
             android:id="@+id/create_play_btn"

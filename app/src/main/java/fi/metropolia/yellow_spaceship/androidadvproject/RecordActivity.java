@@ -45,6 +45,7 @@ public class RecordActivity extends AppCompatActivity {
     private TextView mRecordTimer;
     private ImageButton mRecordButton;
     private Button mPlayButton;
+    private Button mSaveButton;
     private long mStartTime = 0;
     private boolean mRecording = false;
     private boolean mPlaying = false;
@@ -194,7 +195,8 @@ public class RecordActivity extends AppCompatActivity {
         mRecordTimer = (TextView) findViewById(R.id.record_timer);
         mRecordButton = (ImageButton) findViewById(R.id.record_button);
         mPlayButton = (Button) findViewById(R.id.play_btn);
-        Button mSaveButton = (Button) findViewById(R.id.save_btn);
+        mSaveButton = (Button) findViewById(R.id.save_btn);
+        mSaveButton.setEnabled(false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.record_title));
@@ -371,6 +373,10 @@ public class RecordActivity extends AppCompatActivity {
 
         mSoundRecorder.stopRecording();
         mSoundRecorder = null;
+
+        if (mTempFileExists) {
+            mSaveButton.setEnabled(true);
+        }
 
     }
 
