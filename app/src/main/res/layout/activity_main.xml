@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/create_ss_crop" />
+                    android:src="@drawable/create_ss_crop_150dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/sound_l_crop" />
+                        android:src="@drawable/sound_l_crop_75dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/your_ss_crop" />
+                        android:src="@drawable/your_ss_crop_75dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -149,7 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/museum_crop" />
+                    android:src="@drawable/museum_crop_150dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
