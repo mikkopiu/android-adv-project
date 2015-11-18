@@ -40,4 +40,11 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="colorPrimary">@color/txt</item>
+        <item name="colorPrimaryDark">@color/txt</item>
+        <item name="colorAccent">@color/txt</item>
+        <item name="colorControlNormal">@color/txt</item>
+    </style>
+
 </resources>
