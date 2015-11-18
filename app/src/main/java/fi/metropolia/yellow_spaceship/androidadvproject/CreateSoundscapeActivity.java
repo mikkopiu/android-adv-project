@@ -269,6 +269,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      * Start project playback
      */
     private void startPlayback() {
+        fabMenu.setKeepScreenOn(true);
         soundPlayer.playAll();
         mIsPlaying = true;
         ((ImageButton) findViewById(R.id.create_play_btn))
@@ -279,6 +280,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      * Stop project playback
      */
     private void stopPlayback() {
+        fabMenu.setKeepScreenOn(false);
         soundPlayer.stopAll();
         mIsPlaying = false;
         ((ImageButton) findViewById(R.id.create_play_btn))
