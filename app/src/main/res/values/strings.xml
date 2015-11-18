@@ -51,5 +51,6 @@
     <string name="delete">Delete</string>
     <string name="randomize_switch">Randomize</string>
     <string name="recordings_share">Share</string>
+    <string name="remove_sound">Remove sound</string>
 
 </resources>
