@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,6 +20,8 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
 
     private final SaveListener listener;
     private final Context context;
+
+    private Throwable error;
 
     public ProjectSaveTask(Context context, SaveListener listener) {
         this.listener = listener;
@@ -39,18 +42,15 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
                     "/" + project.getName() + FILE_EXT);
 
             File folder = new File(this.context.getFilesDir() + "/" + PROJECT_FOLDER);
-            boolean folderAndFileCreated = false;
-            if (!folder.exists()) {
-                folderAndFileCreated = folder.mkdirs();
-            }
+            folder.mkdirs();
 
-            // TODO: add logic for handling already existing names
+            // We simply allow overwriting of existing projects
             if (!outputFile.exists()) {
-                folderAndFileCreated = outputFile.createNewFile();
+                outputFile.createNewFile();
             }
 
-            if (!folderAndFileCreated) {
-                throw new IOException("Failed to create folder or file for saving");
+            if (!folder.exists() || !outputFile.exists()) {
+                error = new IOException("Failed to create folder or file for saving");
             } else {
                 FileWriter writer = new FileWriter(outputFile);
                 bw = new BufferedWriter(writer);
@@ -58,7 +58,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            error = e;
         } finally {
             try {
                 if (bw != null) {
@@ -74,6 +74,10 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
 
     @Override
     protected void onPostExecute(Boolean result) {
-        listener.onSaveComplete();
+        if (error != null) {
+            Log.e("ProjectSaveTask", "Failed to save project", error);
+        }
+
+        listener.onSaveComplete(error == null);
     }
 }

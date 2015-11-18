@@ -64,17 +64,25 @@ public class YourSoundscapesActivity extends AppCompatActivity
      */
     private final SaveListener saveListener = new SaveListener() {
         @Override
-        public void onSaveComplete() {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Project renamed successfully",
-                    Toast.LENGTH_SHORT
-            ).show();
+        public void onSaveComplete(boolean success) {
+            if (success) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Project renamed successfully",
+                        Toast.LENGTH_SHORT
+                ).show();
 
-            mDialog.dismiss();
+                mDialog.dismiss();
 
-            // Reload data
-            loadData();
+                // Reload data
+                loadData();
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Project could not be renamed, an error occurred",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         }
     };
 
@@ -105,6 +113,12 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
         initRecyclerView();
 
+        loadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 

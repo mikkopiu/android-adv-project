@@ -182,18 +182,26 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
      */
     private final SaveListener saveListener = new SaveListener() {
         @Override
-        public void onSaveComplete() {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Project saved successfully",
-                    Toast.LENGTH_SHORT
-            ).show();
-            mIsSaving = false;
-            if (mProgress.isShowing()) {
-                mProgress.cancel();
-            }
+        public void onSaveComplete(boolean success) {
+            if (success) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Project saved successfully",
+                        Toast.LENGTH_SHORT
+                ).show();
+                mIsSaving = false;
+                if (mProgress.isShowing()) {
+                    mProgress.cancel();
+                }
 
-            mDialog.dismiss();
+                mDialog.dismiss();
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Couldn't save project, please try another name",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         }
     };
 
@@ -413,6 +421,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
         mDialogSaveBtn.setOnClickListener(clickListener);
         mDialogCancelBtn.setOnClickListener(clickListener);
+
+        String prevName = this.mProject.getName();
+        if (prevName != null && !prevName.equals("")) {
+            mDialogEditText.setText(prevName);
+        }
 
         mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
