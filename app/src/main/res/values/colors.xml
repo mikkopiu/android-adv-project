@@ -23,5 +23,5 @@
     <item name="switch_inactive" type="color">#d2d2d2</item>
 
     <!-- Main menu specific -->
-    <item name="main_card_text_bac" type="color">#CCFDCA81</item>
+    <item name="main_card_text_bac" type="color">#1c000000</item>
 </resources>
