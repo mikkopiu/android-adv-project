@@ -285,7 +285,11 @@ public class RecordActivity extends AppCompatActivity {
         mDialogSaveBtn.setOnClickListener(clickListener);
         mDialogCancelBtn.setOnClickListener(clickListener);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.categories_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.categories_array,
+                R.layout.support_simple_spinner_dropdown_item
+        );
         mDialogSpinner.setAdapter(adapter);
 
         mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
