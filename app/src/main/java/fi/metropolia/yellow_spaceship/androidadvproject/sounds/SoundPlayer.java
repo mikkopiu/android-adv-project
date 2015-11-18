@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.sounds;
 
 import android.content.Context;
 import android.media.AudioTrack;
+import android.os.Handler;
 
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -13,21 +14,25 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 /**
  * SoundPlayer
  */
-public class SoundPlayer {
+public class SoundPlayer implements SoundFinishedListener {
 
     private final Context mContext;
     private ArrayList<ProjectSound> mSounds;
-    private RandomEngine mRandomEngine;
 
     private boolean mIsPlaying = false;
 
-    private final static int HEADER_SIZE = 44;
+    public final static int HEADER_SIZE = 44;
+    // Minimum time in milliseconds before next playback.
+    private final static short LOWER_LIMIT = 4000;
+    // Maximum time in milliseconds before next playback.
+    private final static short UPPER_LIMIT = 12000;
+
+    private final Handler randomHandler = new Handler();
 
     public SoundPlayer(Context context) {
 
         mContext = context;
         mSounds = new ArrayList<>();
-        mRandomEngine = new RandomEngine(this);
 
     }
 
@@ -76,11 +81,9 @@ public class SoundPlayer {
 
             mSounds.add(projectSound);
 
-            projectSound.setRandomEngine(mRandomEngine);
-
-            if(!projectSound.getIsOnLoop()) {
-                mRandomEngine.addRandom(mSounds.indexOf(projectSound));
-            }
+            int index = mSounds.size() - 1;
+            projectSound.setRandomRunnable(new RandomRunnable(index, this, generateNextPlayback()));
+            projectSound.setSoundFinishedListener(this);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,14 +91,62 @@ public class SoundPlayer {
 
     }
 
-    public void removeSound(int index) {
-        stop(index);
-        mRandomEngine.removeRandom(index);
-        mSounds.remove(index);
+    public void changeToLoop(int index) {
+        ProjectSound sound = mSounds.get(index);
+        if(!sound.getIsOnLoop()) {
+            sound.setIsOnLoop(true);
+            sound.setIsRandom(false);
+            if(mIsPlaying) {
+                sound.stop();
+                sound.play();
+            }
+        }
     }
 
-    public int getSoundIndex(ProjectSound sound) {
-        return mSounds.indexOf(sound);
+    public void changeToRandom(int index) {
+        ProjectSound sound = mSounds.get(index);
+        if(!sound.getIsRandom()) {
+            sound.setIsOnLoop(false);
+            sound.setIsRandom(true);
+            sound.getRandomRunnable().setNextPlayback(generateNextPlayback());
+            if(mIsPlaying) {
+                sound.stop();
+                randomHandler.postDelayed(sound.getRandomRunnable(), sound.getRandomRunnable().getNextPlayback());
+            }
+        }
+    }
+
+    public void removeSound(int index) {
+        ProjectSound sound = mSounds.get(index);
+        sound.stop();
+        sound.clear();
+        randomHandler.removeCallbacks(sound.getRandomRunnable());
+        mSounds.remove(index);
+
+        for(ProjectSound ps : mSounds) {
+            RandomRunnable rr = ps.getRandomRunnable();
+            if(rr.getIndex() > index) {
+                rr.setIndex(rr.getIndex() - 1);
+            }
+        }
+    }
+
+    private short generateNextPlayback() {
+
+        return (short)(LOWER_LIMIT + (Math.random() * ((UPPER_LIMIT - LOWER_LIMIT) + 1)));
+
+    }
+
+    @Override
+    public void soundIsFinished(ProjectSound sound) {
+        int index = mSounds.indexOf(sound);
+        if(index != -1) {
+            ProjectSound projectSound = mSounds.get(index);
+            if(projectSound.getIsRandom()) {
+                projectSound.getRandomRunnable().setNextPlayback(generateNextPlayback());
+                randomHandler.postDelayed(projectSound.getRandomRunnable(), projectSound.getRandomRunnable().getNextPlayback());
+            }
+        }
     }
 
     /**
@@ -106,12 +157,12 @@ public class SoundPlayer {
         for (int i = 0; i < mSounds.size(); i++) {
             ProjectSound sound = mSounds.get(i);
             if(sound.getIsOnLoop()) {
-                // Start looping sounds.
                 sound.play();
+            } else if(sound.getIsRandom()) {
+                sound.getRandomRunnable().setNextPlayback(generateNextPlayback());
+                randomHandler.postDelayed(sound.getRandomRunnable(), sound.getRandomRunnable().getNextPlayback());
             }
         }
-
-        mRandomEngine.start();
 
     }
 
@@ -119,11 +170,8 @@ public class SoundPlayer {
      * Plays a single sound.
      */
     public void play(int index) {
-        try {
-            mSounds.get(index).play();
-        } catch(IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
+        ProjectSound sound = mSounds.get(index);
+        sound.play();
     }
 
     /**
@@ -132,25 +180,12 @@ public class SoundPlayer {
     public void stopAll() {
 
         for (int i = 0; i < mSounds.size(); i++) {
-            mSounds.get(i).stop();
+            ProjectSound sound = mSounds.get(i);
+            sound.stop();
+            randomHandler.removeCallbacks(sound.getRandomRunnable());
+
         }
 
-        mRandomEngine.stop();
-
-    }
-
-    public void addRandom(int index) {
-        ProjectSound sound = mSounds.get(index);
-        sound.setIsOnLoop(false);
-        sound.setIsRandom(true);
-        mRandomEngine.addRandom(index);
-    }
-
-    public void removeRandom(int index) {
-        ProjectSound sound = mSounds.get(index);
-        sound.setIsOnLoop(true);
-        sound.setIsRandom(false);
-        mRandomEngine.removeRandom(index);
     }
 
     /**
@@ -192,7 +227,9 @@ public class SoundPlayer {
     public void clear() {
 
         for (int i = 0; i < mSounds.size(); i++) {
-            mSounds.get(i).clear();
+            ProjectSound sound = mSounds.get(i);
+            sound.stop();
+            sound.clear();
         }
 
         mSounds.clear();

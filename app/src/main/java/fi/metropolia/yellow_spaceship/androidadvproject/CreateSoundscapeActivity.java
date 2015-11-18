@@ -153,11 +153,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     ProjectSound sound = mProject.getSound(layoutPosition);
 
                     if (sound != null) {
+
                         if(!checked) {
-                            soundPlayer.removeRandom(layoutPosition);
+                            soundPlayer.changeToLoop(layoutPosition);
                         } else if(checked) {
-                            soundPlayer.addRandom(layoutPosition);
+                            soundPlayer.changeToRandom(layoutPosition);
                         }
+
                         //sound.setIsOnLoop(!checked);
                         //sound.setIsRandom(checked);
                     } else {
@@ -259,6 +261,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         super.onDestroy();
         if (mIsPlaying && soundPlayer != null) {
             stopPlayback();
+            soundPlayer.clear();
         }
     }
 

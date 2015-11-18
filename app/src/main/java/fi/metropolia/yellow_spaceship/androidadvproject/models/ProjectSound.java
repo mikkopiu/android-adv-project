@@ -11,7 +11,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.sounds.RandomEngine;
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.RandomRunnable;
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundFinishedListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 
 /**
  * A simplified representation of a DAMSound in a SoundScapeProject.
@@ -34,8 +36,9 @@ public class ProjectSound implements Parcelable {
     private transient int mSampleRate;
     private transient File mFile;
     private transient Thread mTrackThread;
-    private transient RandomEngine mRandomEngine;
     private transient ProjectSound self = this;
+    private transient RandomRunnable mRandomRunnable;
+    private transient SoundFinishedListener soundFinishedListener;
 
     /**
      * Constructor, at least an ID is required
@@ -81,6 +84,18 @@ public class ProjectSound implements Parcelable {
         this.isRandom = isRandom;
         this.mVolume = volume;
 
+    }
+
+    public void setSoundFinishedListener(SoundFinishedListener sfl) {
+        this.soundFinishedListener = sfl;
+    }
+
+    public void setRandomRunnable(RandomRunnable randomRunnable) {
+        mRandomRunnable = randomRunnable;
+    }
+
+    public RandomRunnable getRandomRunnable() {
+        return mRandomRunnable;
     }
 
     public String getId() {
@@ -141,10 +156,6 @@ public class ProjectSound implements Parcelable {
 
     public float getVolume() {
         return mVolume;
-    }
-
-    public void setRandomEngine(RandomEngine re) {
-        mRandomEngine = re;
     }
 
     @Override
@@ -278,6 +289,7 @@ public class ProjectSound implements Parcelable {
     public void play() {
         if (!isPlaying) {
             isPlaying = true;
+
             mTrackThread = new Thread(new TrackRunnable());
             mTrackThread.start();
         }
@@ -289,8 +301,13 @@ public class ProjectSound implements Parcelable {
     public void stop() {
         isPlaying = false;
         if (mTrackThread != null) {
-            mTrackThread.interrupt();
-            mTrackThread = null;
+            try {
+                mTrackThread.interrupt();
+                mTrackThread.join();
+                mTrackThread = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -321,11 +338,22 @@ public class ProjectSound implements Parcelable {
      * Cleans up the ProjectSound
      */
     public void clear() {
-        mAudioTrack.stop();
-        mAudioTrack.release();
-        mAudioTrack = null;
-        mTrackThread.interrupt();
-        mTrackThread = null;
+        try {
+            if(mAudioTrack != null) {
+                if (mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+                    mAudioTrack.stop();
+                }
+                mAudioTrack.release();
+                mAudioTrack = null;
+            }
+            if(mTrackThread != null) {
+                mTrackThread.interrupt();
+                mTrackThread.join();
+                mTrackThread = null;
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -354,7 +382,7 @@ public class ProjectSound implements Parcelable {
 
                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(mFile));
                 // Skip header
-                bis.skip(44);
+                bis.skip(SoundPlayer.HEADER_SIZE);
 
                 while (isPlaying) {
 
@@ -365,15 +393,12 @@ public class ProjectSound implements Parcelable {
                             // Start in the beginning of the file if we are looping.
                             bis.close();
                             bis = new BufferedInputStream(new FileInputStream(mFile));
-                            bis.skip(44);
+                            bis.skip(SoundPlayer.HEADER_SIZE);
                         } else {
                             // Stop playing if we are not looping
                             isPlaying = false;
-
-                            // Tell RandomEngine we are finished
-                            if(mRandomEngine != null && getIsRandom()) {
-                                mRandomEngine.refresh(self);
-                            }
+                            // Tell SoundPlayer we are finished
+                            soundFinishedListener.soundIsFinished(self);
                         }
 
                     }
@@ -393,14 +418,6 @@ public class ProjectSound implements Parcelable {
 
                 mAudioTrack.release();
                 bis.close();
-
-                /*
-                try {
-                    mTrackThread.join();
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
-                */
 
             } catch (Exception e) {
                 e.printStackTrace();
