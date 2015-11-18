@@ -20,7 +20,7 @@
     <item name="acc_card_bac_4" type="color">#F58967</item>
 
     <item name="volbar_white" type="color">#FFFFFF</item>
-    <item name="switch_inactive" type="color">#a7a7a7</item>
+    <item name="switch_inactive" type="color">#d2d2d2</item>
 
     <!-- Main menu specific -->
     <item name="main_card_text_bac" type="color">#CCFDCA81</item>
