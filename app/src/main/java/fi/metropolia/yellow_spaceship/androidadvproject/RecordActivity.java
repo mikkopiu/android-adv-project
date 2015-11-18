@@ -1,14 +1,18 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
@@ -224,6 +228,12 @@ public class RecordActivity extends AppCompatActivity {
 
             switch (v.getId()) {
                 case R.id.record_button:
+                    if(ContextCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 112);
+                        return;
+
+                    }
                     if (!mRecording && !mPlaying) {
                         mRecordButton.setImageResource(R.drawable.ic_stop_white_64dp);
                         mRecording = true;
