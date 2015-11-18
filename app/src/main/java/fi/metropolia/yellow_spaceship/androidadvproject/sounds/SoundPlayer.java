@@ -96,6 +96,7 @@ public class SoundPlayer implements SoundFinishedListener {
         if(!sound.getIsOnLoop()) {
             sound.setIsOnLoop(true);
             sound.setIsRandom(false);
+            randomHandler.removeCallbacks(sound.getRandomRunnable());
             if(mIsPlaying) {
                 sound.stop();
                 sound.play();
@@ -154,6 +155,8 @@ public class SoundPlayer implements SoundFinishedListener {
      */
     public void playAll() {
 
+        mIsPlaying = true;
+
         for (int i = 0; i < mSounds.size(); i++) {
             ProjectSound sound = mSounds.get(i);
             if(sound.getIsOnLoop()) {
@@ -178,6 +181,8 @@ public class SoundPlayer implements SoundFinishedListener {
      * Stops all sounds.
      */
     public void stopAll() {
+
+        mIsPlaying = false;
 
         for (int i = 0; i < mSounds.size(); i++) {
             ProjectSound sound = mSounds.get(i);

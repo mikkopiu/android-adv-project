@@ -300,6 +300,9 @@ public class ProjectSound implements Parcelable {
      */
     public void stop() {
         isPlaying = false;
+        if(mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+            mAudioTrack.stop();
+        }
         if (mTrackThread != null) {
             try {
                 mTrackThread.interrupt();
@@ -359,7 +362,7 @@ public class ProjectSound implements Parcelable {
     /**
      * Audio Track in a thread. Sound playing implementation.
      */
-    private class TrackRunnable implements Runnable {
+    private final class TrackRunnable implements Runnable {
 
         @Override
         public void run() {
