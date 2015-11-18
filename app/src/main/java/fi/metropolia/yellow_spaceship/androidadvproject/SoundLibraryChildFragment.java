@@ -260,6 +260,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
                 this.mSearchQuery,
+                "wav",
                 true,
                 webDataCallback);
     }
@@ -331,6 +332,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.mCategory,
+                "wav",
                 true,
                 webDataCallback);
     }

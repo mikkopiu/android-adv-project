@@ -139,6 +139,7 @@ public class ApiClient {
         @GET("/api_audio_search/index.php/")
         void getCategory(@Query("key") String apiKey,
                          @Query("category") SoundCategory category,
+                         @Query("format") String format,
                          @Query("link") boolean link,
                          Callback<List<List<DAMSound>>> callback);
 
@@ -180,6 +181,7 @@ public class ApiClient {
         @GET("/api_audio_search/index.php/")
         void getTextSearchResults(@Query("key") String apiKey,
                                   @Query("search") String search,
+                                  @Query("format") String format,
                                   @Query("link") boolean link,
                                   Callback<List<List<DAMSound>>> callback);
     }
