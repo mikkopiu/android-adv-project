@@ -61,12 +61,15 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/volume_slider_icon"
-                android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/volume_slider_btn"
+                style="?android:borderlessButtonStyle"
+                android:layout_width="24dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="@string/volume_slider_description"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:contentDescription="@string/volume_slider_btn_description"
                 android:src="@drawable/ic_volume_up_white_24dp" />
 
             <SeekBar
@@ -74,7 +77,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:max="10" />
+                android:max="100" />
 
         </LinearLayout>
 

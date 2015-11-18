@@ -146,7 +146,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
                 @Override
                 public void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress) {
-                    float newVol = (float) progress / 10.0f; // SeekBar has values from 0-10 (int)
+                    float newVol = (float) progress / 100.0f; // SeekBar has values from 0-100 (int)
 
                     // soundPlayer, mProject and recyclerView should have matching indexes
                     // for the sound items.

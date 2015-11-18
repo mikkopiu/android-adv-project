@@ -31,9 +31,12 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             SeekBar.OnSeekBarChangeListener,
             SwitchCompat.OnCheckedChangeListener {
+
         private final IProjectSoundViewHolderClicks mListener;
+        private int prevProgress;
 
         public final ImageButton closeBtn;
+        public final ImageButton volBtn;
         public final SeekBar volBar;
         public final CardView cardView;
         public final SwitchCompat randomSwitch;
@@ -47,21 +50,35 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             this.volBar = (SeekBar) itemView.findViewById(R.id.volume_slider);
             this.cardView = (CardView) itemView.findViewById(R.id.create_card_view);
             this.randomSwitch = (SwitchCompat) itemView.findViewById(R.id.randomize_switch);
+            this.volBtn = (ImageButton) itemView.findViewById(R.id.volume_slider_btn);
 
             this.closeBtn.setOnClickListener(this);
+            this.volBtn.setOnClickListener(this);
             this.volBar.setOnSeekBarChangeListener(this);
             this.randomSwitch.setOnCheckedChangeListener(this);
+
+            this.prevProgress = 100;
         }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.close_btn) {
                 this.mListener.onCloseClicked(v, getLayoutPosition());
+            } else if (v.getId() == R.id.volume_slider_btn) {
+                this.volBar.setProgress(this.prevProgress == 0 ? 100 : 0);
             }
         }
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // Update icon when volume hits zero
+            if (progress == 0) {
+                this.volBtn.setImageResource(R.drawable.ic_volume_mute_white_24dp);
+            } else if (this.prevProgress == 0) { // Prevent unnecessary reload of image resources
+                this.volBtn.setImageResource(R.drawable.ic_volume_up_white_24dp);
+            }
+            this.prevProgress = progress;
+
             this.mListener.onVolumeChange(seekBar, getLayoutPosition(), progress);
         }
 
@@ -117,7 +134,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         // And set data to the views
         textView.setText(item.getTitle());
         textView.setAllCaps(true);
-        volBar.setProgress((int) (item.getVolume() * 10));
+        volBar.setProgress((int) (item.getVolume() * 100));
         randomizeSwitch.setChecked(item.getIsRandom());
 
         // TODO: Replace with actual logic (maybe by index?)

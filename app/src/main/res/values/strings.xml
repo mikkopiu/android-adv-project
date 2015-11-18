@@ -28,7 +28,7 @@
     <string name="fab_sound_library">Sound library</string>
     <string name="create_play_btn_description">Play soundscape</string>
     <string name="create_save_btn">Save</string>
-    <string name="volume_slider_description">Volume slider</string>
+    <string name="volume_slider_btn_description">Toggle mute</string>
     <string name="create_loop_btn">Loop</string>
     <string name="create_random_btn">Random</string>
 
