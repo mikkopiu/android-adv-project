@@ -300,7 +300,7 @@ public class ProjectSound implements Parcelable {
      */
     public void stop() {
         isPlaying = false;
-        if(mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+        if(mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
             mAudioTrack.stop();
         }
         if (mTrackThread != null) {
