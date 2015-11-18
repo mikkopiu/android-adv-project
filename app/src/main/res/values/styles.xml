@@ -40,11 +40,14 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
-        <item name="colorPrimary">@color/txt</item>
-        <item name="colorPrimaryDark">@color/txt</item>
-        <item name="colorAccent">@color/txt</item>
+    <!-- Spinner (dropdown) style -->
+    <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:textColorPrimary">@color/txt</item>
         <item name="colorControlNormal">@color/txt</item>
+        <item name="colorControlHighlight">@color/bac</item>
+    </style>
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:theme">@style/ActionBarThemeOverlay</item>
     </style>
 
 </resources>
