@@ -7,8 +7,8 @@
         <item name="colorAccent">@color/acc</item>
         <item name="android:windowBackground">@color/bac</item>
         <item name="android:textColorPrimary">@color/txt</item>
-
         <item name="colorControlNormal">@color/txt_light</item>
+        <item name="android:textColorHint">@color/txt</item>
     </style>
 
     <style name="DarkToolbarStyle" parent="AppTheme">
@@ -48,6 +48,13 @@
     </style>
     <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
         <item name="android:theme">@style/ActionBarThemeOverlay</item>
+    </style>
+
+    <style name="CustomTextInputLayoutStyle" parent="Widget.Design.TextInputLayout">
+        <item name="colorPrimary">@color/txt</item>
+        <item name="colorPrimaryDark">@color/txt</item>
+        <item name="colorAccent">@color/txt</item>
+        <item name="colorControlNormal">@color/txt</item>
     </style>
 
 </resources>

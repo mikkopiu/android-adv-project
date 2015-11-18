@@ -10,14 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
-        android:minWidth="200dp">
+        android:minWidth="200dp"
+        android:theme="@style/CustomTextInputLayoutStyle">
 
         <EditText
             android:id="@+id/input_filename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/record_dialog_filename_hint"
-            android:imeOptions="actionDone"
             android:inputType="text"
             android:textColor="@color/txt" />
     </android.support.design.widget.TextInputLayout>
