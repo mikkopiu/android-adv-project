@@ -20,10 +20,10 @@
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"
             android:layout_toLeftOf="@+id/close_btn"
-            android:singleLine="true"
-            android:ellipsize="end"
             android:layout_toStartOf="@+id/close_btn"
-            android:text=""
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAllCaps="true"
             android:textColor="@color/txt_light"
             android:textSize="20sp" />
 

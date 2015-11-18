@@ -116,7 +116,8 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         // And set data to the views
         textView.setText(item.getTitle());
-        volBar.setProgress((int) (item.getVolume() * 100));
+        textView.setAllCaps(true);
+        volBar.setProgress((int) (item.getVolume() * 10));
         randomizeSwitch.setChecked(item.getIsRandom());
 
         // TODO: Replace with actual logic (maybe by index?)
