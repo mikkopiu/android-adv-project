@@ -64,6 +64,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private boolean playingAudio;
     private boolean initialStage = true;
     private int playingInd = -1;
+    //SoundListAdapter.ViewHolder
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
 
@@ -93,7 +94,24 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void onPlayPauseToggle(View view, int layoutPosition) {
-            togglePlayPause(layoutPosition);
+
+            DAMSound sound = data.get(layoutPosition);
+
+            if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
+                // layout position is playing
+                pausePreview(layoutPosition);
+            } else if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
+                // layout position is paused
+                continuePreview(layoutPosition);
+            } else if(playingInd == -1) {
+                // nothing is playing
+                startPreview(layoutPosition);
+            } else if(playingInd != layoutPosition) {
+                // something else is playing
+                stopPreview(playingInd);
+                startPreview(layoutPosition);
+            }
+
         }
 
         @Override
@@ -131,6 +149,75 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             }
         }
     };
+
+    public void startPreview(int layoutPosition) {
+
+        SoundListAdapter.ViewHolder viewHolder =
+                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                        findViewHolderForAdapterPosition(layoutPosition));
+
+        viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+
+        if(mediaPlayer == null) {
+            initMediaPlayer();
+        }
+
+        startPreviewPlayback(layoutPosition);
+
+    }
+
+    private void pausePreview(int layoutPosition) {
+        if (mediaPlayer.isPlaying()) {
+
+            mediaPlayer.pause();
+            playingAudio = false;
+
+            SoundListAdapter.ViewHolder viewHolder =
+                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                            findViewHolderForAdapterPosition(layoutPosition));
+
+            if(viewHolder != null) {
+                viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+            }
+
+        }
+    }
+
+    private void continuePreview(int layoutPosition) {
+        if (!mediaPlayer.isPlaying()) {
+
+            mediaPlayer.start();
+            playingAudio = true;
+
+            SoundListAdapter.ViewHolder viewHolder =
+                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                            findViewHolderForAdapterPosition(layoutPosition));
+
+            if(viewHolder != null) {
+                viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+            }
+
+        }
+    }
+
+    public void stopPreview(int layoutPosition) {
+        SoundListAdapter.ViewHolder viewHolder =
+                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                        findViewHolderForAdapterPosition(layoutPosition));
+
+        if(viewHolder != null) {
+            viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+        }
+
+        data.get(layoutPosition).setIsPlaying(false);
+        playingInd = -1;
+        initialStage = true;
+        playingAudio = false;
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+    }
 
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
@@ -571,42 +658,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
-    private void togglePlayPause(int layoutPosition) {
-        // No need to instantiate this on onCreate, only when we first need it
-        if (mediaPlayer == null) {
-            initMediaPlayer();
-        }
-
-        if (layoutPosition != playingInd) {
-            // Play was clicked in some other position than which was playing earlier
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-
-            if (playingInd != -1) {
-                setPlaybackStatus(false);
-            }
-
-            startPreviewPlayback(layoutPosition);
-        } else {
-            if (!playingAudio) {
-                // No sound has played before, or the earlier one has already completed
-                if (initialStage) {
-                    startPreviewPlayback(layoutPosition);
-                } else {
-                    if (!mediaPlayer.isPlaying()) {
-                        mediaPlayer.start();
-                        setPlaybackStatus(true);
-                    }
-                }
-            } else {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    setPlaybackStatus(false);
-                }
-            }
-        }
-    }
-
     /**
      * Start preview playback when nothing is currently playing/previous audio has finished
      *
@@ -626,32 +677,13 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         if (!TextUtils.isEmpty(url)) {
             new Player().execute(url);
             this.playingInd = layoutPosition;
-            this.setPlaybackStatus(true);
+            data.get(layoutPosition).setIsPlaying(true);
         } else {
             Toast.makeText(
                     getActivity(),
                     "Sorry, there is something wrong with this sound, please try another sound.",
                     Toast.LENGTH_SHORT
             ).show();
-        }
-    }
-
-    /**
-     * Update playback status
-     *
-     * @param playing Is audio playing
-     */
-    private void setPlaybackStatus(boolean playing) {
-        this.playingAudio = playing;
-
-        if (!this.playingAudio) {
-            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(
-                    this.mRecyclerView.getChildAt(this.playingInd))
-            ).previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
-        } else {
-            ((SoundListAdapter.ViewHolder) this.mRecyclerView.getChildViewHolder(
-                    this.mRecyclerView.getChildAt(this.playingInd))
-            ).previewBtn.setImageResource(R.drawable.ic_pause_24dp);
         }
     }
 
@@ -700,11 +732,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                     public void onCompletion(MediaPlayer mp) {
                         // This sound has completed, so clicking play should restart the sound,
                         // not unpause it.
-                        initialStage = true;
-                        setPlaybackStatus(false);
-
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
+                        stopPreview(playingInd);
                     }
                 });
 
@@ -731,8 +759,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             if (result) {
                 mediaPlayer.start();
                 initialStage = false;
+                playingAudio = true;
             } else {
-                setPlaybackStatus(false);
+                stopPreview(playingInd);
                 Toast.makeText(
                         getActivity().getApplicationContext(),
                         "Something went wrong, please try another sound",

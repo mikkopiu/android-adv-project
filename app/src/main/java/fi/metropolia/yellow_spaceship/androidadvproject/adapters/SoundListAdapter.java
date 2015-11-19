@@ -62,22 +62,22 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                     popup.setOnMenuItemClickListener(this);
                     popup.show();
                 } else {
-                    this.mListener.onFavorite(v, getLayoutPosition());
+                    this.mListener.onFavorite(v, this.getAdapterPosition());
                 }
             } else if (v.getId() == R.id.sound_library_preview_button) {
-                this.mListener.onPlayPauseToggle(v, getLayoutPosition());
+                this.mListener.onPlayPauseToggle(v, this.getAdapterPosition());
             } else {
-                this.mListener.onRowSelect(v, getLayoutPosition());
+                this.mListener.onRowSelect(v, this.getAdapterPosition());
             }
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.upload_sound) {
-                this.mListener.onRowUpload(itemView, getLayoutPosition());
+                this.mListener.onRowUpload(itemView, this.getAdapterPosition());
                 return true;
             } else if (item.getItemId() == R.id.delete_sound) {
-                this.mListener.onRowDelete(itemView, getLayoutPosition());
+                this.mListener.onRowDelete(itemView, this.getAdapterPosition());
                 return true;
             }
             return false;
@@ -139,6 +139,13 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         // And set data to the views
         textView.setText(item.getTitle());
+
+        // Set play/pause icon
+        if(item.getIsPlaying()) {
+            holder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+        } else {
+            holder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+        }
 
         // Context-menu replaces the favorite-button
         if (showContextMenu) {

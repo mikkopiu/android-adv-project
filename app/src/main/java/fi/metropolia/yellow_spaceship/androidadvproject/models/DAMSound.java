@@ -34,6 +34,17 @@ public class DAMSound implements Parcelable {
     private transient String fileName;
     private transient String soundId;
 
+    // Silly Adapter stuff
+    private transient boolean isPlaying = false;
+
+    public void setIsPlaying(boolean plays) {
+        isPlaying = plays;
+    }
+
+    public boolean getIsPlaying() {
+        return isPlaying;
+    }
+
     /**
      * Necessary empty constructor, to not conflict with the Parcelable implementation
      */
