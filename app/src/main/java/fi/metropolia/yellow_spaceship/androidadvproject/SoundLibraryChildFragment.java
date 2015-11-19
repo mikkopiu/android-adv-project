@@ -100,7 +100,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
                 // layout position is playing
                 pausePreview(layoutPosition);
-            } else if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
+            } else if(!sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
                 // layout position is paused
                 continuePreview(layoutPosition);
             } else if(playingInd == -1) {
@@ -149,75 +149,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             }
         }
     };
-
-    public void startPreview(int layoutPosition) {
-
-        SoundListAdapter.ViewHolder viewHolder =
-                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                        findViewHolderForAdapterPosition(layoutPosition));
-
-        viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
-
-        if(mediaPlayer == null) {
-            initMediaPlayer();
-        }
-
-        startPreviewPlayback(layoutPosition);
-
-    }
-
-    private void pausePreview(int layoutPosition) {
-        if (mediaPlayer.isPlaying()) {
-
-            mediaPlayer.pause();
-            playingAudio = false;
-
-            SoundListAdapter.ViewHolder viewHolder =
-                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                            findViewHolderForAdapterPosition(layoutPosition));
-
-            if(viewHolder != null) {
-                viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
-            }
-
-        }
-    }
-
-    private void continuePreview(int layoutPosition) {
-        if (!mediaPlayer.isPlaying()) {
-
-            mediaPlayer.start();
-            playingAudio = true;
-
-            SoundListAdapter.ViewHolder viewHolder =
-                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                            findViewHolderForAdapterPosition(layoutPosition));
-
-            if(viewHolder != null) {
-                viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
-            }
-
-        }
-    }
-
-    public void stopPreview(int layoutPosition) {
-        SoundListAdapter.ViewHolder viewHolder =
-                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                        findViewHolderForAdapterPosition(layoutPosition));
-
-        if(viewHolder != null) {
-            viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
-        }
-
-        data.get(layoutPosition).setIsPlaying(false);
-        playingInd = -1;
-        initialStage = true;
-        playingAudio = false;
-        if(mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-        }
-    }
 
     public static SoundLibraryChildFragment newInstance() {
         return new SoundLibraryChildFragment();
@@ -339,6 +270,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     @Override
     public void onPause() {
         super.onPause();
+        stopPreview(playingInd);
         clearMediaPlayer();
     }
 
@@ -655,6 +587,80 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             } else {
                 mRecyclerView.getAdapter().notifyDataSetChanged();
             }
+        }
+    }
+
+    public void startPreview(int layoutPosition) {
+
+        SoundListAdapter.ViewHolder viewHolder =
+                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                        findViewHolderForAdapterPosition(layoutPosition));
+
+        viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+
+        if(mediaPlayer == null) {
+            initMediaPlayer();
+        }
+
+        startPreviewPlayback(layoutPosition);
+
+    }
+
+    private void pausePreview(int layoutPosition) {
+        if (mediaPlayer.isPlaying()) {
+
+            mediaPlayer.pause();
+            playingAudio = false;
+
+            data.get(layoutPosition).setIsPlaying(false);
+
+            SoundListAdapter.ViewHolder viewHolder =
+                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                            findViewHolderForAdapterPosition(layoutPosition));
+
+            if(viewHolder != null) {
+                viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+            }
+
+        }
+    }
+
+    private void continuePreview(int layoutPosition) {
+        if (!mediaPlayer.isPlaying()) {
+
+            mediaPlayer.start();
+            playingAudio = true;
+
+            data.get(layoutPosition).setIsPlaying(true);
+
+            SoundListAdapter.ViewHolder viewHolder =
+                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                            findViewHolderForAdapterPosition(layoutPosition));
+
+            if(viewHolder != null) {
+                viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+            }
+
+        }
+    }
+
+    public void stopPreview(int layoutPosition) {
+        SoundListAdapter.ViewHolder viewHolder =
+                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
+                        findViewHolderForAdapterPosition(layoutPosition));
+
+        if(viewHolder != null) {
+            viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+        }
+        if(layoutPosition != -1) {
+            data.get(layoutPosition).setIsPlaying(false);
+        }
+        playingInd = -1;
+        initialStage = true;
+        playingAudio = false;
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
         }
     }
 

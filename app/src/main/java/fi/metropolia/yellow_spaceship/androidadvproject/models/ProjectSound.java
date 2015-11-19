@@ -193,6 +193,8 @@ public class ProjectSound implements Parcelable {
      * @param sampleRate Sample rate as integer value e.g 44100
      */
     public void setSampleRate(int sampleRate) {
+        if(sampleRate != 44100)
+            sampleRate = 44100;
         mSampleRate = sampleRate;
     }
 
