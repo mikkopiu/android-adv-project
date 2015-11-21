@@ -137,25 +137,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         volBar.setProgress((int) (item.getVolume() * 100));
         randomizeSwitch.setChecked(item.getIsRandom());
 
-        // TODO: Replace with actual logic (maybe by index?)
-        int cardBackgroundColorId;
-
-        switch (item.getCategory()) {
-            case HUMAN:
-                cardBackgroundColorId = R.color.acc_card_bac_1;
-                break;
-            case STORY:
-                cardBackgroundColorId = R.color.acc_card_bac_3;
-                break;
-            case NATURE:
-                cardBackgroundColorId = R.color.acc_card_bac_2;
-                break;
-            case MACHINE:
-                cardBackgroundColorId = R.color.acc_card_bac_4;
-                break;
-            default:
-                cardBackgroundColorId = R.color.acc_card_bac_1;
-        }
+        int cardBackgroundColorId = getCardBackgroundColorId(item);
 
         int color;
         int volBarColor;
@@ -183,5 +165,34 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Select a colour to use for a sound cardview.
+     * TODO: Replace with actual logic (maybe by index?)
+     * @param sound ProjectSound for the current ViewHolder
+     * @return Background colour id
+     */
+    private int getCardBackgroundColorId(ProjectSound sound) {
+        int cardBackgroundColorId;
+
+        switch (sound.getCategory()) {
+            case HUMAN:
+                cardBackgroundColorId = R.color.acc_card_bac_1;
+                break;
+            case STORY:
+                cardBackgroundColorId = R.color.acc_card_bac_3;
+                break;
+            case NATURE:
+                cardBackgroundColorId = R.color.acc_card_bac_2;
+                break;
+            case MACHINE:
+                cardBackgroundColorId = R.color.acc_card_bac_4;
+                break;
+            default:
+                cardBackgroundColorId = R.color.acc_card_bac_1;
+        }
+
+        return cardBackgroundColorId;
     }
 }
