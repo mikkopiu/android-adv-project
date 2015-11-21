@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, YourSoundscapesActivity.class);
                     break;
                 case R.id.incontext_museum_tour:
-//                    intent = new Intent(MainActivity.this, MuseumTourActivity.class); // TODO: set correct Activity
+//                    intent = new Intent(MainActivity.this, MuseumTourActivity.class);
 //                    break;
                     Toast.makeText(getApplicationContext(), "Coming soon", Toast.LENGTH_SHORT).show();
                     return;

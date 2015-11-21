@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
-import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter.ViewHolder.ISoundViewHolderClicks;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.ISoundLibraryViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloaderListener;
@@ -71,14 +71,14 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Event handling for adapter's events
      */
-    private final ISoundViewHolderClicks listEventHandler = new ISoundViewHolderClicks() {
+    private final ISoundLibraryViewHolderClicks listEventHandler = new ISoundLibraryViewHolderClicks() {
         @Override
-        public void onFavorite(View view, int layoutPosition) {
+        public void onFavorite(int layoutPosition) {
             setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);
         }
 
         @Override
-        public void onRowSelect(View view, int layoutPosition) {
+        public void onRowSelect(int layoutPosition) {
             DAMSound selectedSound = data.get(layoutPosition);
 
             // Return the selection results if necessary
@@ -93,7 +93,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         @Override
-        public void onPlayPauseToggle(View view, int layoutPosition) {
+        public void onPlayPauseToggle(int layoutPosition) {
 
             DAMSound sound = data.get(layoutPosition);
 
@@ -115,7 +115,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         @Override
-        public void onRowUpload(View view, int layoutPosition) {
+        public void onRowUpload(int layoutPosition) {
             Log.d("SoundLibChild DEBUG", "UPLOADING SOUND: " + data.get(layoutPosition).getTitle());
             DAMSound s = data.get(layoutPosition);
 
@@ -125,7 +125,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         @Override
-        public void onRowDelete(View view, int layoutPosition) {
+        public void onRowDelete(int layoutPosition) {
             Log.d("SoundLibChild DEBUG", "DELETING SOUND: " + data.get(layoutPosition).getTitle());
             DAMSound s = data.get(layoutPosition);
 

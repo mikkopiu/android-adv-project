@@ -13,10 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
@@ -24,7 +22,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import java.io.File;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
-import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
@@ -123,7 +121,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             new IProjectSoundViewHolderClicks() {
 
                 @Override
-                public void onCloseClicked(View view, int layoutPosition) {
+                public void onCloseClick(int layoutPosition) {
                     try {
                         mProject.removeSound(layoutPosition);
                         soundPlayer.removeSound(layoutPosition);
@@ -145,7 +143,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress) {
+                public void onVolumeChange(int layoutPosition, int progress) {
                     float newVol = (float) progress / 100.0f; // SeekBar has values from 0-100 (int)
 
                     // soundPlayer, mProject and recyclerView should have matching indexes
@@ -154,7 +152,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onRandomizeCheckedChange(CompoundButton button, int layoutPosition, boolean checked) {
+                public void onRandomizeCheckedChange(int layoutPosition, boolean checked) {
                     ProjectSound sound = mProject.getSound(layoutPosition);
 
                     if (sound != null) {
@@ -225,7 +223,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             }
         });
 
-        soundPlayer = new SoundPlayer(this);
+        soundPlayer = new SoundPlayer();
 
         if (savedInstanceState != null) {
             this.mProject = savedInstanceState.getParcelable(UNSAVED_PROJECT_BUNDLE_NAME);

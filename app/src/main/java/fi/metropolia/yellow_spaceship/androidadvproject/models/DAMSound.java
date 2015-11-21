@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A single sound from the DAM.
@@ -18,7 +16,7 @@ public class DAMSound implements Parcelable {
     private String OriginalFilename;
     private SoundCategory Category;
     private SoundType SoundType;
-    private int LengthSec; // TODO: Can this be a float on the DAM side?
+    private int LengthSec;
     private Date CreationDate;
     private String FileExtension;
     private float FileSizeKB;
@@ -26,7 +24,6 @@ public class DAMSound implements Parcelable {
     private String CollectionName;
     private int CollectionID;
     private String DownloadLink;
-    private Map<String, Object> additionalProperties = new HashMap<>();
 
     // Additional local properties
     private transient boolean isFavorite;
@@ -274,14 +271,6 @@ public class DAMSound implements Parcelable {
      */
     public void setDownloadLink(String downloadLink) {
         DownloadLink = downloadLink;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
     /**

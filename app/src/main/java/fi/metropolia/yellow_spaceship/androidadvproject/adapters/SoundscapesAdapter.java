@@ -17,7 +17,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject
 public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.ViewHolder> {
 
     private final ArrayList<SoundScapeProject> mDataSet;
-    private final ViewHolder.ISoundscapeViewHolderClicks listener;
+    private final ISoundscapeViewHolderClicks listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
@@ -43,33 +43,25 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
                 popup.setOnMenuItemClickListener(this);
                 popup.show();
             } else {
-                this.mListener.onRowSelect(v, getLayoutPosition());
+                this.mListener.onRowSelect(getLayoutPosition());
             }
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.rename_soundscape) {
-                this.mListener.onRowRename(itemView, getLayoutPosition());
+                this.mListener.onRowRename(getLayoutPosition());
                 return true;
             } else if (item.getItemId() == R.id.delete_soundscape) {
-                this.mListener.onRowDelete(itemView, getLayoutPosition());
+                this.mListener.onRowDelete(getLayoutPosition());
                 return true;
             }
             return false;
         }
-
-        public interface ISoundscapeViewHolderClicks {
-            void onRowSelect(View view, int layoutPosition);
-
-            void onRowRename(View view, int layoutPosition);
-
-            void onRowDelete(View view, int layoutPosition);
-        }
     }
 
     public SoundscapesAdapter(ArrayList<SoundScapeProject> dataSet,
-                              ViewHolder.ISoundscapeViewHolderClicks listener) {
+                              ISoundscapeViewHolderClicks listener) {
         this.mDataSet = dataSet;
         this.listener = listener;
     }

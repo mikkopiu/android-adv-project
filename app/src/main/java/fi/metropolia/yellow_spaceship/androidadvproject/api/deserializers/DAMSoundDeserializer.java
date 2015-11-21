@@ -1,5 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.api.deserializers;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -16,7 +18,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
 
 /**
- * Deserialize JSON's "Category" property into enum SoundCategory.
+ * Deserialize DAMSounds from JSON
  */
 public class DAMSoundDeserializer implements JsonDeserializer<DAMSound> {
     @Override
@@ -86,7 +88,12 @@ public class DAMSoundDeserializer implements JsonDeserializer<DAMSound> {
                     sound.setDownloadLink(val.getAsString());
                     break;
                 default:
-                    sound.setAdditionalProperty(entry.getKey(), val);
+                    Log.w(
+                            "DAMSoundDeserializer",
+                            "No match for JSON property in DAMSound. Key: " +
+                                    entry.getKey() + ", with value: " + val.getAsString()
+                    );
+                    break;
             }
         }
 

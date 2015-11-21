@@ -23,6 +23,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
         toolbar.setTitle(R.string.sound_library_title);
         setSupportActionBar(toolbar);
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

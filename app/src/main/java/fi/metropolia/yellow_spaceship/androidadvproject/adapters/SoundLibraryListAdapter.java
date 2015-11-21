@@ -1,8 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
  */
 public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryListAdapter.ViewHolder> {
 
-    private final Context context;
     private final ArrayList<ListRowData> dataSet;
     private final View.OnClickListener listener;
 
@@ -47,13 +44,12 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
     /**
      * Constructor
      *
-     * @param context The activity
+     * @param listener Click listener for the adapter's items
      * @param dataSet Data for the adapter.
      */
-    public SoundLibraryListAdapter(Context context, View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
+    public SoundLibraryListAdapter(View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
 
         this.dataSet = dataSet;
-        this.context = context;
         this.listener = listener;
 
     }
@@ -132,10 +128,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
     @Override
     public int getItemCount() {
-        if (dataSet != null)
-            return dataSet.size();
-        else
-            return 0;
+        return dataSet != null ? dataSet.size() : 0;
     }
 
 }

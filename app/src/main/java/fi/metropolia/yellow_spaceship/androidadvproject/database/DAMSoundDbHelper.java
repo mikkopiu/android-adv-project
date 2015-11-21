@@ -27,7 +27,7 @@ public class DAMSoundDbHelper extends SQLiteOpenHelper {
                     DAMSoundEntry.COLUMN_NAME_TITLE + TEXT_TYPE + NOT_NULL + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_CATEGORY + TEXT_TYPE + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
-                    DAMSoundEntry.COLUMN_NAME_LENGTH_SEC + INTEGER_TYPE + COMMA_SEP +   // TODO: check is this actually an int, or can it be a float?
+                    DAMSoundEntry.COLUMN_NAME_LENGTH_SEC + INTEGER_TYPE + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_IS_FAVORITE + INTEGER_TYPE + COMMA_SEP +  // SQLite doesn't have booleans, so this needs to be an int
                     DAMSoundEntry.COLUMN_NAME_IS_RECORDING + INTEGER_TYPE + COMMA_SEP +
                     DAMSoundEntry.COLUMN_NAME_FILE_NAME + TEXT_TYPE + COMMA_SEP +

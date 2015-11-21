@@ -1,9 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +25,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdapter.ViewHolder> {
 
     private final ArrayList<ProjectSound> mDataSet;
-    private final ViewHolder.IProjectSoundViewHolderClicks listener;
+    private final IProjectSoundViewHolderClicks listener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             SeekBar.OnSeekBarChangeListener,
@@ -64,7 +62,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.close_btn) {
-                this.mListener.onCloseClicked(v, getLayoutPosition());
+                this.mListener.onCloseClick(getLayoutPosition());
             } else if (v.getId() == R.id.volume_slider_btn) {
                 this.volBar.setProgress(this.prevProgress == 0 ? 100 : 0);
             }
@@ -80,7 +78,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             }
             this.prevProgress = progress;
 
-            this.mListener.onVolumeChange(seekBar, getLayoutPosition(), progress);
+            this.mListener.onVolumeChange(getLayoutPosition(), progress);
         }
 
         @Override
@@ -95,20 +93,12 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            this.mListener.onRandomizeCheckedChange(buttonView, getLayoutPosition(), isChecked);
-        }
-
-        public interface IProjectSoundViewHolderClicks {
-            void onCloseClicked(View view, int layoutPosition);
-
-            void onVolumeChange(SeekBar seekBar, int layoutPosition, int progress);
-
-            void onRandomizeCheckedChange(CompoundButton button, int layoutPosition, boolean checked);
+            this.mListener.onRandomizeCheckedChange(getLayoutPosition(), isChecked);
         }
     }
 
     public SoundCardViewAdapter(ArrayList<ProjectSound> dataSet,
-                                SoundCardViewAdapter.ViewHolder.IProjectSoundViewHolderClicks listener) {
+                                IProjectSoundViewHolderClicks listener) {
         this.mDataSet = dataSet;
         this.listener = listener;
     }

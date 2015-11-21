@@ -56,7 +56,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         }
 
         // Adapter for RecyclerView
-        adapter = new SoundLibraryListAdapter(getActivity(), this, data);
+        adapter = new SoundLibraryListAdapter(this, data);
         recyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         recyclerView.setHasFixedSize(true);

@@ -1,6 +1,5 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.sounds;
 
-import android.content.Context;
 import android.os.Handler;
 
 import java.io.FileInputStream;
@@ -15,7 +14,6 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
  */
 public class SoundPlayer implements SoundFinishedListener {
 
-    private final Context mContext;
     private ArrayList<ProjectSound> mSounds;
 
     private boolean mIsPlaying = false;
@@ -28,11 +26,8 @@ public class SoundPlayer implements SoundFinishedListener {
 
     private final Handler randomHandler = new Handler();
 
-    public SoundPlayer(Context context) {
-
-        mContext = context;
+    public SoundPlayer() {
         mSounds = new ArrayList<>();
-
     }
 
     /**

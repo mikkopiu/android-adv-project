@@ -129,8 +129,6 @@ public class ApiClient {
 
         /**
          * Simplified method for getting all sounds for a single category
-         * <p/>
-         * TODO: Does this search all collections available to the user, or for anyone?
          *
          * @param category SoundCategory
          * @param link     Show download link?

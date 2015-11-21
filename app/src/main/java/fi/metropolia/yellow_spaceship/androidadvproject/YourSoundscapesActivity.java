@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.ISoundscapeViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
@@ -26,7 +27,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
 public class YourSoundscapesActivity extends AppCompatActivity
-        implements SoundscapesAdapter.ViewHolder.ISoundscapeViewHolderClicks,
+        implements ISoundscapeViewHolderClicks,
         ProjectLoadListener {
 
     private ArrayList<SoundScapeProject> mData;
@@ -168,7 +169,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRowSelect(View view, int layoutPosition) {
+    public void onRowSelect(int layoutPosition) {
         SoundScapeProject d = this.mData.get(layoutPosition);
 
         Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
@@ -177,7 +178,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRowRename(View view, int layoutPosition) {
+    public void onRowRename(int layoutPosition) {
         if (this.mDialog == null) {
             setupDialog();
         }
@@ -186,7 +187,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRowDelete(View view, int layoutPosition) {
+    public void onRowDelete(int layoutPosition) {
         this.deleteProject(this.mData.get(layoutPosition));
     }
 
