@@ -5,4 +5,5 @@
 
     <dimen name="activity_main_card_title_padding">8dp</dimen>
     <dimen name="activity_main_card_title_font_size">16sp</dimen>
+    <dimen name="activity_main_card_height">150dp</dimen>
 </resources>
