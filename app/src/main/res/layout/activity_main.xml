@@ -3,8 +3,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"
-        android:id="@+id/toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,6 +30,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/create_soundscape_title"
                     android:scaleType="centerCrop"
                     android:src="@drawable/create_ss_crop_150dp" />
 
@@ -75,6 +77,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/sound_library_title"
                         android:scaleType="centerCrop"
                         android:src="@drawable/sound_l_crop_75dp" />
 
@@ -111,6 +114,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/your_soundscapes_title"
                         android:scaleType="centerCrop"
                         android:src="@drawable/your_ss_crop_75dp" />
 
@@ -148,6 +152,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/museum_tour_title"
                     android:scaleType="centerCrop"
                     android:src="@drawable/museum_crop_150dp" />
 
