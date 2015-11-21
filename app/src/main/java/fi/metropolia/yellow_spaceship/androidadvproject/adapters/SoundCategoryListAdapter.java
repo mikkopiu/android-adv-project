@@ -18,7 +18,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
 /**
  * Adapter for SoundLibrary RecyclerView
  */
-public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryListAdapter.ViewHolder> {
+public class SoundCategoryListAdapter extends RecyclerView.Adapter<SoundCategoryListAdapter.ViewHolder> {
 
     private final ArrayList<ListRowData> dataSet;
     private final View.OnClickListener listener;
@@ -47,7 +47,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
      * @param listener Click listener for the adapter's items
      * @param dataSet Data for the adapter.
      */
-    public SoundLibraryListAdapter(View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
+    public SoundCategoryListAdapter(View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
 
         this.dataSet = dataSet;
         this.listener = listener;
@@ -76,7 +76,7 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
     }
 
     @Override
-    public SoundLibraryListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SoundCategoryListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         // Inflate the view
         View v = LayoutInflater.from(parent.getContext())

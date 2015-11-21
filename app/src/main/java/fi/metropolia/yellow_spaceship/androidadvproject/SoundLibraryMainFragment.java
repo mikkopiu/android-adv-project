@@ -12,16 +12,14 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundLibraryListAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCategoryListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ListRowData;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 
 public class SoundLibraryMainFragment extends Fragment implements View.OnClickListener {
 
-    private ArrayList<ListRowData> data;
-
     private RecyclerView recyclerView;
-    private SoundLibraryListAdapter adapter;
+    private SoundCategoryListAdapter adapter;
 
     public static SoundLibraryMainFragment newInstance() {
         return new SoundLibraryMainFragment();
@@ -44,7 +42,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         View fragmentView = inflater.inflate(R.layout.sound_library_main_fragment, container, false);
 
         // Data for RecycleView
-        this.data = new ArrayList<>();
+        ArrayList<ListRowData> data = new ArrayList<>();
         data.add(new ListRowData(RECORDINGS_CAPTION, R.drawable.ic_mic_yellow_24dp, null));
         data.add(new ListRowData(FAVOURITES_CAPTION, R.drawable.ic_star_24dp, null));
 
@@ -56,7 +54,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
         }
 
         // Adapter for RecyclerView
-        adapter = new SoundLibraryListAdapter(this, data);
+        adapter = new SoundCategoryListAdapter(this, data);
         recyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         recyclerView.setHasFixedSize(true);
@@ -94,7 +92,7 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
         int itemPosition = recyclerView.getChildAdapterPosition(v);
-        ListRowData d = this.data.get(itemPosition);
+        ListRowData d = adapter.getDataWithPosition(itemPosition);
         Bundle bundle = new Bundle();
 
         bundle.putString("title", d.getCaption());
@@ -107,10 +105,9 @@ public class SoundLibraryMainFragment extends Fragment implements View.OnClickLi
                 bundle.putBoolean("isFavorites", true);
                 break;
             default:
-                ListRowData data = adapter.getDataWithPosition(itemPosition);
                 bundle.putBoolean("isFavorites", false);
                 bundle.putBoolean("isRecordings", false);
-                bundle.putString("category", data.getCategory().toString());
+                bundle.putString("category", d.getCategory().toString());
         }
 
         fragment.setArguments(bundle);
