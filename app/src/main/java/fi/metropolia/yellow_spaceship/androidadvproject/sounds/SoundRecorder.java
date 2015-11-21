@@ -26,8 +26,6 @@ public class SoundRecorder {
 
     private Thread mBackgroundThread;
 
-    private AudioRecord mAudioRecord;
-
     public SoundRecorder() {
 
     }
@@ -143,8 +141,18 @@ public class SoundRecorder {
         @Override
         public void run() {
 
-            int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize);
+            int minBufferSize = AudioRecord.getMinBufferSize(
+                    SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT
+            );
+            AudioRecord audioRecord = new AudioRecord(
+                    MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                    minBufferSize
+            );
             int minBufferByteSize = minBufferSize * 2;
             byte[] recBuffer = new byte[minBufferByteSize];
             int frameByteSize = minBufferSize / 2;
@@ -161,13 +169,19 @@ public class SoundRecorder {
                     mFile.delete();
                 }
 
-                DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(mTempFile)));
+                DataOutputStream dos = new DataOutputStream(
+                        new BufferedOutputStream(new FileOutputStream(mTempFile))
+                );
 
-                mAudioRecord.startRecording();
+                audioRecord.startRecording();
 
                 while (mIsRecording) {
 
-                    int reallySampledBytes = mAudioRecord.read(recBuffer, recBufferBytePtr, sampleBytes);
+                    int reallySampledBytes = audioRecord.read(
+                            recBuffer,
+                            recBufferBytePtr,
+                            sampleBytes
+                    );
 
                     // Uncomment block if you want to do some manipulation on samples.
                     /*
@@ -214,9 +228,9 @@ public class SoundRecorder {
 
                 }
 
-                mAudioRecord.stop();
-                mAudioRecord.release();
-                mAudioRecord = null;
+                audioRecord.stop();
+                audioRecord.release();
+                audioRecord = null;
 
                 // Close output stream
                 dos.close();

@@ -196,7 +196,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
      * @param project Existing SoundScapeProject
      * @param name New name for the project
      */
-    public void renameProject(SoundScapeProject project, String name) {
+    private void renameProject(SoundScapeProject project, String name) {
         if (project != null && !name.trim().isEmpty() && !name.equals(project.getName())) {
             String dir = getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER + "/";
             File newFile = new File(dir + name + ProjectSaveTask.FILE_EXT);
@@ -225,7 +225,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
      * Reloads data on success.
      * @param project Existing SoundScapeProject
      */
-    public void deleteProject(SoundScapeProject project) {
+    private void deleteProject(SoundScapeProject project) {
         if (project != null) {
             File file = new File(getFilesDir() +
                     "/" + ProjectSaveTask.PROJECT_FOLDER +

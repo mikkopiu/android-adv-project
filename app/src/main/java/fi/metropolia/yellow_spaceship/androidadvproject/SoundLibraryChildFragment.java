@@ -71,7 +71,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Event handling for adapter's events
      */
-    private ISoundViewHolderClicks listEventHandler = new ISoundViewHolderClicks() {
+    private final ISoundViewHolderClicks listEventHandler = new ISoundViewHolderClicks() {
         @Override
         public void onFavorite(View view, int layoutPosition) {
             setItemFavorite(!data.get(layoutPosition).getIsFavorite(), layoutPosition);

@@ -4,7 +4,7 @@ public class RandomRunnable implements Runnable {
 
     private int mIndex;
     private short mNextPlayback;
-    private SoundPlayer mSoundPlayer;
+    private final SoundPlayer mSoundPlayer;
 
     public void setNextPlayback(short np) {
         mNextPlayback = np;

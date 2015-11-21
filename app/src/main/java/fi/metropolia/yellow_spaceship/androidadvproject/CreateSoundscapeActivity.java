@@ -161,7 +161,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
                         if(!checked) {
                             soundPlayer.changeToLoop(layoutPosition);
-                        } else if(checked) {
+                        } else {
                             soundPlayer.changeToRandom(layoutPosition);
                         }
 

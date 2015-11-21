@@ -1,7 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.sounds;
 
 import android.content.Context;
-import android.media.AudioTrack;
 import android.os.Handler;
 
 import java.io.FileInputStream;

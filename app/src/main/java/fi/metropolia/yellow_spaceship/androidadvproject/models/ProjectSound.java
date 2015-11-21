@@ -36,7 +36,6 @@ public class ProjectSound implements Parcelable {
     private transient int mSampleRate;
     private transient File mFile;
     private transient Thread mTrackThread;
-    private transient ProjectSound self = this;
     private transient RandomRunnable mRandomRunnable;
     private transient SoundFinishedListener soundFinishedListener;
 
@@ -403,7 +402,7 @@ public class ProjectSound implements Parcelable {
                             // Stop playing if we are not looping
                             isPlaying = false;
                             // Tell SoundPlayer we are finished
-                            soundFinishedListener.soundIsFinished(self);
+                            soundFinishedListener.soundIsFinished(ProjectSound.this);
                         }
 
                     }
