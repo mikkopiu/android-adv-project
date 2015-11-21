@@ -129,6 +129,10 @@ public class SoundScapeProject implements Parcelable {
         this.addSounds(sounds);
     }
 
+    /**
+     * Parcelable implementations
+     */
+
     @Override
     public int describeContents() {
         return 0;

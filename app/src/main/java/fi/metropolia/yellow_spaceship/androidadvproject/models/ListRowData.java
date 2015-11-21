@@ -10,15 +10,6 @@ public class ListRowData {
     private final SoundCategory category;
 
     /**
-     * Default constructor
-     */
-    public ListRowData() {
-        this.caption = null;
-        this.icon = null;
-        this.category = null;
-    }
-
-    /**
      * Constructor
      *
      * @param caption Caption for the row.

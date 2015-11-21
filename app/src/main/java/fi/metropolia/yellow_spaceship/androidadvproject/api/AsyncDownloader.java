@@ -214,8 +214,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
             // Insert or update meta data, depending on whether the sound already exists
             // in the database.
             mContext.getContentResolver().insert(SoundContentProvider.CONTENT_URI, values);
-
-            //mRecyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 

@@ -12,7 +12,8 @@ public class AlertDialogManager {
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
 
-        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+        String btnTxt = context.getResources().getString(android.R.string.ok);
+        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, btnTxt, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             }
         });

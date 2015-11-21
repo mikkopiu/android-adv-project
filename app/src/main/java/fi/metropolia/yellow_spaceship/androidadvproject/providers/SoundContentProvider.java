@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -87,7 +88,11 @@ public class SoundContentProvider extends ContentProvider {
                 selectionArgs, null, null, sortOrder);
 
         // Make sure that potential listeners are getting notified
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        try {
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        } catch (NullPointerException e) {
+            Log.e("SoundContentProvider", "Could not set notification URI, context is null!");
+        }
 
         return cursor;
     }
@@ -105,46 +110,49 @@ public class SoundContentProvider extends ContentProvider {
         long id = 0;
 
         // Verify that the proper URI is being accessed
-        switch (uriType) {
-            case SOUNDS:
-                String selection = DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?";
-                String[] selectionArgs = new String[]{
-                        values.getAsString(DAMSoundEntry.COLUMN_NAME_SOUND_ID)
-                };
+        if (uriType == SOUNDS) {
+            String selection = DAMSoundEntry.COLUMN_NAME_SOUND_ID + "=?";
+            String[] selectionArgs = new String[]{
+                    values.getAsString(DAMSoundEntry.COLUMN_NAME_SOUND_ID)
+            };
 
-                // Do an update if the constraints match
-                int rowsAffected = this.database.update(
+            // Do an update if the constraints match
+            int rowsAffected = this.database.update(
+                    DAMSoundEntry.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs
+            );
+
+            if (rowsAffected == 0) {
+                // No such row already existed, do an actual insert
+                id = this.database.insert(DAMSoundEntry.TABLE_NAME, null, values);
+            } else {
+                // Find the ID of the already existing sound (to return)
+                Cursor cursor = this.database.query(
                         DAMSoundEntry.TABLE_NAME,
-                        values,
+                        new String[]{DAMSoundEntry._ID},
                         selection,
-                        selectionArgs
+                        selectionArgs,
+                        null, null, null
                 );
 
-                if (rowsAffected == 0) {
-                    // No such row already existed, do an actual insert
-                    id = this.database.insert(DAMSoundEntry.TABLE_NAME, null, values);
-                } else {
-                    // Find the ID of the already existing sound (to return)
-                    Cursor cursor = this.database.query(
-                            DAMSoundEntry.TABLE_NAME,
-                            new String[]{DAMSoundEntry._ID},
-                            selection,
-                            selectionArgs,
-                            null, null, null
-                    );
-
-                    if (cursor.moveToFirst()) {
-                        id = cursor.getLong(0);
-                    }
-
-                    cursor.close();
+                if (cursor.moveToFirst()) {
+                    id = cursor.getLong(0);
                 }
 
-                getContext().getContentResolver().notifyChange(uri, null);
+                cursor.close();
+            }
 
-                return ContentUris.withAppendedId(uri, id);
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
+            try {
+                getContext().getContentResolver().notifyChange(uri, null);
+            } catch (NullPointerException e) {
+                Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+            }
+
+            return ContentUris.withAppendedId(uri, id);
+        } else {
+            throw new IllegalArgumentException("Unknown URI: " + uri);
         }
     }
 
@@ -175,7 +183,13 @@ public class SoundContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        try {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+        }
+
         return rowsDeleted;
     }
 
@@ -210,7 +224,13 @@ public class SoundContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        try {
+            getContext().getContentResolver().notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+        }
+
         return rowsUpdated;
     }
 

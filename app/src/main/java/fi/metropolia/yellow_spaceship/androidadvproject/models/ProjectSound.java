@@ -40,28 +40,6 @@ public class ProjectSound implements Parcelable {
     private transient SoundFinishedListener soundFinishedListener;
 
     /**
-     * Constructor, at least an ID is required
-     *
-     * @param id
-     */
-    public ProjectSound(String id) {
-        this(id, null, null, null, null, false, false, 1.0f);
-    }
-
-    private ProjectSound(Parcel in) {
-        this(
-                in.readString(),
-                in.readString(),
-                SoundCategory.fromApi(in.readString()),
-                SoundType.fromApi(in.readString()),
-                in.readString(),
-                in.readByte() == 1,
-                in.readByte() == 1,
-                in.readFloat()
-        );
-    }
-
-    /**
      * Full constructor
      *
      * @param id
@@ -83,6 +61,19 @@ public class ProjectSound implements Parcelable {
         this.isRandom = isRandom;
         this.mVolume = volume;
 
+    }
+
+    private ProjectSound(Parcel in) {
+        this(
+                in.readString(),
+                in.readString(),
+                SoundCategory.fromApi(in.readString()),
+                SoundType.fromApi(in.readString()),
+                in.readString(),
+                in.readByte() == 1,
+                in.readByte() == 1,
+                in.readFloat()
+        );
     }
 
     public void setSoundFinishedListener(SoundFinishedListener sfl) {
@@ -156,35 +147,6 @@ public class ProjectSound implements Parcelable {
     public float getVolume() {
         return mVolume;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.getId());
-        dest.writeString(this.getTitle());
-        dest.writeString(this.getCategory().toString());
-        dest.writeString(this.getSoundType().toString());
-        dest.writeString(this.getFileName());
-        dest.writeByte((byte) (this.getIsOnLoop() ? 1 : 0));
-        dest.writeByte((byte) (this.getIsRandom() ? 1 : 0));
-        dest.writeFloat(this.getVolume());
-    }
-
-    public static final Parcelable.Creator<ProjectSound> CREATOR
-            = new Parcelable.Creator<ProjectSound>() {
-
-        public ProjectSound createFromParcel(Parcel in) {
-            return new ProjectSound(in);
-        }
-
-        public ProjectSound[] newArray(int size) {
-            return new ProjectSound[size];
-        }
-    };
 
     /**
      * Set sample rate
@@ -430,5 +392,38 @@ public class ProjectSound implements Parcelable {
         }
 
     }
+
+    /**
+     * Parcelable implementation
+     */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.getId());
+        dest.writeString(this.getTitle());
+        dest.writeString(this.getCategory().toString());
+        dest.writeString(this.getSoundType().toString());
+        dest.writeString(this.getFileName());
+        dest.writeByte((byte) (this.getIsOnLoop() ? 1 : 0));
+        dest.writeByte((byte) (this.getIsRandom() ? 1 : 0));
+        dest.writeFloat(this.getVolume());
+    }
+
+    public static final Parcelable.Creator<ProjectSound> CREATOR
+            = new Parcelable.Creator<ProjectSound>() {
+
+        public ProjectSound createFromParcel(Parcel in) {
+            return new ProjectSound(in);
+        }
+
+        public ProjectSound[] newArray(int size) {
+            return new ProjectSound[size];
+        }
+    };
 
 }

@@ -35,22 +35,6 @@ public enum SoundCategory {
         }
     }
 
-    public String getDescription() {
-        switch (this) {
-            case NATURE:
-                return "Nature sound";
-            case HUMAN:
-                return "Human sound";
-            case MACHINE:
-                return "Machine sound";
-            case STORY:
-                return "Story sound";
-            case UNKNOWN:
-            default:
-                return "Unknown sound";
-        }
-    }
-
     public String toString() {
         switch (this) {
             case NATURE:

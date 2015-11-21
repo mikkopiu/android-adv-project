@@ -31,20 +31,6 @@ public enum SoundType {
         }
     }
 
-    public String getDescription() {
-        switch (this) {
-            case SOUNDSCAPE:
-                return "Soundscape";
-            case AMBIENCE:
-                return "Ambient sound";
-            case EFFECT:
-                return "Effect sound";
-            case UNKNOWN:
-            default:
-                return "Unknown sound type";
-        }
-    }
-
     public String toString() {
         switch (this) {
             case SOUNDSCAPE:
