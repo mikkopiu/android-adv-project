@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_collection_id"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="number"
                 android:textColor="@color/txt" />
         </android.support.design.widget.TextInputLayout>
 
