@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/sound_title"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"
@@ -42,7 +42,7 @@
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/randomize_switch"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/sound_title"
             android:paddingBottom="16dp"
@@ -54,7 +54,7 @@
             android:theme="@style/CustomSwitchStyle" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_below="@id/randomize_switch"
@@ -74,7 +74,7 @@
 
             <SeekBar
                 android:id="@+id/volume_slider"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:max="100" />

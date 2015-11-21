@@ -7,12 +7,13 @@
     android:layout_height="match_parent"
     tools:context="fi.metropolia.yellow_spaceship.androidadvproject.CreateSoundscapeActivity">
 
-    <include layout="@layout/toolbar"
-        android:id="@+id/toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/create_recycler_view"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_toolbar"
         android:layout_below="@id/toolbar"
@@ -23,7 +24,7 @@
 
     <RelativeLayout
         android:id="@id/bottom_toolbar"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="0dp"
