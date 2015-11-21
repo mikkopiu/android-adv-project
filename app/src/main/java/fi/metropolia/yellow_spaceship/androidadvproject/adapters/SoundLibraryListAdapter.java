@@ -100,7 +100,9 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
         // And set data to the views
         textView.setText(dataSet.get(position).getCaption());
         if (dataSet.get(position).getIcon() != null) {
-            Drawable icon = ContextCompat.getDrawable(context, dataSet.get(position).getIcon());
+            Drawable icon = ContextCompat.getDrawable(
+                    holder.itemView.getContext(), dataSet.get(position).getIcon()
+            );
 
             // If the row has an icon, that means it is one of the pre-defined categories,
             // i.e. it needs a different styling.
@@ -113,15 +115,10 @@ public class SoundLibraryListAdapter extends RecyclerView.Adapter<SoundLibraryLi
 
             // In order to show the parent view's ripple effect properly, the button's background
             // needs to be transparent.
-            int color;
-            if (Build.VERSION.SDK_INT < 23) {
-                color = holder.listItemContainerView.getContext().getResources()
-                        .getColor(android.R.color.transparent);
-            } else {
-                color = holder.listItemContainerView.getContext().getResources().getColor(
-                        android.R.color.transparent, holder.listItemContainerView.getContext().getTheme()
-                );
-            }
+            int color = ContextCompat.getColor(
+                    holder.itemView.getContext(),
+                    android.R.color.transparent
+            );
             listIconView.setBackgroundColor(color);
         } else {
             textView.setPadding(

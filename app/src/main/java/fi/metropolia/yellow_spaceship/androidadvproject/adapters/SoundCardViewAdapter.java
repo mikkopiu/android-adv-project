@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -133,24 +134,16 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         // And set data to the views
         textView.setText(item.getTitle());
-        textView.setAllCaps(true);
+        textView.setAllCaps(true); // XML value for capitalization is overridden when using setText
         volBar.setProgress((int) (item.getVolume() * 100));
         randomizeSwitch.setChecked(item.getIsRandom());
 
-        int cardBackgroundColorId = getCardBackgroundColorId(item);
+        // Get colours for view elements
+        Context context = holder.itemView.getContext();
+        int color = ContextCompat.getColor(context, getCardBackgroundColorId(item));
+        int volBarColor = ContextCompat.getColor(context, R.color.volbar_white);
 
-        int color;
-        int volBarColor;
-        Context context = holder.cardView.getContext();
-        Resources res = context.getResources();
-
-        if (Build.VERSION.SDK_INT < 23) {
-            color = res.getColor(cardBackgroundColorId);
-            volBarColor = res.getColor(R.color.volbar_white);
-        } else {
-            color = res.getColor(cardBackgroundColorId, context.getTheme());
-            volBarColor = res.getColor(R.color.volbar_white, context.getTheme());
-        }
+        // Update card's colour based on our colouring rules
         holder.cardView.setCardBackgroundColor(color);
 
         // Fix volume SeekBar's (and its thumb's) and Randomize-switch's colours
