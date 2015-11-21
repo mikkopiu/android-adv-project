@@ -22,19 +22,32 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
 
-        private final View itemView;
         private final ImageButton contextMenuBtn;
         private final ISoundscapeViewHolderClicks mListener;
+        private final TextView textView;
 
-        public ViewHolder(View v, ISoundscapeViewHolderClicks listener) {
-            super(v);
-            this.itemView = v;
-            this.contextMenuBtn = (ImageButton) v.findViewById(R.id.sound_library_fav_button);
+        public ViewHolder(final View itemView, ISoundscapeViewHolderClicks listener) {
+            super(itemView);
+            this.contextMenuBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+            this.textView = (TextView) itemView.findViewById(R.id.sound_library_list_text);
+
             this.mListener = listener;
-            v.setOnClickListener(this);
+
+            this.itemView.setOnClickListener(this);
             this.contextMenuBtn.setOnClickListener(this);
         }
 
+        /**
+         * Bind SoundScapeProject to this ViewHolder.
+         * Updates layout to match (titles etc.)
+         * @param project SoundScapeProject to bind
+         */
+        public void bindProject(SoundScapeProject project) {
+            this.textView.setText(project.getName());
+
+            this.contextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp);
+        }
+        
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.sound_library_fav_button) {
@@ -78,15 +91,8 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // Find the views in the layout
-        TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_library_list_text);
-        ImageButton contextMenuBtn = (ImageButton) holder.itemView
-                .findViewById(R.id.sound_library_fav_button); // Re-use the fav-button as the menu-button
-
-        // And set data to the views
-        textView.setText(mDataSet.get(position).getName());
-
-        contextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp);
+        SoundScapeProject item = mDataSet.get(position);
+        holder.bindProject(item);
     }
 
     @Override

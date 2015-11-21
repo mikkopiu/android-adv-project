@@ -28,17 +28,65 @@ public class SoundCategoryListAdapter extends RecyclerView.Adapter<SoundCategory
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public final View view;
-        public final LinearLayout listItemContainerView;
+        private final TextView textView;
+        private final ImageButton listIcon;
+        private final LinearLayout listItemContainerView;
 
-        public ViewHolder(View v, View.OnClickListener listener) {
-            super(v);
-            if (listener != null)
-                v.setOnClickListener(listener);
-            this.view = v;
-            this.listItemContainerView = (LinearLayout) v.findViewById(R.id.list_item_container);
+        public ViewHolder(final View itemView, View.OnClickListener listener) {
+            super(itemView);
+
+            this.textView = (TextView) itemView.findViewById(R.id.sound_library_list_text);
+            this.listIcon = (ImageButton) itemView.findViewById(R.id.sound_library_preview_button);
+            this.listItemContainerView = (LinearLayout) itemView.findViewById(R.id.list_item_container);
+
+            if (listener != null) {
+                itemView.setOnClickListener(listener);
+            }
         }
 
+        /**
+         * Bind ListRowData to this ViewHolder.
+         * Sets proper icons and text content.
+         * @param data ListRowData to set
+         */
+        public void bindData(ListRowData data) {
+
+            this.textView.setText(data.getCaption());
+
+            if (data.getIcon() != null) {
+                Drawable icon = ContextCompat.getDrawable(
+                        this.itemView.getContext(),
+                        data.getIcon()
+                );
+
+                // If the row has an icon, that means it is one of the pre-defined categories,
+                // i.e. it needs a different styling.
+                this.listItemContainerView
+                        .setBackgroundResource(R.drawable.sound_library_select_ripple);
+
+                // The ImageButtons are just icons here, not meant to be clicked
+                this.listIcon.setImageDrawable(icon);
+                this.listIcon.setClickable(false);
+                this.listIcon.setFocusable(false);
+
+                // In order to show the parent view's ripple effect properly,
+                // the button's background needs to be transparent.
+                int color = ContextCompat.getColor(
+                        this.itemView.getContext(),
+                        android.R.color.transparent
+                );
+                this.listIcon.setBackgroundColor(color);
+            } else {
+
+                // This item has no icon => fake the ImageButton as left padding
+                this.textView.setPadding(
+                        this.listIcon.getMaxWidth(),
+                        this.textView.getPaddingTop(),
+                        this.textView.getPaddingRight(),
+                        this.textView.getPaddingBottom()
+                );
+            }
+        }
     }
 
     /**
@@ -88,42 +136,8 @@ public class SoundCategoryListAdapter extends RecyclerView.Adapter<SoundCategory
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        // Find the views in the layout
-        TextView textView = (TextView) holder.view.findViewById(R.id.sound_library_list_text);
-        ImageButton listIconView = (ImageButton) holder.view.findViewById(R.id.sound_library_preview_button);
-
-        // And set data to the views
-        textView.setText(dataSet.get(position).getCaption());
-        if (dataSet.get(position).getIcon() != null) {
-            Drawable icon = ContextCompat.getDrawable(
-                    holder.itemView.getContext(), dataSet.get(position).getIcon()
-            );
-
-            // If the row has an icon, that means it is one of the pre-defined categories,
-            // i.e. it needs a different styling.
-            holder.listItemContainerView.setBackgroundResource(R.drawable.sound_library_select_ripple);
-
-            // The ImageButtons are just icons here, not meant to be clicked
-            listIconView.setImageDrawable(icon);
-            listIconView.setClickable(false);
-            listIconView.setFocusable(false);
-
-            // In order to show the parent view's ripple effect properly, the button's background
-            // needs to be transparent.
-            int color = ContextCompat.getColor(
-                    holder.itemView.getContext(),
-                    android.R.color.transparent
-            );
-            listIconView.setBackgroundColor(color);
-        } else {
-            textView.setPadding(
-                    listIconView.getMaxWidth(), // Fake the ImageButton as left padding
-                    textView.getPaddingTop(),
-                    textView.getPaddingRight(),
-                    textView.getPaddingBottom()
-            );
-        }
+        ListRowData d = dataSet.get(position);
+        holder.bindData(d);
     }
 
     @Override

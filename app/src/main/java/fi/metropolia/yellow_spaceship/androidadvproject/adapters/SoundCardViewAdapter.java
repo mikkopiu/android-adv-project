@@ -34,29 +34,52 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         private final IProjectSoundViewHolderClicks mListener;
         private int prevProgress;
 
-        public final ImageButton closeBtn;
-        public final ImageButton volBtn;
-        public final SeekBar volBar;
-        public final CardView cardView;
-        public final SwitchCompat randomSwitch;
+        private final ImageButton volBtn;
+        private final SeekBar volBar;
+        private final CardView cardView;
+        private final SwitchCompat randomSwitch;
+        private final TextView textView;
 
-        public ViewHolder(View itemView, IProjectSoundViewHolderClicks listener) {
+        public ViewHolder(final View itemView, IProjectSoundViewHolderClicks listener) {
             super(itemView);
 
             this.mListener = listener;
 
-            this.closeBtn = (ImageButton) itemView.findViewById(R.id.close_btn);
+            this.textView = (TextView) itemView.findViewById(R.id.sound_title);
             this.volBar = (SeekBar) itemView.findViewById(R.id.volume_slider);
             this.cardView = (CardView) itemView.findViewById(R.id.create_card_view);
             this.randomSwitch = (SwitchCompat) itemView.findViewById(R.id.randomize_switch);
             this.volBtn = (ImageButton) itemView.findViewById(R.id.volume_slider_btn);
 
-            this.closeBtn.setOnClickListener(this);
+            itemView.findViewById(R.id.close_btn).setOnClickListener(this);
             this.volBtn.setOnClickListener(this);
             this.volBar.setOnSeekBarChangeListener(this);
             this.randomSwitch.setOnCheckedChangeListener(this);
 
             this.prevProgress = 100;
+        }
+
+        /**
+         * Bind a ProjectSound's data to this ViewHolder
+         * @param sound Sound to bind
+         */
+        public void bindSound(ProjectSound sound) {
+            this.textView.setText(sound.getTitle());
+            this.textView.setAllCaps(true); // XML value for capitalization is overridden when using setText
+            this.volBar.setProgress((int) (sound.getVolume() * 100));
+            this.randomSwitch.setChecked(sound.getIsRandom());
+
+            // Get colours for view elements
+            Context context = this.itemView.getContext();
+            int color = ContextCompat.getColor(context, getCardBackgroundColorId(sound));
+            int volBarColor = ContextCompat.getColor(context, R.color.volbar_white);
+
+            // Update card's colour based on our colouring rules
+            this.cardView.setCardBackgroundColor(color);
+
+            // Fix volume SeekBar's (and its thumb's) and Randomize-switch's colours
+            this.volBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
+            this.volBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
         }
 
         @Override
@@ -116,29 +139,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProjectSound item = mDataSet.get(position);
-
-        // Find the views in the layout
-        TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_title);
-        SeekBar volBar = holder.volBar;
-        SwitchCompat randomizeSwitch = holder.randomSwitch;
-
-        // And set data to the views
-        textView.setText(item.getTitle());
-        textView.setAllCaps(true); // XML value for capitalization is overridden when using setText
-        volBar.setProgress((int) (item.getVolume() * 100));
-        randomizeSwitch.setChecked(item.getIsRandom());
-
-        // Get colours for view elements
-        Context context = holder.itemView.getContext();
-        int color = ContextCompat.getColor(context, getCardBackgroundColorId(item));
-        int volBarColor = ContextCompat.getColor(context, R.color.volbar_white);
-
-        // Update card's colour based on our colouring rules
-        holder.cardView.setCardBackgroundColor(color);
-
-        // Fix volume SeekBar's (and its thumb's) and Randomize-switch's colours
-        holder.volBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
-        holder.volBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
+        holder.bindSound(item);
     }
 
     @Override
@@ -156,7 +157,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
      * @param sound ProjectSound for the current ViewHolder
      * @return Background colour id
      */
-    private int getCardBackgroundColorId(ProjectSound sound) {
+    private static int getCardBackgroundColorId(ProjectSound sound) {
         int cardBackgroundColorId;
 
         switch (sound.getCategory()) {

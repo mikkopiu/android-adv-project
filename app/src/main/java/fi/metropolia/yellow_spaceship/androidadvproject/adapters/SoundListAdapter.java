@@ -26,11 +26,11 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
 
-        public final ISoundLibraryViewHolderClicks mListener;
+        private final ISoundLibraryViewHolderClicks mListener;
 
-        public final TextView tvTitle;
-        public final ImageButton favBtn;
-        public final ImageButton previewBtn;
+        private final TextView tvTitle;
+        private final ImageButton favBtn;
+        private final ImageButton previewBtn;
 
         private final boolean showContextMenu;
 
@@ -50,6 +50,34 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             itemView.setOnClickListener(this);
             this.favBtn.setOnClickListener(this);
             this.previewBtn.setOnClickListener(this);
+        }
+
+        /**
+         * Bind DAMSound to this ViewHolder.
+         * Sets icons and text content.
+         * @param sound DAMSound to bind
+         */
+        public void bindSound(DAMSound sound) {
+
+            this.tvTitle.setText(sound.getTitle());
+
+            // Set play/pause icon
+            if(sound.getIsPlaying()) {
+                this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+            } else {
+                this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+            }
+
+            // Context-menu replaces the favorite-button
+            if (showContextMenu) {
+                this.favBtn.setImageResource(R.drawable.ic_more_vert_24dp);
+            } else {
+                if (sound.getIsFavorite()) {
+                    this.favBtn.setImageResource(R.drawable.ic_star_24dp);
+                } else {
+                    this.favBtn.setImageResource(R.drawable.ic_star_outline_24dp);
+                }
+            }
         }
 
         @Override
@@ -120,30 +148,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
     @Override
     public void onBindViewHolder(final SoundListAdapter.ViewHolder holder, int position) {
         DAMSound item = mDataSet.get(position);
-
-        // Find the views in the layout
-        TextView textView = (TextView) holder.itemView.findViewById(R.id.sound_library_list_text);
-
-        // And set data to the views
-        textView.setText(item.getTitle());
-
-        // Set play/pause icon
-        if(item.getIsPlaying()) {
-            holder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
-        } else {
-            holder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
-        }
-
-        // Context-menu replaces the favorite-button
-        if (showContextMenu) {
-            holder.favBtn.setImageResource(R.drawable.ic_more_vert_24dp);
-        } else {
-            if (item.getIsFavorite()) {
-                holder.favBtn.setImageResource(R.drawable.ic_star_24dp);
-            } else {
-                holder.favBtn.setImageResource(R.drawable.ic_star_outline_24dp);
-            }
-        }
+        holder.bindSound(item);
     }
 
     @Override
