@@ -62,6 +62,7 @@
     <string name="your_soundscapes_delete_error">Error deleting soundscape, try again</string>
     <string name="your_soundscapes_rename_success">Project renamed</string>
     <string name="your_soundscapes_rename_error">Project could not be renamed, an error occurred</string>
+    <string name="your_soundscapes_rename_error_name_taken">Name already taken</string>
     <string name="library_download_error">Download failed, try again</string>
     <string name="library_upload_success">Sound uploaded</string>
     <string name="library_upload_error">Upload failed, try again</string>

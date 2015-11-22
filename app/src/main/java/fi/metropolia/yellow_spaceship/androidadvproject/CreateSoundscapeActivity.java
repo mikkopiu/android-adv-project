@@ -1,27 +1,19 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -29,6 +21,8 @@ import java.io.File;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
@@ -36,7 +30,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
-public class CreateSoundscapeActivity extends AppCompatActivity {
+public class CreateSoundscapeActivity extends AppCompatActivity implements SaveDialogListener {
 
     public final static int GET_LIBRARY_SOUND = 1;
     public final static int RECORD_SOUND = 2;
@@ -45,15 +39,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
     private SoundScapeProject mProject;
     private RecyclerView recyclerView;
-    private Dialog mDialog;
-    private EditText mDialogEditText;
-    private TextInputLayout mDialogTextInputLayout;
     private ProgressDialog mProgress;
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionMenu fabMenu;
 
     private boolean mIsSaving = false;
     private boolean mIsPlaying = false;
+    private SaveDialogManager saveDialogManager;
 
     private SoundPlayer soundPlayer;
 
@@ -64,20 +56,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             switch (v.getId()) {
-                case R.id.dialog_cancel_btn:
-                    mDialog.dismiss();
-                    break;
-                case R.id.dialog_save_btn:
-                    String str = mDialogEditText.getText().toString();
-                    if (str.trim().equals("")) {
-                        mDialogEditText.setError("Name is required");
-                        break;
-                    } else if (str.length() > mDialogTextInputLayout.getCounterMaxLength()) {
-                        mDialogEditText.setError("Name is too long");
-                        break;
-                    }
-                    save(str.trim());
-                    break;
                 case R.id.create_play_btn:
                     if (mProject.getSounds().size() > 0) {
                         if (mIsPlaying) {
@@ -94,10 +72,22 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.create_save_btn:
-                    if (mDialog == null) {
-                        setupDialog();
+                    if (saveDialogManager == null) {
+                        saveDialogManager = new SaveDialogManager(
+                                CreateSoundscapeActivity.this,
+                                getResources().getString(R.string.record_dialog_title),
+                                CreateSoundscapeActivity.this
+                        );
+                        saveDialogManager.setCounterMaxLength(
+                                getResources().getInteger(R.integer.soundscape_name_max_length)
+                        );
+
+                        String prevName = mProject.getName();
+                        if (prevName != null && !prevName.equals("")) {
+                            saveDialogManager.setEditTextText(prevName);
+                        }
                     }
-                    mDialog.show();
+                    saveDialogManager.show();
                     break;
                 default:
                     break;
@@ -202,7 +192,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                     mProgress.cancel();
                 }
 
-                mDialog.dismiss();
+                saveDialogManager.dismiss();
             } else {
                 Snackbar.make(
                         coordinatorLayout,
@@ -288,6 +278,30 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
+            if (resultCode == Activity.RESULT_OK) {
+                // TODO: handle multi-select
+                DAMSound result = data.getExtras().getParcelable("result");
+                addSelectedSound(result);
+            }
+
+            fabMenu.close(false);
+        }
+    }
+
+    @Override
+    public void onSave(String title) {
+        save(title.trim());
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
     /**
      * Start project playback
      */
@@ -371,20 +385,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         startActivityForResult(intent, RECORD_SOUND);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
-            if (resultCode == Activity.RESULT_OK) {
-                // TODO: handle multi-select
-                DAMSound result = data.getExtras().getParcelable("result");
-                addSelectedSound(result);
-            }
-
-            fabMenu.close(false);
-        }
-    }
-
     private void addSelectedSound(DAMSound result) {
         try {
             ProjectSound ps = new ProjectSound(
@@ -431,41 +431,4 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
             new ProjectSaveTask(this.getApplicationContext(), saveListener).execute(this.mProject);
         }
     }
-
-    private void setupDialog() {
-        mDialog = new Dialog(CreateSoundscapeActivity.this);
-        mDialog.setContentView(R.layout.create_save_dialog);
-        mDialog.setTitle("Save");
-        final Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
-        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
-        mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
-        mDialogTextInputLayout = (TextInputLayout) mDialog.findViewById(R.id.layout_input_name);
-
-        mDialogSaveBtn.setOnClickListener(clickListener);
-        mDialogCancelBtn.setOnClickListener(clickListener);
-        mDialogEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    clickListener.onClick(mDialogSaveBtn);
-                    handled = true;
-                }
-                return handled;
-            }
-        });
-
-        // Don't allow too long titles
-        mDialogTextInputLayout.setCounterMaxLength(
-                getResources().getInteger(R.integer.soundscape_name_max_length)
-        );
-
-        String prevName = this.mProject.getName();
-        if (prevName != null && !prevName.equals("")) {
-            mDialogEditText.setText(prevName);
-        }
-
-        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
 }

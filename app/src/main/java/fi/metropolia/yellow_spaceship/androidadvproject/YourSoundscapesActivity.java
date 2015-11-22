@@ -1,21 +1,14 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,6 +17,8 @@ import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.ISoundscapeViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
@@ -32,46 +27,19 @@ import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
 public class YourSoundscapesActivity extends AppCompatActivity
         implements ISoundscapeViewHolderClicks,
-        ProjectLoadListener {
+        ProjectLoadListener,
+        SaveDialogListener {
 
     private ArrayList<SoundScapeProject> mData;
     private RecyclerView recyclerView;
-    private TextView mEmptyView;
 
     private SoundScapeProject mEditedProject;
 
+    private SaveDialogManager saveDialogManager;
+
+    private TextView mEmptyView;
     private ProgressBar mSpinner;
-    private Dialog mDialog;
-    private EditText mDialogEditText;
-    private TextInputLayout mDialogTextInputLayout;
     private CoordinatorLayout coordinatorLayout;
-
-    /**
-     * Dialog's click listener
-     */
-    private final View.OnClickListener clickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-
-            switch (v.getId()) {
-                case R.id.dialog_cancel_btn:
-                    mDialog.dismiss();
-                    break;
-                case R.id.dialog_save_btn:
-                    String str = mDialogEditText.getText().toString();
-                    if (str.trim().equals("")) {
-                        mDialogEditText.setError("Name is required");
-                        break;
-                    } else if (str.length() > mDialogTextInputLayout.getCounterMaxLength()) {
-                        mDialogEditText.setError("Name is too long");
-                        break;
-                    }
-                    renameProject(mEditedProject, str.trim());
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     /**
      * SaveListener for renaming projects (they need to be re-saved in order to
@@ -87,7 +55,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
                         Snackbar.LENGTH_SHORT
                 ).show();
 
-                mDialog.dismiss();
+                saveDialogManager.dismiss();
 
                 // Reload data
                 loadData();
@@ -140,29 +108,6 @@ public class YourSoundscapesActivity extends AppCompatActivity
         loadData();
     }
 
-    private void loadData() {
-        this.mSpinner.setVisibility(View.VISIBLE);
-
-        new ProjectLoadTask(this).execute(getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER);
-    }
-
-    private void initRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        recyclerView.setHasFixedSize(true);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        initRecyclerViewAdapter();
-    }
-
-    private void initRecyclerViewAdapter() {
-        mData = new ArrayList<>();
-        SoundscapesAdapter adapter = new SoundscapesAdapter(mData, this);
-        recyclerView.setAdapter(adapter);
-    }
-
     @Override
     public void onLoadFinished(ArrayList<SoundScapeProject> data) {
         if (this.mData != null) {
@@ -185,6 +130,10 @@ public class YourSoundscapesActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * ISoundscapeViewHolderClicks implementation
+     */
+
     @Override
     public void onRowSelect(int layoutPosition) {
         SoundScapeProject d = this.mData.get(layoutPosition);
@@ -196,16 +145,73 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
     @Override
     public void onRowRename(int layoutPosition) {
-        if (this.mDialog == null) {
-            setupDialog();
+        if (this.saveDialogManager == null) {
+            this.saveDialogManager = new SaveDialogManager(
+                    this,
+                    getResources().getString(R.string.soundscape_rename_dialog_title),
+                    this
+            );
+            this.saveDialogManager.setCounterMaxLength(
+                    getResources().getInteger(R.integer.soundscape_name_max_length)
+            );
         }
         this.mEditedProject = this.mData.get(layoutPosition);
-        this.mDialog.show();
+        this.saveDialogManager.show();
     }
 
     @Override
     public void onRowDelete(int layoutPosition) {
         this.deleteProject(this.mData.get(layoutPosition));
+    }
+
+    /**
+     * SaveDialogListener implementation
+     */
+
+    @Override
+    public void onSave(String title) {
+        if (this.mEditedProject != null) {
+            renameProject(this.mEditedProject, title.trim());
+        }
+    }
+
+    @Override
+    public void onCancel() {
+        if (this.saveDialogManager != null) {
+            this.saveDialogManager.dismiss();
+        }
+    }
+
+    /**
+     * Load existing soundscapes
+     */
+    private void loadData() {
+        this.mSpinner.setVisibility(View.VISIBLE);
+
+        new ProjectLoadTask(this).execute(getFilesDir() + "/" + ProjectSaveTask.PROJECT_FOLDER);
+    }
+
+    /**
+     * Initialize the RecyclerView (list of soundscapes)
+     */
+    private void initRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        recyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        initRecyclerViewAdapter();
+    }
+
+    /**
+     * Initialize the adapter for the RecyclerView
+     */
+    private void initRecyclerViewAdapter() {
+        mData = new ArrayList<>();
+        SoundscapesAdapter adapter = new SoundscapesAdapter(mData, this);
+        recyclerView.setAdapter(adapter);
     }
 
     /**
@@ -221,7 +227,9 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
             // Bail out if a project with the same name already exists
             if (newFile.exists()) {
-                mDialogEditText.setError("Name already taken");
+                this.saveDialogManager.setTextInputLayoutError(
+                        getResources().getString(R.string.your_soundscapes_rename_error_name_taken)
+                );
                 return;
             }
 
@@ -257,43 +265,5 @@ public class YourSoundscapesActivity extends AppCompatActivity
                 ).show();
             }
         }
-    }
-
-    /**
-     * Setup a renaming dialog
-     */
-    private void setupDialog() {
-        mDialog = new Dialog(YourSoundscapesActivity.this);
-        mDialog.setContentView(R.layout.create_save_dialog);
-        mDialog.setTitle(getResources().getString(R.string.soundscape_rename_dialog_title));
-        final Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
-        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
-        mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
-        mDialogTextInputLayout = (TextInputLayout) mDialog.findViewById(R.id.layout_input_name);
-
-        mDialogSaveBtn.setOnClickListener(clickListener);
-        mDialogCancelBtn.setOnClickListener(clickListener);
-        mDialogEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    clickListener.onClick(mDialogSaveBtn);
-                    handled = true;
-                }
-                return handled;
-            }
-        });
-
-        // Don't allow too long titles
-        mDialogTextInputLayout.setCounterMaxLength(
-                getResources().getInteger(R.integer.soundscape_name_max_length)
-        );
-
-
-        mDialogSaveBtn.setOnClickListener(clickListener);
-        mDialogCancelBtn.setOnClickListener(clickListener);
-
-        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }
