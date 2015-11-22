@@ -476,11 +476,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 session.getCollectionID(),
                 sound.getTitle(),
                 sound.getDescription(),
-                null,
                 sound.getCategory(),
                 sound.getSoundType(),
                 sound.getLengthSec(),
-                sound.getFileName(),
                 typedSound,
                 uploadCallback
         );

@@ -160,11 +160,9 @@ public class ApiClient {
                          @Query("collection") int collectionId,
                          @Query("field8") String title,
                          @Query("field73") String description,
-                         @Query("field74") String tags,
                          @Query("field75") SoundCategory category,
                          @Query("field76") SoundType soundType,
-                         @Query("field78") int lengthInSecs,
-                         @Part("filename") String filename,
+                         @Query("field79") int lengthInSecs,
                          @Part("userfile") TypedFile file,
                          Callback<Object> callback);
 
