@@ -11,6 +11,8 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,13 +26,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.nio.channels.FileChannel;
 import java.util.Date;
 
@@ -63,14 +63,13 @@ public class RecordActivity extends AppCompatActivity {
     private AppCompatSpinner mDialogSpinner = null;
     private EditText mDialogEditText = null;
     private TextInputLayout mDialogTextInputLayout = null;
+    private CoordinatorLayout coordinatorLayout;
 
     private final static String DEFAULT_FILE_NAME = "untitled-recording.wav";
     private final static String DEFAULT_FOLDER = "sounds";
     private boolean mIsSaving = false;
     private boolean mTempFileExists = false;
     private int mLatestSeconds = 0;
-
-    private MessageHandler msgHandler;
 
     /**
      * Handler and runnable for recording timer
@@ -157,10 +156,6 @@ public class RecordActivity extends AppCompatActivity {
 
             mIsSaving = false;
 
-            Message msg = msgHandler.obtainMessage();
-            msg.obj = "File saved";
-            msgHandler.sendMessage(msg);
-
             deleteTempFile();
 
             // Return damSound if we have a intent from CreateSoundScapeActivity.
@@ -198,6 +193,7 @@ public class RecordActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_record);
 
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         mRecordTimer = (TextView) findViewById(R.id.record_timer);
         mRecordButton = (ImageButton) findViewById(R.id.record_button);
         mPlayButton = (Button) findViewById(R.id.play_btn);
@@ -221,8 +217,6 @@ public class RecordActivity extends AppCompatActivity {
         mRecordButton.setOnClickListener(clickListener);
         mPlayButton.setOnClickListener(clickListener);
         mSaveButton.setOnClickListener(clickListener);
-
-        msgHandler = new MessageHandler(this);
     }
 
     private final View.OnClickListener clickListener = new View.OnClickListener() {
@@ -422,26 +416,6 @@ public class RecordActivity extends AppCompatActivity {
             mPlayer = null;
         }
 
-
-    }
-
-    private static class MessageHandler extends Handler {
-        private final WeakReference<RecordActivity> mTarget;
-
-        public MessageHandler(RecordActivity context) {
-            mTarget = new WeakReference<>(context);
-
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            String str = (String) msg.obj;
-            Toast toast = Toast.makeText(mTarget.get(), str, Toast.LENGTH_SHORT);
-            toast.show();
-
-            mTarget.get().mRecordTimer.setText(R.string.record_default_timer);
-        }
 
     }
 

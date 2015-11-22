@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,7 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -48,7 +49,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
     private EditText mDialogEditText;
     private TextInputLayout mDialogTextInputLayout;
     private ProgressDialog mProgress;
-
+    private CoordinatorLayout coordinatorLayout;
     private FloatingActionMenu fabMenu;
 
     private boolean mIsSaving = false;
@@ -85,10 +86,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                             startPlayback();
                         }
                     } else {
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Add at least one sound to your soundscape",
-                                Toast.LENGTH_SHORT
+                        Snackbar.make(
+                                coordinatorLayout,
+                                R.string.create_no_sounds_added_play,
+                                Snackbar.LENGTH_SHORT
                         ).show();
                     }
                     break;
@@ -143,10 +144,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Something went wrong, please try again",
-                                Toast.LENGTH_SHORT
+                        Snackbar.make(
+                                coordinatorLayout,
+                                R.string.create_error_on_remove,
+                                Snackbar.LENGTH_LONG
                         ).show();
                     }
                 }
@@ -191,10 +192,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         @Override
         public void onSaveComplete(boolean success) {
             if (success) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Project saved successfully",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        coordinatorLayout,
+                        R.string.create_project_save_success,
+                        Snackbar.LENGTH_SHORT
                 ).show();
                 mIsSaving = false;
                 if (mProgress.isShowing()) {
@@ -203,10 +204,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
                 mDialog.dismiss();
             } else {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Couldn't save project, please try another name",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        coordinatorLayout,
+                        R.string.create_project_save_error,
+                        Snackbar.LENGTH_SHORT
                 ).show();
             }
         }
@@ -231,6 +232,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
                 CreateSoundscapeActivity.this.onBackPressed();
             }
         });
+
+        this.coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         soundPlayer = new SoundPlayer();
 
@@ -406,10 +409,10 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
 
         } catch (NullPointerException e) {
             e.printStackTrace();
-            Toast.makeText(
-                    getApplicationContext(),
-                    "Something went wrong, please try another sound",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    coordinatorLayout,
+                    R.string.create_add_sound_error,
+                    Snackbar.LENGTH_LONG
             ).show();
         }
     }

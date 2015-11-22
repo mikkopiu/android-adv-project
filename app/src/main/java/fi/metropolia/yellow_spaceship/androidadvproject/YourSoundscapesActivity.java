@@ -3,6 +3,8 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private Dialog mDialog;
     private EditText mDialogEditText;
     private TextInputLayout mDialogTextInputLayout;
+    private CoordinatorLayout coordinatorLayout;
 
     /**
      * Dialog's click listener
@@ -79,10 +81,10 @@ public class YourSoundscapesActivity extends AppCompatActivity
         @Override
         public void onSaveComplete(boolean success) {
             if (success) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Project renamed successfully",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        coordinatorLayout,
+                        R.string.your_soundscapes_rename_success,
+                        Snackbar.LENGTH_SHORT
                 ).show();
 
                 mDialog.dismiss();
@@ -90,10 +92,10 @@ public class YourSoundscapesActivity extends AppCompatActivity
                 // Reload data
                 loadData();
             } else {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "Project could not be renamed, an error occurred",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        coordinatorLayout,
+                        R.string.your_soundscapes_rename_error,
+                        Snackbar.LENGTH_LONG
                 ).show();
             }
         }
@@ -123,6 +125,8 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
         this.mEmptyView = (TextView) findViewById(R.id.empty_view);
         this.mEmptyView.setVisibility(View.GONE);
+
+        this.coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         initRecyclerView();
 
@@ -216,11 +220,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
             // Bail out if a project with the same name already exists
             if (newFile.exists()) {
-                Toast.makeText(
-                        this.getApplicationContext(),
-                        "A soundscape with that name already exists",
-                        Toast.LENGTH_SHORT
-                ).show();
+                mDialogEditText.setError("Name already taken");
                 return;
             }
 
@@ -249,10 +249,10 @@ public class YourSoundscapesActivity extends AppCompatActivity
                 // Reload data
                 this.loadData();
             } else {
-                Toast.makeText(
-                        this.getApplicationContext(),
-                        "Couldn't delete " + project.getName() + ". Something went wrong",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        this.coordinatorLayout,
+                        R.string.your_soundscapes_delete_error,
+                        Snackbar.LENGTH_LONG
                 ).show();
             }
         }

@@ -50,7 +50,25 @@
     <string name="soundscape_rename_dialog_title">Rename soundscape</string>
     <string name="delete">Delete</string>
     <string name="randomize_switch">Randomize</string>
-    <string name="recordings_share">Share</string>
+    <string name="recordings_share">Upload</string>
     <string name="remove_sound">Remove sound</string>
+
+    <!-- Error & success messages -->
+    <string name="create_no_sounds_added_play">Add at least one sound</string>
+    <string name="create_error_on_remove">Error removing sound, try again</string>
+    <string name="create_project_save_success">Project saved</string>
+    <string name="create_project_save_error">Error saving project, try another name</string>
+    <string name="create_add_sound_error">Error adding sound, try again</string>
+    <string name="your_soundscapes_delete_error">Error deleting soundscape, try again</string>
+    <string name="your_soundscapes_rename_success">Project renamed</string>
+    <string name="your_soundscapes_rename_error">Project could not be renamed, an error occurred</string>
+    <string name="library_download_error">Download failed, try again</string>
+    <string name="library_upload_success">Sound uploaded</string>
+    <string name="library_upload_error">Upload failed, try again</string>
+    <string name="library_preview_error">Preview failed to start, try again</string>
+
+    <string name="library_buffering">Buffering…</string>
+    <string name="library_delete_success">Sound deleted</string>
+    <string name="library_delete_error">Delete failed, try again</string>
 
 </resources>

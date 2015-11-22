@@ -9,6 +9,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +55,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private String mSearchQuery;
     private ProgressBar mSpinner;
     private TextView mEmptyView;
+    private CoordinatorLayout coordinatorLayout;
 
     private boolean isFavoritesView;
     private boolean isRecordingsView;
@@ -133,17 +135,17 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 int deletedRows = deleteSound(s);
 
                 if (deletedRows > 0) {
-                    Toast.makeText(
-                            getContext(),
-                            "Sound deleted",
-                            Toast.LENGTH_SHORT
+                    Snackbar.make(
+                            coordinatorLayout,
+                            R.string.library_delete_success,
+                            Snackbar.LENGTH_LONG
                     ).show();
                     loadRecordingsData();
                 } else {
-                    Toast.makeText(
-                            getContext(),
-                            "Couldn't delete sound, something went wrong",
-                            Toast.LENGTH_SHORT
+                    Snackbar.make(
+                            coordinatorLayout,
+                            R.string.library_delete_error,
+                            Snackbar.LENGTH_LONG
                     ).show();
                 }
             }
@@ -170,6 +172,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             toolbar.setHomeAsUpIndicator(null);
             toolbar.setTitle(getArguments().getString("title"));
         }
+
+        this.coordinatorLayout = (CoordinatorLayout) getActivity()
+                .findViewById(R.id.coordinator_layout);
 
         session = new SessionManager(getActivity());
 
@@ -224,10 +229,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             getActivity().setResult(Activity.RESULT_OK, returnIntent);
             getActivity().finish();
         } else {
-            Toast.makeText(
-                    getActivity().getApplicationContext(),
-                    "Something went wrong when downloading the sound, please select another sound",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    this.coordinatorLayout,
+                    R.string.library_download_error,
+                    Snackbar.LENGTH_LONG
             ).show();
         }
     }
@@ -307,10 +312,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             error.printStackTrace();
 
             mSpinner.setVisibility(View.GONE);
-            Toast.makeText(
-                    getActivity().getApplicationContext(),
-                    "Downloading sounds failed, please try again",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    coordinatorLayout,
+                    R.string.library_download_error,
+                    Snackbar.LENGTH_LONG
             ).show();
         }
     };
@@ -322,10 +327,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private final Callback<Object> uploadCallback = new Callback<Object>() {
         @Override
         public void success(Object stringResponse, Response response) {
-            Toast.makeText(
-                    getContext(),
-                    "Sound uploaded successfully",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    coordinatorLayout,
+                    R.string.library_upload_success,
+                    Snackbar.LENGTH_LONG
             ).show();
 
             mSpinner.setVisibility(View.GONE);
@@ -336,10 +341,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             error.printStackTrace();
 
             mSpinner.setVisibility(View.GONE);
-            Toast.makeText(
-                    getContext(),
-                    "Uploading sound failed, please try again",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    coordinatorLayout,
+                    R.string.library_upload_error,
+                    Snackbar.LENGTH_LONG
             ).show();
 
             mSpinner.setVisibility(View.GONE);
@@ -687,10 +692,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             this.playingInd = layoutPosition;
             data.get(layoutPosition).setIsPlaying(true);
         } else {
-            Toast.makeText(
-                    getActivity(),
-                    "Sorry, there is something wrong with this sound, please try another sound.",
-                    Toast.LENGTH_SHORT
+            Snackbar.make(
+                    this.coordinatorLayout,
+                    R.string.library_preview_error,
+                    Snackbar.LENGTH_LONG
             ).show();
         }
     }
@@ -770,10 +775,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 playingAudio = true;
             } else {
                 stopPreview(playingInd);
-                Toast.makeText(
-                        getActivity().getApplicationContext(),
-                        "Something went wrong, please try another sound",
-                        Toast.LENGTH_SHORT
+                Snackbar.make(
+                        coordinatorLayout,
+                        R.string.library_preview_error,
+                        Snackbar.LENGTH_LONG
                 ).show();
             }
         }
@@ -785,7 +790,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.progress.setMessage("Buffering...");
+            this.progress.setMessage(getResources().getString(R.string.library_buffering));
             this.progress.show();
         }
     }
