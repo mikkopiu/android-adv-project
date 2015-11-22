@@ -80,6 +80,18 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             }
         }
 
+        /**
+         * Update the preview button to match play-state
+         * @param playing
+         */
+        public void setPlayingState(boolean playing) {
+            this.previewBtn.setImageResource(
+                    playing ?
+                    R.drawable.ic_pause_24dp :
+                    R.drawable.ic_play_arrow_24dp
+            );
+        }
+
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.sound_library_fav_button) {

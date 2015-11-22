@@ -596,7 +596,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                 ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
                         findViewHolderForAdapterPosition(layoutPosition));
 
-        viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+        if (viewHolder != null) {
+            viewHolder.setPlayingState(true);
+        }
 
         if(mediaPlayer == null) {
             initMediaPlayer();
@@ -619,7 +621,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                             findViewHolderForAdapterPosition(layoutPosition));
 
             if(viewHolder != null) {
-                viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+                viewHolder.setPlayingState(false);
             }
 
         }
@@ -638,7 +640,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                             findViewHolderForAdapterPosition(layoutPosition));
 
             if(viewHolder != null) {
-                viewHolder.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+                viewHolder.setPlayingState(true);
             }
 
         }
@@ -650,7 +652,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         findViewHolderForAdapterPosition(layoutPosition));
 
         if(viewHolder != null) {
-            viewHolder.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+            viewHolder.setPlayingState(false);
         }
         if(layoutPosition != -1) {
             data.get(layoutPosition).setIsPlaying(false);
