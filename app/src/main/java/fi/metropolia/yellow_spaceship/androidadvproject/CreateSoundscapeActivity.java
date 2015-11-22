@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -332,7 +333,17 @@ public class CreateSoundscapeActivity extends AppCompatActivity {
         this.recyclerView = (RecyclerView) findViewById(R.id.create_recycler_view);
         this.recyclerView.setHasFixedSize(false); // Soundscapes can be deleted & renamed
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        int numberOfAdjacent;
+        Configuration config = getResources().getConfiguration();
+        if(config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            numberOfAdjacent = 2;
+        } else if(config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            numberOfAdjacent = 4;
+        } else {
+            numberOfAdjacent = 2;
+        }
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfAdjacent);
         this.recyclerView.setLayoutManager(layoutManager);
 
         SoundCardViewAdapter adapter = new SoundCardViewAdapter(this.mProject.getSounds(), adapterOnClickListener);
