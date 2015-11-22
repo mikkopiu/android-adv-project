@@ -1,72 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fi.metropolia.yellow_spaceship.androidadvproject.CreateSoundscapeActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/create_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_toolbar"
-        android:layout_below="@id/toolbar"
-        android:clipToPadding="false"
-        android:paddingBottom="30dp">
-
-    </android.support.v7.widget.RecyclerView>
-
     <RelativeLayout
-        android:id="@id/bottom_toolbar"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="0dp"
-        android:background="@color/pri"
-        android:elevation="4dp"
-        android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/create_save_btn"
-            style="@style/DarkButtonStyle"
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/create_recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:text="@string/create_save_btn" />
+            android:layout_above="@+id/bottom_toolbar"
+            android:layout_below="@id/toolbar"
+            android:clipToPadding="false"
+            android:paddingBottom="30dp">
 
-        <ImageButton
-            android:id="@+id/create_play_btn"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+        </android.support.v7.widget.RecyclerView>
+
+        <RelativeLayout
+            android:id="@id/bottom_toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:contentDescription="@string/create_play_btn_description"
-            android:src="@drawable/ic_play_arrow_white_48dp" />
+            android:layout_alignParentBottom="true"
+            android:layout_margin="0dp"
+            android:background="@color/pri"
+            android:elevation="4dp"
+            android:minHeight="?attr/actionBarSize"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/create_save_btn"
+                style="@style/DarkButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/create_save_btn" />
+
+            <ImageButton
+                android:id="@+id/create_play_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/create_play_btn_description"
+                android:src="@drawable/ic_play_arrow_white_48dp" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/add_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:elevation="6dp"
+        app:layout_anchor="@id/bottom_toolbar"
+        app:layout_anchorGravity="right"
         fab:menu_animationDelayPerItem="0"
         fab:menu_colorNormal="@color/acc"
         fab:menu_colorPressed="@color/acc_dark"
@@ -96,4 +101,5 @@
             fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
-</RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
