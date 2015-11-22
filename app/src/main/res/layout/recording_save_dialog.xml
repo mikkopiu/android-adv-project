@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_input_filename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         android:minWidth="200dp"
-        android:theme="@style/CustomTextInputLayoutStyle">
+        android:theme="@style/CustomTextInputLayoutStyle"
+        android.support.design:counterEnabled="true">
 
         <EditText
             android:id="@+id/input_filename"
@@ -19,6 +22,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/record_dialog_filename_hint"
             android:inputType="text"
+            android:singleLine="true"
             android:textColor="@color/txt" />
     </android.support.design.widget.TextInputLayout>
 

@@ -3,12 +3,15 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -39,6 +42,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private ProgressBar mSpinner;
     private Dialog mDialog;
     private EditText mDialogEditText;
+    private TextInputLayout mDialogTextInputLayout;
 
     /**
      * Dialog's click listener
@@ -51,7 +55,15 @@ public class YourSoundscapesActivity extends AppCompatActivity
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_save_btn:
-                    renameProject(mEditedProject, mDialogEditText.getText().toString().trim());
+                    String str = mDialogEditText.getText().toString();
+                    if (str.trim().equals("")) {
+                        mDialogEditText.setError("Name is required");
+                        break;
+                    } else if (str.length() > mDialogTextInputLayout.getCounterMaxLength()) {
+                        mDialogEditText.setError("Name is too long");
+                        break;
+                    }
+                    renameProject(mEditedProject, str.trim());
                     break;
                 default:
                     break;
@@ -253,9 +265,31 @@ public class YourSoundscapesActivity extends AppCompatActivity
         mDialog = new Dialog(YourSoundscapesActivity.this);
         mDialog.setContentView(R.layout.create_save_dialog);
         mDialog.setTitle(getResources().getString(R.string.soundscape_rename_dialog_title));
-        Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
+        final Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
         Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
         mDialogEditText = (EditText) mDialog.findViewById(R.id.input_name);
+        mDialogTextInputLayout = (TextInputLayout) mDialog.findViewById(R.id.layout_input_name);
+
+        mDialogSaveBtn.setOnClickListener(clickListener);
+        mDialogCancelBtn.setOnClickListener(clickListener);
+        mDialogEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    clickListener.onClick(mDialogSaveBtn);
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        // Don't allow too long titles
+        mDialogTextInputLayout.setCounterMaxLength(
+                getResources().getInteger(R.integer.soundscape_name_max_length)
+        );
+
+
         mDialogSaveBtn.setOnClickListener(clickListener);
         mDialogCancelBtn.setOnClickListener(clickListener);
 

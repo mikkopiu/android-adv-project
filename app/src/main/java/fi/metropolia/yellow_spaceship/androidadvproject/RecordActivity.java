@@ -11,6 +11,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +62,7 @@ public class RecordActivity extends AppCompatActivity {
     private Dialog mDialog = null;
     private AppCompatSpinner mDialogSpinner = null;
     private EditText mDialogEditText = null;
+    private TextInputLayout mDialogTextInputLayout = null;
 
     private final static String DEFAULT_FILE_NAME = "untitled-recording.wav";
     private final static String DEFAULT_FOLDER = "sounds";
@@ -265,8 +267,12 @@ public class RecordActivity extends AppCompatActivity {
                     mDialog.dismiss();
                     break;
                 case R.id.dialog_save_btn:
-                    if (mDialogEditText.getText().toString().trim().equals("")) {
-                        mDialogEditText.setError("Filename is required!");
+                    String str = mDialogEditText.getText().toString().trim();
+                    if (str.equals("")) {
+                        mDialogEditText.setError("Filename is required");
+                        break;
+                    } else if (str.length() > mDialogTextInputLayout.getCounterMaxLength()) {
+                        mDialogEditText.setError("Filename is too long");
                         break;
                     }
 
@@ -299,6 +305,12 @@ public class RecordActivity extends AppCompatActivity {
         Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
         mDialogSpinner = (AppCompatSpinner) mDialog.findViewById(R.id.spinner_category);
         mDialogEditText = (EditText) mDialog.findViewById(R.id.input_filename);
+        mDialogTextInputLayout = (TextInputLayout) mDialog.findViewById(R.id.layout_input_filename);
+
+        mDialogTextInputLayout.setCounterMaxLength(
+                getResources().getInteger(R.integer.recording_filename_max_length)
+        );
+
         mDialogSaveBtn.setOnClickListener(clickListener);
         mDialogCancelBtn.setOnClickListener(clickListener);
 
