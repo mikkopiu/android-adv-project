@@ -124,6 +124,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
         this.mSpinner.setVisibility(View.GONE);
 
         this.mEmptyView = (TextView) findViewById(R.id.empty_view);
+        this.mEmptyView.setText(R.string.no_saved_soundscapes);
         this.mEmptyView.setVisibility(View.GONE);
 
         this.coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -251,9 +252,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         });
 
         this.mEmptyView = (TextView) getActivity().findViewById(R.id.empty_view);
+        this.mEmptyView.setVisibility(View.GONE);
 
         this.mSpinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
-        mSpinner.setVisibility(View.GONE);
+        this.mSpinner.setVisibility(View.GONE);
 
 
         if (this.mCategory != null)
@@ -556,6 +558,15 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         if (this.data.isEmpty()) {
             this.mRecyclerView.setVisibility(View.GONE);
             this.mEmptyView.setVisibility(View.VISIBLE);
+
+            if (this.isFavoritesView) {
+                this.mEmptyView.setText(R.string.no_favorites_added);
+            } else if (this.isRecordingsView) {
+                this.mEmptyView.setText(R.string.no_recordings_added);
+            } else {
+                this.mEmptyView.setText(R.string.no_sounds_found);
+            }
+
         } else {
             this.mRecyclerView.setVisibility(View.VISIBLE);
             this.mEmptyView.setVisibility(View.GONE);

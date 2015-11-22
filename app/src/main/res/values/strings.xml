@@ -70,5 +70,9 @@
     <string name="library_buffering">Buffering…</string>
     <string name="library_delete_success">Sound deleted</string>
     <string name="library_delete_error">Delete failed, try again</string>
+    <string name="no_saved_soundscapes">You have no saved soundscapes</string>
+    <string name="no_favorites_added">You have not added any sounds to favourites</string>
+    <string name="no_recordings_added">You have no saved recordings</string>
+    <string name="no_sounds_found">No sounds found</string>
 
 </resources>
