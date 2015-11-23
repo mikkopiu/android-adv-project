@@ -23,8 +23,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
-import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
 
 public class YourSoundscapesActivity extends AppCompatActivity
         implements ISoundscapeViewHolderClicks,
@@ -43,10 +43,10 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private CoordinatorLayout coordinatorLayout;
 
     /**
-     * SaveListener for renaming projects (they need to be re-saved in order to
+     * ProjectSaveListener for renaming projects (they need to be re-saved in order to
      * serialize the updated name).
      */
-    private final SaveListener saveListener = new SaveListener() {
+    private final ProjectSaveListener projectSaveListener = new ProjectSaveListener() {
         @Override
         public void onSaveComplete(boolean success) {
             if (success) {
@@ -242,7 +242,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
             // Star a ProjectSaveTask for saving the renamed project (to serialize the new name)
             project.setName(name);
-            new ProjectSaveTask(this.getApplicationContext(), saveListener).execute(project);
+            new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(project);
         }
     }
 

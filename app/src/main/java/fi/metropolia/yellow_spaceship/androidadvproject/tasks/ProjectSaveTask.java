@@ -18,12 +18,12 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
     public final static String PROJECT_FOLDER = "projects";
     public final static String FILE_EXT = ".json";
 
-    private final SaveListener listener;
+    private final ProjectSaveListener listener;
     private final Context context;
 
     private Throwable error;
 
-    public ProjectSaveTask(Context context, SaveListener listener) {
+    public ProjectSaveTask(Context context, ProjectSaveListener listener) {
         this.listener = listener;
         this.context = context;
     }

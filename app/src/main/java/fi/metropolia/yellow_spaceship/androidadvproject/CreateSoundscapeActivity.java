@@ -29,7 +29,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
-import fi.metropolia.yellow_spaceship.androidadvproject.tasks.SaveListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveListener;
 
 public class CreateSoundscapeActivity extends AppCompatActivity implements SaveDialogListener {
 
@@ -180,7 +180,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
     /**
      * Unified save-event handler
      */
-    private final SaveListener saveListener = new SaveListener() {
+    private final ProjectSaveListener projectSaveListener = new ProjectSaveListener() {
         @Override
         public void onSaveComplete(boolean success) {
             if (success) {
@@ -430,7 +430,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             this.mProgress.setMessage("Saving...");
             this.mProgress.show();
             this.mProject.setName(fileName);
-            new ProjectSaveTask(this.getApplicationContext(), saveListener).execute(this.mProject);
+            new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(this.mProject);
         }
     }
 }
