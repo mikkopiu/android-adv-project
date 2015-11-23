@@ -19,6 +19,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.adapters.ISoundscapeView
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundscapesAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectLoadTask;
@@ -149,6 +150,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
             this.saveDialogManager = new SaveDialogManager(
                     this,
                     getResources().getString(R.string.soundscape_rename_dialog_title),
+                    null,
                     this
             );
             this.saveDialogManager.setCounterMaxLength(
@@ -169,14 +171,15 @@ public class YourSoundscapesActivity extends AppCompatActivity
      */
 
     @Override
-    public void onSave(String title) {
+    public void onDialogSave(String title, SoundCategory category) {
         if (this.mEditedProject != null) {
+            // Category is not relevant here, ignore in all cases
             renameProject(this.mEditedProject, title.trim());
         }
     }
 
     @Override
-    public void onCancel() {
+    public void onDialogCancel() {
         if (this.saveDialogManager != null) {
             this.saveDialogManager.dismiss();
         }

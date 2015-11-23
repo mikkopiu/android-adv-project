@@ -2,7 +2,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,20 +9,14 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -35,6 +28,8 @@ import java.nio.channels.FileChannel;
 import java.util.Date;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
@@ -45,7 +40,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundRecorder;
 /**
  * Activity for recording sounds.
  */
-public class RecordActivity extends AppCompatActivity {
+public class RecordActivity extends AppCompatActivity implements SaveDialogListener {
 
     private TextView mRecordTimer;
     private ImageButton mRecordButton;
@@ -59,11 +54,9 @@ public class RecordActivity extends AppCompatActivity {
     private MediaPlayer mPlayer = null;
     private SessionManager session;
 
-    private Dialog mDialog = null;
-    private AppCompatSpinner mDialogSpinner = null;
-    private EditText mDialogEditText = null;
-    private TextInputLayout mDialogTextInputLayout = null;
-    private CoordinatorLayout coordinatorLayout;
+    private SaveDialogManager saveDialogManager;
+    private String mSaveDialogTextResult;
+    private SoundCategory mSaveDialogCategoryResult;
 
     private final static String DEFAULT_FILE_NAME = "untitled-recording.wav";
     private final static String DEFAULT_FOLDER = "sounds";
@@ -107,8 +100,8 @@ public class RecordActivity extends AppCompatActivity {
              */
 
             DAMSound damSound = new DAMSound();
-            damSound.setTitle(mDialogEditText.getText().toString());
-            damSound.setCategory(SoundCategory.fromApi(mDialogSpinner.getSelectedItem().toString().toLowerCase()));
+            damSound.setTitle(mSaveDialogTextResult);
+            damSound.setCategory(mSaveDialogCategoryResult);
             damSound.setLengthSec(mLatestSeconds);
             damSound.setSoundType(SoundType.EFFECT);
             damSound.setIsFavorite(false);
@@ -133,7 +126,7 @@ public class RecordActivity extends AppCompatActivity {
                 ic.transferTo(0, ic.size(), oc);
                 is.close();
                 os.close();
-                mDialog.dismiss();
+                saveDialogManager.dismiss();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -174,14 +167,6 @@ public class RecordActivity extends AppCompatActivity {
 
     };
 
-    private void deleteTempFile() {
-        File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
-        if (file.exists()) {
-            file.delete();
-            mTempFileExists = false;
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -193,7 +178,6 @@ public class RecordActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_record);
 
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         mRecordTimer = (TextView) findViewById(R.id.record_timer);
         mRecordButton = (ImageButton) findViewById(R.id.record_button);
         mPlayButton = (Button) findViewById(R.id.play_btn);
@@ -217,6 +201,38 @@ public class RecordActivity extends AppCompatActivity {
         mRecordButton.setOnClickListener(clickListener);
         mPlayButton.setOnClickListener(clickListener);
         mSaveButton.setOnClickListener(clickListener);
+    }
+
+    @Override
+    public void onPause() {
+
+        super.onPause();
+
+        if (mRecorder != null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
+
+
+    }
+
+    @Override
+    public void onDialogSave(String title, @Nullable SoundCategory category) {
+        this.mSaveDialogTextResult = title;
+        this.mSaveDialogCategoryResult = category;
+        saveRecording();
+    }
+
+    @Override
+    public void onDialogCancel() {
+        if (this.saveDialogManager != null) {
+            this.saveDialogManager.dismiss();
+        }
     }
 
     private final View.OnClickListener clickListener = new View.OnClickListener() {
@@ -252,25 +268,23 @@ public class RecordActivity extends AppCompatActivity {
                         stopPlaying();
                     break;
                 case R.id.save_btn:
-                    if (mDialog == null) {
-                        setupDialog();
+                    if (saveDialogManager == null) {
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                                RecordActivity.this,
+                                R.array.categories_array,
+                                R.layout.support_simple_spinner_dropdown_item
+                        );
+                        saveDialogManager = new SaveDialogManager(
+                                RecordActivity.this,
+                                getResources().getString(R.string.record_dialog_title),
+                                adapter,
+                                RecordActivity.this
+                        );
+                        saveDialogManager.setCounterMaxLength(
+                                getResources().getInteger(R.integer.recording_filename_max_length)
+                        );
                     }
-                    mDialog.show();
-                    break;
-                case R.id.dialog_cancel_btn:
-                    mDialog.dismiss();
-                    break;
-                case R.id.dialog_save_btn:
-                    String str = mDialogEditText.getText().toString().trim();
-                    if (str.equals("")) {
-                        mDialogEditText.setError("Filename is required");
-                        break;
-                    } else if (str.length() > mDialogTextInputLayout.getCounterMaxLength()) {
-                        mDialogEditText.setError("Filename is too long");
-                        break;
-                    }
-
-                    saveRecording();
+                    saveDialogManager.show();
                     break;
                 default:
                     break;
@@ -278,44 +292,20 @@ public class RecordActivity extends AppCompatActivity {
         }
     };
 
+    private void deleteTempFile() {
+        File file = new File(RecordActivity.this.getFilesDir().getAbsolutePath() + "/" + DEFAULT_FOLDER + "/" + DEFAULT_FILE_NAME);
+        if (file.exists()) {
+            file.delete();
+            mTempFileExists = false;
+        }
+    }
+
     private void saveRecording() {
 
         if (!mIsSaving) {
             mIsSaving = true;
             new Thread(copyFileRunnable).start();
         }
-
-    }
-
-    /**
-     * Setups the save dialog view.
-     */
-    private void setupDialog() {
-
-        mDialog = new Dialog(RecordActivity.this);
-        mDialog.setContentView(R.layout.recording_save_dialog);
-        mDialog.setTitle(getResources().getString(R.string.record_dialog_title));
-        Button mDialogSaveBtn = (Button) mDialog.findViewById(R.id.dialog_save_btn);
-        Button mDialogCancelBtn = (Button) mDialog.findViewById(R.id.dialog_cancel_btn);
-        mDialogSpinner = (AppCompatSpinner) mDialog.findViewById(R.id.spinner_category);
-        mDialogEditText = (EditText) mDialog.findViewById(R.id.input_filename);
-        mDialogTextInputLayout = (TextInputLayout) mDialog.findViewById(R.id.layout_input_filename);
-
-        mDialogTextInputLayout.setCounterMaxLength(
-                getResources().getInteger(R.integer.recording_filename_max_length)
-        );
-
-        mDialogSaveBtn.setOnClickListener(clickListener);
-        mDialogCancelBtn.setOnClickListener(clickListener);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.categories_array,
-                R.layout.support_simple_spinner_dropdown_item
-        );
-        mDialogSpinner.setAdapter(adapter);
-
-        mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
     }
 
@@ -372,22 +362,6 @@ public class RecordActivity extends AppCompatActivity {
 
         mSoundRecorder.startRecording();
 
-        /*
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        mRecorder.setOutputFile(folder.getAbsolutePath() + "/" + DEFAULT_FILE_NAME);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mRecorder.start();
-        */
-
     }
 
     private void stopRecording() {
@@ -400,23 +374,4 @@ public class RecordActivity extends AppCompatActivity {
         }
 
     }
-
-    @Override
-    public void onPause() {
-
-        super.onPause();
-
-        if (mRecorder != null) {
-            mRecorder.release();
-            mRecorder = null;
-        }
-
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
-        }
-
-
-    }
-
 }

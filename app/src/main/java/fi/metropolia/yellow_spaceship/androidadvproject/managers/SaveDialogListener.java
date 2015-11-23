@@ -1,6 +1,10 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.managers;
 
+import android.support.annotation.Nullable;
+
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
+
 public interface SaveDialogListener {
-    void onSave(String title);
-    void onCancel();
+    void onDialogSave(String title, @Nullable SoundCategory category);
+    void onDialogCancel();
 }

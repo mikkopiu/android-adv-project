@@ -25,6 +25,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListe
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
@@ -76,6 +77,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
                         saveDialogManager = new SaveDialogManager(
                                 CreateSoundscapeActivity.this,
                                 getResources().getString(R.string.record_dialog_title),
+                                null,
                                 CreateSoundscapeActivity.this
                         );
                         saveDialogManager.setCounterMaxLength(
@@ -293,12 +295,12 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
     }
 
     @Override
-    public void onSave(String title) {
+    public void onDialogSave(String title, SoundCategory category) {
         save(title.trim());
     }
 
     @Override
-    public void onCancel() {
+    public void onDialogCancel() {
 
     }
 
