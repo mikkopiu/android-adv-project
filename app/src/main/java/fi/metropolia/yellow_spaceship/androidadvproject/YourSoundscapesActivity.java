@@ -122,7 +122,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
         this.mSpinner.setVisibility(View.GONE);
         this.recyclerView.getAdapter().notifyDataSetChanged();
 
-        if (this.mData.isEmpty()) {
+        if (this.recyclerView.getAdapter().getItemCount() == 0) {
             this.recyclerView.setVisibility(View.GONE);
             this.mEmptyView.setVisibility(View.VISIBLE);
         } else {

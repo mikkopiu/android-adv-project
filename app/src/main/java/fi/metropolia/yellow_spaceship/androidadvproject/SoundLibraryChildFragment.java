@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -554,7 +553,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         this.mRecyclerView.getAdapter().notifyDataSetChanged();
         this.mSpinner.setVisibility(View.GONE);
 
-        if (this.data.isEmpty()) {
+        if (this.mRecyclerView.getAdapter().getItemCount() == 0) {
             this.mRecyclerView.setVisibility(View.GONE);
             this.mEmptyView.setVisibility(View.VISIBLE);
 
@@ -605,7 +604,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
-    public void startPreview(int layoutPosition) {
+    private void startPreview(int layoutPosition) {
 
         SoundListAdapter.ViewHolder viewHolder =
                 ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
@@ -661,7 +660,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
-    public void stopPreview(int layoutPosition) {
+    private void stopPreview(int layoutPosition) {
         SoundListAdapter.ViewHolder viewHolder =
                 ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
                         findViewHolderForAdapterPosition(layoutPosition));

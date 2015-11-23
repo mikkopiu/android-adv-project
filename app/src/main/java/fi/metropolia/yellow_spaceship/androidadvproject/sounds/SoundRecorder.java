@@ -230,7 +230,6 @@ public class SoundRecorder {
 
                 audioRecord.stop();
                 audioRecord.release();
-                audioRecord = null;
 
                 // Close output stream
                 dos.close();
