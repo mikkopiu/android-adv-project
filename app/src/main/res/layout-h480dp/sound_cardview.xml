@@ -44,6 +44,7 @@
             android:id="@+id/randomize_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@id/volume_container"
             android:layout_below="@id/sound_title"
             android:paddingBottom="16dp"
             android:paddingLeft="10dp"
@@ -54,10 +55,10 @@
             android:theme="@style/CustomSwitchStyle" />
 
         <LinearLayout
+            android:id="@+id/volume_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_below="@id/randomize_switch"
             android:orientation="horizontal"
             android:padding="16dp">
 
