@@ -587,6 +587,12 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Toggles between previews pause and play states.
+     * If another sound is being played it will be stopped and the sound in layoutPosition will start.
+     *
+     * @param layoutPosition
+     */
     private void playPauseToggle(int layoutPosition) {
         DAMSound sound = data.get(layoutPosition);
 
@@ -606,6 +612,12 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Toggle between pause/play icon in ViewHolder.
+     *
+     * @param layoutPosition
+     * @param playing
+     */
     private void toggleViewHolderIcon(int layoutPosition, boolean playing) {
         SoundListAdapter.ViewHolder viewHolder =
                 ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView
@@ -616,6 +628,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Start preview playback
+     *
+     * @param layoutPosition
+     */
     private void startPreview(int layoutPosition) {
 
         toggleViewHolderIcon(layoutPosition, true);
@@ -628,6 +645,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     }
 
+    /**
+     * Pause preview playback
+     *
+     * @param layoutPosition
+     */
     private void pausePreview(int layoutPosition) {
         if (mediaPlayer.isPlaying()) {
 
@@ -641,6 +663,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Continue preview playback
+     *
+     * @param layoutPosition
+     */
     private void continuePreview(int layoutPosition) {
         if (!mediaPlayer.isPlaying()) {
 
@@ -654,6 +681,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    /**
+     * Stop preview playback
+     *
+     * @param layoutPosition
+     */
     private void stopPreview(int layoutPosition) {
         toggleViewHolderIcon(layoutPosition, false);
 
