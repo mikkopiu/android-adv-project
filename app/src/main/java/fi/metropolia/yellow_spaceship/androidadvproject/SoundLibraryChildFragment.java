@@ -271,7 +271,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         mSpinner.setVisibility(View.VISIBLE);
 
-        ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
+        ApiClient.getDAMApiClient().getTextSearchResults(
+                session.getApiKey(),
+                session.getCollectionID(),
                 this.mSearchQuery,
                 WANTED_FILETYPE,
                 true,
@@ -343,7 +345,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         mSpinner.setVisibility(View.VISIBLE);
 
-        ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
+        ApiClient.getDAMApiClient().getCategory(
+                session.getApiKey(),
+                session.getCollectionID(),
                 this.mCategory,
                 WANTED_FILETYPE,
                 true,

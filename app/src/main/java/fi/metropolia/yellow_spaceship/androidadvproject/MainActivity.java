@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SessionManager session = new SessionManager(getApplicationContext());
+        final SessionManager session = new SessionManager(getApplicationContext());
 
         // Check login status and redirect to LoginActivity if necessary
         session.checkLogin();
@@ -28,6 +29,18 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
+        toolbar.inflateMenu(R.menu.toolbar_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.action_logout:
+                        session.logoutUser();
+                        break;
+                }
+                return true;
+            }
+        });
 
         //DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
         //drawerMenu.createMenu();
