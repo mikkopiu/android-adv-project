@@ -97,24 +97,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void onPlayPauseToggle(int layoutPosition) {
-
-            DAMSound sound = data.get(layoutPosition);
-
-            if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
-                // layout position is playing
-                pausePreview(layoutPosition);
-            } else if(!sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
-                // layout position is paused
-                continuePreview(layoutPosition);
-            } else if(playingInd == -1) {
-                // nothing is playing
-                startPreview(layoutPosition);
-            } else if(playingInd != layoutPosition) {
-                // something else is playing
-                stopPreview(playingInd);
-                startPreview(layoutPosition);
-            }
-
+            playPauseToggle(layoutPosition);
         }
 
         @Override
@@ -604,15 +587,38 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
-    private void startPreview(int layoutPosition) {
+    private void playPauseToggle(int layoutPosition) {
+        DAMSound sound = data.get(layoutPosition);
 
+        if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
+            // layout position is playing
+            pausePreview(layoutPosition);
+        } else if(!sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
+            // layout position is paused
+            continuePreview(layoutPosition);
+        } else if(playingInd == -1) {
+            // nothing is playing
+            startPreview(layoutPosition);
+        } else if(playingInd != layoutPosition) {
+            // something else is playing
+            stopPreview(playingInd);
+            startPreview(layoutPosition);
+        }
+    }
+
+    private void toggleViewHolderIcon(int layoutPosition, boolean playing) {
         SoundListAdapter.ViewHolder viewHolder =
-                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                        findViewHolderForAdapterPosition(layoutPosition));
+                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView
+                        .findViewHolderForAdapterPosition(layoutPosition));
 
         if (viewHolder != null) {
-            viewHolder.setPlayingState(true);
+            viewHolder.setPlayingState(playing);
         }
+    }
+
+    private void startPreview(int layoutPosition) {
+
+        toggleViewHolderIcon(layoutPosition, true);
 
         if(mediaPlayer == null) {
             initMediaPlayer();
@@ -630,13 +636,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
             data.get(layoutPosition).setIsPlaying(false);
 
-            SoundListAdapter.ViewHolder viewHolder =
-                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                            findViewHolderForAdapterPosition(layoutPosition));
-
-            if(viewHolder != null) {
-                viewHolder.setPlayingState(false);
-            }
+            toggleViewHolderIcon(layoutPosition, false);
 
         }
     }
@@ -649,31 +649,22 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
             data.get(layoutPosition).setIsPlaying(true);
 
-            SoundListAdapter.ViewHolder viewHolder =
-                    ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                            findViewHolderForAdapterPosition(layoutPosition));
-
-            if(viewHolder != null) {
-                viewHolder.setPlayingState(true);
-            }
+            toggleViewHolderIcon(layoutPosition, true);
 
         }
     }
 
     private void stopPreview(int layoutPosition) {
-        SoundListAdapter.ViewHolder viewHolder =
-                ((SoundListAdapter.ViewHolder) SoundLibraryChildFragment.this.mRecyclerView.
-                        findViewHolderForAdapterPosition(layoutPosition));
+        toggleViewHolderIcon(layoutPosition, false);
 
-        if(viewHolder != null) {
-            viewHolder.setPlayingState(false);
-        }
         if(layoutPosition != -1) {
             data.get(layoutPosition).setIsPlaying(false);
         }
+
         playingInd = -1;
         initialStage = true;
         playingAudio = false;
+
         if(mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.reset();
