@@ -70,6 +70,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     //SoundListAdapter.ViewHolder
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
+    private static final String WANTED_FILETYPE = "wav";
 
     /**
      * Event handling for adapter's events
@@ -291,7 +292,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         ApiClient.getDAMApiClient().getTextSearchResults(session.getApiKey(),
                 this.mSearchQuery,
-                "wav",
+                WANTED_FILETYPE,
                 true,
                 webDataCallback);
     }
@@ -363,7 +364,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         ApiClient.getDAMApiClient().getCategory(session.getApiKey(),
                 this.mCategory,
-                "wav",
+                WANTED_FILETYPE,
                 true,
                 webDataCallback);
     }
