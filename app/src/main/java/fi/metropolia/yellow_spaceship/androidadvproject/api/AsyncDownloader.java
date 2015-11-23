@@ -80,7 +80,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                         byte[] buffer = new byte[1024 * 4];
                         long downloaded = 0;
                         long totalSize = response.body().contentLength();
-                        publishProgress(0L, totalSize);
 
                         int len;
                         while ((len = inputStream.read(buffer)) > 0) {
@@ -88,7 +87,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                             outputStream.write(buffer, 0, len);
 
                             downloaded += len;
-                            publishProgress(downloaded, totalSize);
 
                             // Stop the task and return false, if cancel() is called.
                             if (isCancelled())
@@ -133,14 +131,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
             return false;
 
         }
-
-    }
-
-    @Override
-    protected void onProgressUpdate(Long... values) {
-
-        float percentage = (float) values[0] / (float) values[1] * 100;
-        Log.d("AsyncDownloader DEBUG", String.valueOf(percentage));
 
     }
 
