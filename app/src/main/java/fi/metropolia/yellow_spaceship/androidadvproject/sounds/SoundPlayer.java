@@ -18,12 +18,14 @@ public class SoundPlayer implements SoundFinishedListener {
 
     private boolean mIsPlaying = false;
 
+    // Size of the header in bytes.
     public final static int HEADER_SIZE = 44;
     // Minimum time in milliseconds before next playback.
     private final static short LOWER_LIMIT = 4000;
     // Maximum time in milliseconds before next playback.
     private final static short UPPER_LIMIT = 12000;
 
+    // Handles the timing of random playback.
     private final Handler randomHandler = new Handler();
 
     public SoundPlayer() {
@@ -32,7 +34,6 @@ public class SoundPlayer implements SoundFinishedListener {
 
     /**
      * Add multiple sounds to the Sound Player at once
-     *
      * @param projectSounds An array of ProjectSounds
      */
     public void addSounds(ProjectSound[] projectSounds) {
@@ -48,6 +49,7 @@ public class SoundPlayer implements SoundFinishedListener {
      */
     public void addSound(ProjectSound projectSound) {
 
+        // Read sample rate, number of channels and bit depth from file header.
         ByteBuffer buffer = ByteBuffer.allocate(HEADER_SIZE);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -86,32 +88,47 @@ public class SoundPlayer implements SoundFinishedListener {
 
     }
 
+    /**
+     * Switch a sound from random to looping.
+     *
+     * @param index The position of the sound in the data structure / RecyclerView.
+     */
     public void changeToLoop(int index) {
         ProjectSound sound = mSounds.get(index);
-        if (!sound.getIsOnLoop()) {
+        if(!sound.getIsOnLoop()) {
             sound.setIsOnLoop(true);
             sound.setIsRandom(false);
             randomHandler.removeCallbacks(sound.getRandomRunnable());
-            if (mIsPlaying) {
+            if(mIsPlaying) {
                 sound.stop();
                 sound.play();
             }
         }
     }
 
+    /**
+     * Switch a sound from looping to random.
+     *
+     * @param index The position of the sound in the data structure / RecyclerView.
+     */
     public void changeToRandom(int index) {
         ProjectSound sound = mSounds.get(index);
-        if (!sound.getIsRandom()) {
+        if(!sound.getIsRandom()) {
             sound.setIsOnLoop(false);
             sound.setIsRandom(true);
             sound.getRandomRunnable().setNextPlayback(generateNextPlayback());
-            if (mIsPlaying) {
+            if(mIsPlaying) {
                 sound.stop();
                 randomHandler.postDelayed(sound.getRandomRunnable(), sound.getRandomRunnable().getNextPlayback());
             }
         }
     }
 
+    /**
+     * Remove a sound from the SoundPlayer.
+     *
+     * @param index The position of the sound in the data structure / RecyclerView.
+     */
     public void removeSound(int index) {
         ProjectSound sound = mSounds.get(index);
         sound.stop();
@@ -119,26 +136,39 @@ public class SoundPlayer implements SoundFinishedListener {
         randomHandler.removeCallbacks(sound.getRandomRunnable());
         mSounds.remove(index);
 
-        for (ProjectSound ps : mSounds) {
+        for(ProjectSound ps : mSounds) {
             RandomRunnable rr = ps.getRandomRunnable();
-            if (rr.getIndex() > index) {
+            if(rr.getIndex() > index) {
                 rr.setIndex(rr.getIndex() - 1);
             }
         }
     }
 
+    /**
+     * Generate a random time in milliseconds between LOWER_LIMIT and UPPER_LIMIT
+     * to be used as next playback time for a sound.
+     *
+     * @return Next playback time in milliseconds.
+     */
     private short generateNextPlayback() {
 
-        return (short) (LOWER_LIMIT + (Math.random() * ((UPPER_LIMIT - LOWER_LIMIT) + 1)));
+        return (short)(LOWER_LIMIT + (Math.random() * ((UPPER_LIMIT - LOWER_LIMIT) + 1)));
 
     }
 
+    /**
+     * SoundFinishedListener method.
+     * Called when a randomly played sound finishes playing.
+     * Generates a new playback time and playback for the sound.
+     *
+     * @param sound ProjectSound object.
+     */
     @Override
     public void soundIsFinished(ProjectSound sound) {
         int index = mSounds.indexOf(sound);
-        if (index != -1) {
+        if(index != -1) {
             ProjectSound projectSound = mSounds.get(index);
-            if (projectSound.getIsRandom()) {
+            if(projectSound.getIsRandom() && mIsPlaying) {
                 projectSound.getRandomRunnable().setNextPlayback(generateNextPlayback());
                 randomHandler.postDelayed(projectSound.getRandomRunnable(), projectSound.getRandomRunnable().getNextPlayback());
             }
@@ -154,8 +184,8 @@ public class SoundPlayer implements SoundFinishedListener {
 
         // Start playing the first sound immediately if we have only randomly played sounds.
         boolean allRandom = true;
-        for (ProjectSound ps : mSounds) {
-            if (ps.getIsOnLoop()) {
+        for(ProjectSound ps : mSounds) {
+            if(ps.getIsOnLoop()) {
                 allRandom = false;
                 break;
             }
@@ -163,11 +193,11 @@ public class SoundPlayer implements SoundFinishedListener {
 
         for (int i = 0; i < mSounds.size(); i++) {
             ProjectSound sound = mSounds.get(i);
-            if (sound.getIsOnLoop()) {
+            if(sound.getIsOnLoop()) {
                 sound.play();
-            } else if (sound.getIsRandom()) {
-                if (allRandom) {
-                    if (i == 0) {
+            } else if(sound.getIsRandom()) {
+                if(allRandom) {
+                    if(i == 0) {
                         sound.play();
                     }
                 } else {

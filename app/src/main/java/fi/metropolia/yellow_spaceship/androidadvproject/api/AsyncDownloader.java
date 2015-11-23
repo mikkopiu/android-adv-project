@@ -68,6 +68,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                     File folder = new File(mContext.getFilesDir() + "/" + SOUNDS_FOLDER);
                     boolean folderExists = folder.exists();
+                    // Create a folder if it doesn't exist.
                     if (!folderExists) {
                         folderExists = folder.mkdirs();
                     }
@@ -84,6 +85,7 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                         int len;
                         while ((len = inputStream.read(buffer)) > 0) {
 
+                            // Write the buffer to the file.
                             outputStream.write(buffer, 0, len);
 
                             downloaded += len;
