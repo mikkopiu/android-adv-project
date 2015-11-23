@@ -151,13 +151,28 @@ public class SoundPlayer implements SoundFinishedListener {
 
         mIsPlaying = true;
 
+        // Start playing the first sound immediately if we have only randomly played sounds.
+        boolean allRandom = true;
+        for(ProjectSound ps : mSounds) {
+            if(ps.getIsOnLoop()) {
+                allRandom = false;
+                break;
+            }
+        }
+
         for (int i = 0; i < mSounds.size(); i++) {
             ProjectSound sound = mSounds.get(i);
             if(sound.getIsOnLoop()) {
                 sound.play();
             } else if(sound.getIsRandom()) {
-                sound.getRandomRunnable().setNextPlayback(generateNextPlayback());
-                randomHandler.postDelayed(sound.getRandomRunnable(), sound.getRandomRunnable().getNextPlayback());
+                if(allRandom) {
+                    if(i == 0) {
+                        sound.play();
+                    }
+                } else {
+                    sound.getRandomRunnable().setNextPlayback(generateNextPlayback());
+                    randomHandler.postDelayed(sound.getRandomRunnable(), sound.getRandomRunnable().getNextPlayback());
+                }
             }
         }
 
