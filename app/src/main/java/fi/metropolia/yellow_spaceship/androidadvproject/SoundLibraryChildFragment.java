@@ -69,7 +69,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     //SoundListAdapter.ViewHolder
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
-    private static final String WANTED_FILETYPE = "wav";
+    private static final String WANTED_FILETYPE = "mp3";
 
     /**
      * Event handling for adapter's events
