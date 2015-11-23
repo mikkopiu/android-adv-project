@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">SoundSpace</string>
-    <string name="action_settings">Settings</string>
 
     <string name="toolbar_title">@string/app_name</string>
-
-    <string name="drawer_open">10</string>
-    <string name="drawer_close">10</string>
 
     <string name="create_soundscape_title">Create Soundscape</string>
     <string name="sound_library_title">Sound Library</string>
@@ -17,14 +13,12 @@
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="favorite_btn_description">Toggle favourite status</string>
-    <string name="sound_library_preview_description">Preview</string>
 
     <string name="fab_rec_sound">Record sound</string>
     <string name="fab_sound_library">Sound library</string>
     <string name="create_play_btn_description">Play soundscape</string>
     <string name="create_save_btn">Save</string>
     <string name="volume_slider_btn_description">Toggle mute</string>
-    <string name="create_loop_btn">Loop</string>
     <string name="create_random_btn">Random</string>
 
     <string name="record_stop_btn">Stop</string>
