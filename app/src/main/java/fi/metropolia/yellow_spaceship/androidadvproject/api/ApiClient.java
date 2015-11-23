@@ -1,6 +1,8 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.api;
 
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -80,7 +82,7 @@ public class ApiClient {
          * @param callback Callback for parsing
          */
         @POST("/api_auth/auth.php")
-        void login(@Body DAMUser user,
+        void login(@NonNull @Body DAMUser user,
                    Callback<DAMApiKey> callback);
 
         /**
@@ -90,9 +92,10 @@ public class ApiClient {
          * String.valueOf(Object) is called for all Query objects, so adding a toString-method
          * to a custom class/enum should be enough.
          *
+         * @param apiKey     API key
+         * @param collection Collection ID
          * @param format     File format
          * @param size       File size, e.g. "<50KB"
-         * @param collection Collection ID
          * @param category   SoundCategory
          * @param tag        Tag of the sound, e.g. "dog"
          * @param link       Show download link?
@@ -102,10 +105,10 @@ public class ApiClient {
          * @param callback   Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getSoundsWithParams(@Query("key") String apiKey,
+        void getSoundsWithParams(@NonNull @Query("key") String apiKey,
+                                 @Query("collection") Integer collection,
                                  @Query("format") String format,
                                  @Query("size") String size,
-                                 @Query("collection") Integer collection,
                                  @Query("category") SoundCategory category,
                                  @Query("tag") String tag,
                                  @Query("link") boolean link,
@@ -115,72 +118,63 @@ public class ApiClient {
                                  Callback<List<List<DAMSound>>> callback);
 
         /**
-         * Simplified method for getting all sounds in a single collection
-         *
-         * @param collection Collection ID
-         * @param link       Show download link?
-         * @param callback   Callback for parsing
-         */
-        @GET("/api_audio_search/index.php/")
-        void getCollection(@Query("key") String apiKey,
-                           @Query("collection") int collection,
-                           @Query("link") boolean link,
-                           Callback<List<List<DAMSound>>> callback);
-
-        /**
          * Simplified method for getting all sounds for a single category
          *
-         * @param category SoundCategory
-         * @param link     Show download link?
-         * @param callback Callback for parsing
+         * @param apiKey       API key
+         * @param collectionId Current collection ID
+         * @param category     SoundCategory
+         * @param format       File format
+         * @param link         Show download link?
+         * @param callback     Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getCategory(@Query("key") String apiKey,
-                         @Query("collection") int collectionId,
+        void getCategory(@NonNull @Query("key") String apiKey,
+                         @NonNull @Query("collection") Integer collectionId,
                          @Query("category") SoundCategory category,
                          @Query("format") String format,
                          @Query("link") boolean link,
                          Callback<List<List<DAMSound>>> callback);
 
         /**
-         * Simplified method for getting all sounds of a single SoundType
+         * Make a free text search on all available metadata fields
          *
-         * @param soundType SoundType
-         * @param link      Show download link?
-         * @param callback  Callback for parsing
+         * @param apiKey   DAM API key
+         * @param search   Free text search query
+         * @param format   File format
+         * @param link     Show download links?
+         * @param callback Callback for parsing
          */
         @GET("/api_audio_search/index.php/")
-        void getType(@Query("key") String apiKey,
-                     @Query("sound_type") SoundType soundType,
-                     @Query("link") boolean link,
-                     Callback<List<List<DAMSound>>> callback);
+        void getTextSearchResults(@NonNull @Query("key") String apiKey,
+                                  @NonNull @Query("collection") Integer collectionId,
+                                  @Query("search") String search,
+                                  @Query("format") String format,
+                                  @Query("link") boolean link,
+                                  Callback<List<List<DAMSound>>> callback);
 
+        /**
+         * Upload a sound to the DAM
+         *
+         * @param apiKey       API key
+         * @param collectionId Current collection ID
+         * @param title        Title of the sound
+         * @param description  Description of the sound
+         * @param category     Category of the sound
+         * @param soundType    Type of the sound
+         * @param lengthInSecs Length in full seconds
+         * @param file         Actual sound file
+         * @param callback     Callback for responses
+         */
         @Multipart
         @POST("/api_upload/?resourcetype=4")
-        void uploadSound(@Query("key") String apiKey,
-                         @Query("collection") int collectionId,
+        void uploadSound(@NonNull @Query("key") String apiKey,
+                         @NonNull @Query("collection") Integer collectionId,
                          @Query("field8") String title,
                          @Query("field73") String description,
                          @Query("field75") SoundCategory category,
                          @Query("field76") SoundType soundType,
                          @Query("field79") int lengthInSecs,
-                         @Part("userfile") TypedFile file,
+                         @NonNull @Part("userfile") TypedFile file,
                          Callback<Object> callback);
-
-        /**
-         * Make a free text search on all available metadata fields
-         *
-         * @param apiKey   DAM API key
-         * @param search   Free text search query
-         * @param link     Show download links?
-         * @param callback Callback for parsing
-         */
-        @GET("/api_audio_search/index.php/")
-        void getTextSearchResults(@Query("key") String apiKey,
-                                  @Query("collection") int collectionId,
-                                  @Query("search") String search,
-                                  @Query("format") String format,
-                                  @Query("link") boolean link,
-                                  Callback<List<List<DAMSound>>> callback);
     }
 }

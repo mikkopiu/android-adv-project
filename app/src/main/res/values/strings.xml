@@ -19,7 +19,6 @@
     <string name="create_play_btn_description">Play soundscape</string>
     <string name="create_save_btn">Save</string>
     <string name="volume_slider_btn_description">Toggle mute</string>
-    <string name="create_random_btn">Random</string>
 
     <string name="record_stop_btn">Stop</string>
     <string name="record_save_btn">Save</string>
@@ -65,5 +64,6 @@
     <string name="no_recordings_added">You have no saved recordings</string>
     <string name="no_sounds_found">No sounds found</string>
     <string name="logout">Logout</string>
+    <string name="search_menu_title">Search</string>
 
 </resources>
