@@ -4,11 +4,6 @@
 
     <string name="toolbar_title">@string/app_name</string>
 
-    <string name="side_nav_item1">Home</string>
-    <string name="side_nav_item2">Create Soundscape</string>
-    <string name="side_nav_item3">Sound Library</string>
-    <string name="side_nav_item4">Museum Tour</string>
-
     <string name="drawer_open">10</string>
     <string name="drawer_close">10</string>
 
