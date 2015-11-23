@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_username"
                 android:inputType="text"
+                android:singleLine="true"
                 android:textColor="@color/txt" />
         </android.support.design.widget.TextInputLayout>
 
@@ -43,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password"
                 android:inputType="textPassword"
+                android:singleLine="true"
                 android:textColor="@color/txt" />
         </android.support.design.widget.TextInputLayout>
 
@@ -61,6 +63,7 @@
                 android:hint="@string/login_collection_id"
                 android:imeOptions="actionDone"
                 android:inputType="number"
+                android:singleLine="true"
                 android:textColor="@color/txt" />
         </android.support.design.widget.TextInputLayout>
 
