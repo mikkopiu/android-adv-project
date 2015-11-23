@@ -19,7 +19,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 /**
  * SaveDialogManager creates a simple save-dialog with a single text input,
  * and optionally one dropdown/spinner.
- *
+ * 
  * Interfacing with the dialog is done through SaveDialogListener.
  */
 public class SaveDialogManager implements View.OnClickListener {
@@ -33,9 +33,9 @@ public class SaveDialogManager implements View.OnClickListener {
     /**
      * Constructor.
      *
-     * @param context Context where the Dialog should be opened in
-     * @param title Title for the Dialog
-     * @param adapter Nullable adapter (if given value, a dropdown is drawn)
+     * @param context  Context where the Dialog should be opened in
+     * @param title    Title for the Dialog
+     * @param adapter  Nullable adapter (if given value, a dropdown is drawn)
      * @param listener Listener for save/cancel-events
      */
     public SaveDialogManager(Context context, String title, ArrayAdapter<CharSequence> adapter,
@@ -102,6 +102,7 @@ public class SaveDialogManager implements View.OnClickListener {
 
     /**
      * Set a maximum string length for the text input
+     *
      * @param maxLength Maximum amount of characters in text input (will be validated)
      */
     public void setCounterMaxLength(int maxLength) {
@@ -110,6 +111,7 @@ public class SaveDialogManager implements View.OnClickListener {
 
     /**
      * Set custom error message to text input (in case some additional validations failed)
+     *
      * @param str Error message
      */
     public void setTextInputLayoutError(String str) {
@@ -118,6 +120,7 @@ public class SaveDialogManager implements View.OnClickListener {
 
     /**
      * Set a predefined value to the text input (e.g. prefilled project names)
+     *
      * @param str Predefined text value
      */
     public void setEditTextText(String str) {
@@ -126,6 +129,7 @@ public class SaveDialogManager implements View.OnClickListener {
 
     /**
      * Click-handling for Dialog's buttons
+     *
      * @param v Button view
      */
     @Override

@@ -354,9 +354,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
         int numberOfAdjacent;
         Configuration config = getResources().getConfiguration();
-        if(config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_PORTRAIT) {
             numberOfAdjacent = 2;
-        } else if(config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else if (config.screenHeightDp >= 480 && config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             numberOfAdjacent = 4;
         } else {
             numberOfAdjacent = 2;

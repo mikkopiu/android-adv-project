@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Show alert dialog with a login failure message, with a custom message
+     *
      * @param msg Nullable message
      */
     private void showLoginFailMsg(@Nullable String msg) {

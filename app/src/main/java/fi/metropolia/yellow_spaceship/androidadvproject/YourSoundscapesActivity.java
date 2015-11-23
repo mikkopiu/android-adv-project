@@ -220,8 +220,9 @@ public class YourSoundscapesActivity extends AppCompatActivity
     /**
      * Rename an existing project (by moving the file).
      * Reloads data on success.
+     *
      * @param project Existing SoundScapeProject
-     * @param name New name for the project
+     * @param name    New name for the project
      */
     private void renameProject(SoundScapeProject project, String name) {
         if (project != null && !name.trim().isEmpty() && !name.equals(project.getName())) {
@@ -248,6 +249,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     /**
      * Delete an existing project from the file systems.
      * Reloads data on success.
+     *
      * @param project Existing SoundScapeProject
      */
     private void deleteProject(SoundScapeProject project) {

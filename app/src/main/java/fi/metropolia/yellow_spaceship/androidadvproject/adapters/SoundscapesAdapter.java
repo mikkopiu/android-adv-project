@@ -40,6 +40,7 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
         /**
          * Bind SoundScapeProject to this ViewHolder.
          * Updates layout to match (titles etc.)
+         *
          * @param project SoundScapeProject to bind
          */
         public void bindProject(SoundScapeProject project) {
@@ -47,7 +48,7 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
 
             this.contextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp);
         }
-        
+
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.sound_library_fav_button) {

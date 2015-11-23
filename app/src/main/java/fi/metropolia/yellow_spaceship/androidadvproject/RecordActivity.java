@@ -240,7 +240,7 @@ public class RecordActivity extends AppCompatActivity implements SaveDialogListe
 
             switch (v.getId()) {
                 case R.id.record_button:
-                    if(ContextCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 112);
                         return;

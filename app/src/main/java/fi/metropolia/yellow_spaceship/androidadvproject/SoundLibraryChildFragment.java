@@ -66,7 +66,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private boolean playingAudio;
     private boolean initialStage = true;
     private int playingInd = -1;
-    //SoundListAdapter.ViewHolder
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
     private static final String WANTED_FILETYPE = "mp3";
@@ -596,16 +595,16 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private void playPauseToggle(int layoutPosition) {
         DAMSound sound = data.get(layoutPosition);
 
-        if(sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
+        if (sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && playingAudio) {
             // layout position is playing
             pausePreview(layoutPosition);
-        } else if(!sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
+        } else if (!sound.getIsPlaying() && layoutPosition == playingInd && !initialStage && !playingAudio) {
             // layout position is paused
             continuePreview(layoutPosition);
-        } else if(playingInd == -1) {
+        } else if (playingInd == -1) {
             // nothing is playing
             startPreview(layoutPosition);
-        } else if(playingInd != layoutPosition) {
+        } else if (playingInd != layoutPosition) {
             // something else is playing
             stopPreview(playingInd);
             startPreview(layoutPosition);
@@ -637,7 +636,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         toggleViewHolderIcon(layoutPosition, true);
 
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             initMediaPlayer();
         }
 
@@ -689,7 +688,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private void stopPreview(int layoutPosition) {
         toggleViewHolderIcon(layoutPosition, false);
 
-        if(layoutPosition != -1) {
+        if (layoutPosition != -1) {
             data.get(layoutPosition).setIsPlaying(false);
         }
 
@@ -697,7 +696,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         initialStage = true;
         playingAudio = false;
 
-        if(mediaPlayer != null) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.reset();
         }

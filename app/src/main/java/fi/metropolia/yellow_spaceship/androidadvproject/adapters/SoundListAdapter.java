@@ -55,6 +55,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         /**
          * Bind DAMSound to this ViewHolder.
          * Sets icons and text content.
+         *
          * @param sound DAMSound to bind
          */
         public void bindSound(DAMSound sound) {
@@ -62,7 +63,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             this.tvTitle.setText(sound.getTitle());
 
             // Set play/pause icon
-            if(sound.getIsPlaying()) {
+            if (sound.getIsPlaying()) {
                 this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
             } else {
                 this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
@@ -82,13 +83,14 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         /**
          * Update the preview button to match play-state
+         *
          * @param playing
          */
         public void setPlayingState(boolean playing) {
             this.previewBtn.setImageResource(
                     playing ?
-                    R.drawable.ic_pause_24dp :
-                    R.drawable.ic_play_arrow_24dp
+                            R.drawable.ic_pause_24dp :
+                            R.drawable.ic_play_arrow_24dp
             );
         }
 
@@ -127,8 +129,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
     /**
      * Constructor
      *
-     * @param dataSet  A reference to the data for the adapter
-     * @param listener Listener for ViewHolder's click events
+     * @param dataSet         A reference to the data for the adapter
+     * @param listener        Listener for ViewHolder's click events
      * @param showContextMenu True to show context menu instead of the favorite-button
      */
     public SoundListAdapter(ArrayList<DAMSound> dataSet,

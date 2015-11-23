@@ -61,6 +61,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
         /**
          * Bind a ProjectSound's data to this ViewHolder
+         *
          * @param sound Sound to bind
          */
         public void bindSound(ProjectSound sound) {
@@ -154,6 +155,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
     /**
      * Select a colour to use for a sound cardview.
      * TODO: Replace with actual logic (maybe by index?)
+     *
      * @param sound ProjectSound for the current ViewHolder
      * @return Background colour id
      */

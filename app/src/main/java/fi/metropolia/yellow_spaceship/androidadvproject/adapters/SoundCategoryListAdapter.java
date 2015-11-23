@@ -47,6 +47,7 @@ public class SoundCategoryListAdapter extends RecyclerView.Adapter<SoundCategory
         /**
          * Bind ListRowData to this ViewHolder.
          * Sets proper icons and text content.
+         *
          * @param data ListRowData to set
          */
         public void bindData(ListRowData data) {
@@ -93,7 +94,7 @@ public class SoundCategoryListAdapter extends RecyclerView.Adapter<SoundCategory
      * Constructor
      *
      * @param listener Click listener for the adapter's items
-     * @param dataSet Data for the adapter.
+     * @param dataSet  Data for the adapter.
      */
     public SoundCategoryListAdapter(View.OnClickListener listener, ArrayList<ListRowData> dataSet) {
 

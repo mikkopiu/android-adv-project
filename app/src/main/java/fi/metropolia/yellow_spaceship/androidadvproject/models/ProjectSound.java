@@ -154,7 +154,7 @@ public class ProjectSound implements Parcelable {
      * @param sampleRate Sample rate as integer value e.g 44100
      */
     public void setSampleRate(int sampleRate) {
-        if(sampleRate != 44100)
+        if (sampleRate != 44100)
             sampleRate = 44100;
         mSampleRate = sampleRate;
     }
@@ -263,7 +263,7 @@ public class ProjectSound implements Parcelable {
      */
     public void stop() {
         isPlaying = false;
-        if(mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+        if (mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
             mAudioTrack.stop();
         }
         if (mTrackThread != null) {
@@ -305,19 +305,19 @@ public class ProjectSound implements Parcelable {
      */
     public void clear() {
         try {
-            if(mAudioTrack != null) {
+            if (mAudioTrack != null) {
                 if (mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
                     mAudioTrack.stop();
                 }
                 mAudioTrack.release();
                 mAudioTrack = null;
             }
-            if(mTrackThread != null) {
+            if (mTrackThread != null) {
                 mTrackThread.interrupt();
                 mTrackThread.join();
                 mTrackThread = null;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -374,10 +374,10 @@ public class ProjectSound implements Parcelable {
                 }
 
                 // Clean up.
-                if(mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+                if (mAudioTrack != null && mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
                     try {
                         mAudioTrack.stop();
-                    } catch(IllegalStateException e) {
+                    } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
                 }

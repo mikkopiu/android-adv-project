@@ -31,6 +31,7 @@ public class SessionManager {
 
     /**
      * Get the current API key
+     *
      * @return ?String API key for DAM
      */
     public String getApiKey() {
@@ -39,7 +40,8 @@ public class SessionManager {
 
     /**
      * Create a new login session
-     * @param apiKey New API key for DAM
+     *
+     * @param apiKey       New API key for DAM
      * @param collectionId The predefined collection ID for this user
      */
     public void createLoginSession(String apiKey, int collectionId) {
@@ -73,9 +75,9 @@ public class SessionManager {
      * Public method for checking login status and opening the LoginActivity in case of
      * a logged out session.
      */
-    public void checkLogin(){
+    public void checkLogin() {
         // Check login status
-        if(!this.isLoggedIn()){
+        if (!this.isLoggedIn()) {
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(mContext, LoginActivity.class);
             // Closing all the Activities
@@ -96,6 +98,7 @@ public class SessionManager {
 
     /**
      * Get the collection ID setting for this login-session
+     *
      * @return Current collection ID
      */
     public int getCollectionID() {
@@ -104,6 +107,7 @@ public class SessionManager {
 
     /**
      * Quick check for login status
+     *
      * @return boolean Is user logged in
      */
     private boolean isLoggedIn() {
