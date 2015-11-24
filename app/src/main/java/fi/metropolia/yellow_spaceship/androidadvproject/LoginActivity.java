@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             collectionId = Integer.parseInt(txtCollectionId.getText().toString());
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            showLoginFailMsg("Please enter an integer as the collection ID");
+            showLoginFailMsg(getResources().getString(R.string.login_collection_id_not_int));
             return;
         }
 
@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             });
 
         } else {
-            showLoginFailMsg("Please enter a username and password");
+            showLoginFailMsg(getResources().getString(R.string.login_no_name_or_password));
         }
     }
 
@@ -121,11 +121,12 @@ public class LoginActivity extends AppCompatActivity {
      * @param msg Nullable message
      */
     private void showLoginFailMsg(@Nullable String msg) {
-        String message = msg != null ? msg : "Username or password incorrect";
+        String message = msg != null ? msg : getResources()
+                .getString(R.string.login_name_or_password_incorrect);
 
         AlertDialogManager.showAlertDialog(
                 LoginActivity.this,
-                "Login failed",
+                getResources().getString(R.string.login_failed),
                 message
         );
     }

@@ -149,8 +149,12 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
                     Converter converter = new Converter();
                     String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
                     mDAMSound.setFileName(withoutExtension + ".wav");
-                    converter.convert(mContext.getFilesDir().getAbsolutePath() + "/sounds/" + mFile.getName(),
-                            mContext.getFilesDir().getAbsolutePath() + "/sounds/" + withoutExtension + ".wav");
+                    converter.convert(
+                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
+                                    "/" + mFile.getName(),
+                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
+                                    "/" + withoutExtension + ".wav"
+                    );
                     mFile.delete();
                 } catch (Exception e) {
                     e.printStackTrace();

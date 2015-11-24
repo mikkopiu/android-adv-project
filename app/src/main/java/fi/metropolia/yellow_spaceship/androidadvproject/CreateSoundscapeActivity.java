@@ -21,6 +21,7 @@ import java.io.File;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
+import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
@@ -35,6 +36,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
     public final static int GET_LIBRARY_SOUND = 1;
     public final static int RECORD_SOUND = 2;
+    public static final String LOADED_SOUNDSCAPE_KEY = "loadedSoundscape";
 
     private final static String UNSAVED_PROJECT_BUNDLE_NAME = "unsaved_project";
 
@@ -286,7 +288,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
             if (resultCode == Activity.RESULT_OK) {
                 // TODO: handle multi-select
-                DAMSound result = data.getExtras().getParcelable("result");
+                DAMSound result = data.getExtras()
+                        .getParcelable(SoundLibraryActivity.LIBRARY_RESULT_KEY);
                 addSelectedSound(result);
             }
 
@@ -331,11 +334,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
      * TODO: auto-load previous project
      */
     private void initProject() {
-        if (getIntent().getParcelableExtra("loadedSoundscape") != null) {
-            this.mProject = getIntent().getParcelableExtra("loadedSoundscape");
+        if (getIntent().getParcelableExtra(LOADED_SOUNDSCAPE_KEY) != null) {
+            this.mProject = getIntent().getParcelableExtra(LOADED_SOUNDSCAPE_KEY);
 
             for (ProjectSound ps : mProject.getSounds()) {
-                ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+                ps.setFile(new File(getFilesDir().getAbsolutePath() +
+                        "/" + AsyncDownloader.SOUNDS_FOLDER +
+                        "/" + ps.getFileName()));
                 soundPlayer.addSound(ps);
             }
 
@@ -374,7 +379,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
      */
     private void addLibrarySound() {
         Intent intent = new Intent(getApplicationContext(), SoundLibraryActivity.class);
-        intent.putExtra("requestCode", GET_LIBRARY_SOUND);
+        intent.putExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, GET_LIBRARY_SOUND);
         startActivityForResult(intent, GET_LIBRARY_SOUND);
     }
 
@@ -383,7 +388,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
      */
     private void addRecording() {
         Intent intent = new Intent(getApplicationContext(), RecordActivity.class);
-        intent.putExtra("requestCode", RECORD_SOUND);
+        intent.putExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, RECORD_SOUND);
         startActivityForResult(intent, RECORD_SOUND);
     }
 
@@ -400,7 +405,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
                     1.0f        // By default on full volume
             );
 
-            ps.setFile(new File(getFilesDir().getAbsolutePath() + "/sounds/" + ps.getFileName()));
+            ps.setFile(new File(getFilesDir().getAbsolutePath() +
+                    "/" + AsyncDownloader.SOUNDS_FOLDER +
+                    "/" + ps.getFileName()));
 
             this.mProject.addSound(ps);
 
@@ -427,7 +434,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
             mIsSaving = true;
             this.mProgress = new ProgressDialog(this);
-            this.mProgress.setMessage("Saving...");
+            this.mProgress.setMessage(getResources().getString(R.string.saving_project));
             this.mProgress.show();
             this.mProject.setName(fileName);
             new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(this.mProject);

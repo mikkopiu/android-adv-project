@@ -85,7 +85,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
             // Return the selection results if necessary
             Intent intent = getActivity().getIntent();
-            if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
+            if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                 // No need to download any time the user clicks a row, just when getting a sound
                 mSpinner.setVisibility(View.VISIBLE);
                 new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
@@ -167,11 +167,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             this.mCategory = null;
         }
 
-        if (getArguments().getString("search-query") != null) {
-            this.mSearchQuery = getArguments().getString("search-query");
-        } else {
-            this.mSearchQuery = null;
-        }
+        this.mSearchQuery =  getArguments().getString(SoundLibraryActivity.SEARCH_QUERY_KEY);
 
         this.isFavoritesView = getArguments().getBoolean("isFavorites");
         this.isRecordingsView = getArguments().getBoolean("isRecordings");
@@ -208,7 +204,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             // Create the return Intent to send the selected sound
             // to the create-view.
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("result", damSound);
+            returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, damSound);
             getActivity().setResult(Activity.RESULT_OK, returnIntent);
             getActivity().finish();
         } else {

@@ -140,7 +140,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
         SoundScapeProject d = this.mData.get(layoutPosition);
 
         Intent intent = new Intent(getApplicationContext(), CreateSoundscapeActivity.class);
-        intent.putExtra("loadedSoundscape", d);
+        intent.putExtra(CreateSoundscapeActivity.LOADED_SOUNDSCAPE_KEY, d);
         startActivity(intent);
     }
 

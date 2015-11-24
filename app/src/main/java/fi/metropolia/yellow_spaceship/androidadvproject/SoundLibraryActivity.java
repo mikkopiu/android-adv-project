@@ -15,6 +15,10 @@ import android.view.View;
 
 public class SoundLibraryActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
+    public static final String LIBRARY_REQUEST_KEY = "requestCode";
+    public static final String LIBRARY_RESULT_KEY = "result";
+    public static final String SEARCH_QUERY_KEY = "search-query";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +90,7 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
                 SoundLibraryChildFragment fragment = SoundLibraryChildFragment.newInstance();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("search-query", query);
+                bundle.putString(SEARCH_QUERY_KEY, query);
                 fragment.setArguments(bundle);
                 swapFragment(fragment);
 

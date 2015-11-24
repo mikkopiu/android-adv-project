@@ -153,11 +153,11 @@ public class RecordActivity extends AppCompatActivity implements SaveDialogListe
 
             // Return damSound if we have a intent from CreateSoundScapeActivity.
             Intent intent = RecordActivity.this.getIntent();
-            if (intent.getIntExtra("requestCode", 0) == CreateSoundscapeActivity.RECORD_SOUND) {
+            if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.RECORD_SOUND) {
 
                 // Return intent
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", damSound);
+                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, damSound);
                 RecordActivity.this.setResult(Activity.RESULT_OK, returnIntent);
                 RecordActivity.this.finish();
 
