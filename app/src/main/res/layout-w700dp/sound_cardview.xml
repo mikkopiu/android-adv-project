@@ -3,49 +3,57 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/create_card_view"
     android:layout_width="match_parent"
-    android:layout_height="260dp"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:clipToPadding="false"
     card_view:cardBackgroundColor="@color/acc_card_bac_1"
     card_view:cardElevation="2dp">
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/sound_title"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_margin="10dp"
-            android:layout_toLeftOf="@+id/close_btn"
-            android:layout_toStartOf="@+id/close_btn"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textAllCaps="true"
-            android:textColor="@color/txt_light"
-            android:textSize="20sp" />
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@id/close_btn"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:contentDescription="@string/remove_sound"
-            android:minHeight="24dp"
-            android:minWidth="24dp"
-            android:src="@drawable/ic_clear_24dp" />
+            <TextView
+                android:id="@+id/sound_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_margin="10dp"
+                android:layout_toLeftOf="@+id/close_btn"
+                android:layout_toStartOf="@+id/close_btn"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textAllCaps="true"
+                android:textColor="@color/txt_light"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@id/close_btn"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/remove_sound"
+                android:minHeight="24dp"
+                android:minWidth="24dp"
+                android:src="@drawable/ic_clear_24dp" />
+
+        </LinearLayout>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/randomize_switch"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/volume_container"
-            android:layout_below="@id/sound_title"
             android:paddingBottom="16dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -55,10 +63,9 @@
             android:theme="@style/CustomSwitchStyle" />
 
         <LinearLayout
-            android:id="@id/volume_container"
+            android:id="@+id/volume_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:padding="16dp">
 
@@ -82,6 +89,6 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
