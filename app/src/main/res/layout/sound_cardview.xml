@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/create_card_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:clipToPadding="false"
     card_view:cardBackgroundColor="@color/acc_card_bac_1"
@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/sound_title"
@@ -44,6 +44,7 @@
             android:id="@+id/randomize_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/volume_container"
             android:layout_below="@id/sound_title"
             android:paddingBottom="16dp"
             android:paddingLeft="10dp"
@@ -54,11 +55,10 @@
             android:theme="@style/CustomSwitchStyle" />
 
         <LinearLayout
-            android:id="@+id/volume_container"
+            android:id="@id/volume_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_below="@id/randomize_switch"
             android:orientation="horizontal"
             android:padding="16dp">
 
