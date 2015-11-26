@@ -361,7 +361,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         Configuration config = getResources().getConfiguration();
         System.out.println(config.screenWidthDp);
         System.out.println(config.screenHeightDp);
-        if (config.screenWidthDp <= 700) {
+        if (config.screenWidthDp < 700) {
             numberOfAdjacent = 2;
         } else {
             numberOfAdjacent = 4;
