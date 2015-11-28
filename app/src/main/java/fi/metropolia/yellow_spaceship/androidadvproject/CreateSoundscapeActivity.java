@@ -304,7 +304,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
     @Override
     public void onDialogCancel() {
-
+        saveDialogManager.dismiss();
     }
 
     /**
