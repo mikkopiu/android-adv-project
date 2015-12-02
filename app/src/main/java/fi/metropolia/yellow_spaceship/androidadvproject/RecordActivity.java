@@ -144,6 +144,8 @@ public class RecordActivity extends AppCompatActivity implements SaveDialogListe
             values.put(DAMSoundEntry.COLUMN_NAME_IS_RECORDING, damSound.getIsRecording());
             values.put(DAMSoundEntry.COLUMN_NAME_FILE_NAME, damSound.getFileName());
             values.put(DAMSoundEntry.COLUMN_NAME_SOUND_ID, damSound.getFormattedSoundId());
+            values.put(DAMSoundEntry.COLUMN_NAME_URL, damSound.getDownloadLink());
+            values.put(DAMSoundEntry.COLUMN_NAME_FILE_EXT, damSound.getFileExtension());
 
             RecordActivity.this.getContentResolver().insert(SoundContentProvider.CONTENT_URI, values);
 

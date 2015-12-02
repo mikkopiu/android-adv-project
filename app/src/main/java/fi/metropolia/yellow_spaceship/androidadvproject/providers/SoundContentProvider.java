@@ -258,6 +258,8 @@ public class SoundContentProvider extends ContentProvider {
                 DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
                 DAMSoundEntry.COLUMN_NAME_IS_RECORDING,
                 DAMSoundEntry.COLUMN_NAME_FILE_NAME,
+                DAMSoundEntry.COLUMN_NAME_URL,
+                DAMSoundEntry.COLUMN_NAME_FILE_EXT
         };
 
         if (projection != null) {

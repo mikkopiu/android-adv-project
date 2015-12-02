@@ -206,6 +206,8 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
             values.put(DAMSoundEntry.COLUMN_NAME_LENGTH_SEC, mDAMSound.getLengthSec());
             values.put(DAMSoundEntry.COLUMN_NAME_IS_FAVORITE, mDAMSound.getIsFavorite());
             values.put(DAMSoundEntry.COLUMN_NAME_FILE_NAME, mDAMSound.getFileName());
+            values.put(DAMSoundEntry.COLUMN_NAME_URL, mDAMSound.getDownloadLink());
+            values.put(DAMSoundEntry.COLUMN_NAME_FILE_EXT, mDAMSound.getFileExtension());
 
             // Insert or update meta data, depending on whether the sound already exists
             // in the database.

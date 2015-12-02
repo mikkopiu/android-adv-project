@@ -399,7 +399,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
                         DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
                         DAMSoundEntry.COLUMN_NAME_FILE_NAME,
-                        DAMSoundEntry.COLUMN_NAME_SOUND_ID
+                        DAMSoundEntry.COLUMN_NAME_SOUND_ID,
+                        DAMSoundEntry.COLUMN_NAME_URL,
+                        DAMSoundEntry.COLUMN_NAME_FILE_EXT
                 },
                 selection,
                 selectionArgs,
@@ -481,6 +483,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         s.setIsFavorite(cursor.getInt(4) == 1);
         s.setFileName(cursor.getString(5));
         s.setFormattedSoundId(cursor.getString(6));
+        s.setDownloadLink(cursor.getString(7));
+        s.setFileExtension(cursor.getString(8));
         return s;
     }
 
@@ -573,6 +577,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             values.put(DAMSoundEntry.COLUMN_NAME_TYPE, sound.getSoundType().toString());
             values.put(DAMSoundEntry.COLUMN_NAME_LENGTH_SEC, sound.getLengthSec());
             values.put(DAMSoundEntry.COLUMN_NAME_IS_FAVORITE, sound.getIsFavorite());
+            values.put(DAMSoundEntry.COLUMN_NAME_URL, sound.getDownloadLink());
+            values.put(DAMSoundEntry.COLUMN_NAME_FILE_EXT, sound.getFileExtension());
 
             // Insert or update favorite status, depending on whether the sound already exists
             // in the database.
