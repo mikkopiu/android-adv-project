@@ -18,13 +18,15 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:weightSum="10"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/sound_title"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_weight="9"
                 android:layout_margin="10dp"
                 android:layout_toLeftOf="@+id/close_btn"
                 android:layout_toStartOf="@+id/close_btn"
@@ -39,9 +41,7 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
+                android:gravity="right|top"
                 android:contentDescription="@string/remove_sound"
                 android:minHeight="24dp"
                 android:minWidth="24dp"
