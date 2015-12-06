@@ -70,5 +70,6 @@
     <string name="saving_project">Saving…</string>
     <string name="library_buffering">Buffering…</string>
     <string name="library_delete_success">Sound deleted</string>
+    <string name="library_select_done_action">Select</string>
 
 </resources>

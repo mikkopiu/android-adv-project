@@ -9,6 +9,7 @@
         <item name="android:textColorPrimary">@color/txt</item>
         <item name="colorControlNormal">@color/txt_light</item>
         <item name="android:textColorHint">@color/txt</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="DarkToolbarStyle" parent="AppTheme">
@@ -23,6 +24,12 @@
         <item name="actionMenuTextColor">@color/txt_light</item>
         <!-- Color of the Toolbar -->
         <item name="android:background">@color/pri</item>
+
+        <!-- ActionMode styles (multi-select in library) -->
+        <!-- AppTheme should handle windowActionBarOverlay, but just make sure, added here too -->
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionModeBackground">@color/pri_dark</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_clear_24dp</item>
     </style>
 
     <style name="CustomSwitchStyle" parent="AppTheme">

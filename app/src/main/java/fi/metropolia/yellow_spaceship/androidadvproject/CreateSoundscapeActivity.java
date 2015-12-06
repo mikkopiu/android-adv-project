@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
@@ -288,9 +289,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
             if (resultCode == Activity.RESULT_OK) {
                 // TODO: handle multi-select
-                DAMSound result = data.getExtras()
-                        .getParcelable(SoundLibraryActivity.LIBRARY_RESULT_KEY);
-                addSelectedSound(result);
+                ArrayList<DAMSound> result = data
+                        .getParcelableArrayListExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY);
+                for (DAMSound s : result) {
+                    addSelectedSound(s);
+                }
             }
 
             fabMenu.close(false);

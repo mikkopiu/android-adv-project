@@ -14,12 +14,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -47,7 +51,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
-public class SoundLibraryChildFragment extends Fragment implements AsyncDownloaderListener {
+public class SoundLibraryChildFragment extends Fragment implements AsyncDownloaderListener,
+        ActionModeToggleListener {
 
     private ArrayList<DAMSound> data;
     private SoundCategory mCategory;
@@ -66,6 +71,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private boolean playingAudio;
     private boolean initialStage = true;
     private int playingInd = -1;
+    private ActionMode mMode;
+    private int mWantedCount = -1;
+    private ArrayList<DAMSound> mIntentReturnData;
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
     private static final String WANTED_FILETYPE = "mp3";
@@ -88,9 +96,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                 // No need to download any time the user clicks a row, just when getting a sound
                 mSpinner.setVisibility(View.VISIBLE);
+                mWantedCount = 1;
                 new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
-
-
             }
         }
 
@@ -167,7 +174,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             this.mCategory = null;
         }
 
-        this.mSearchQuery =  getArguments().getString(SoundLibraryActivity.SEARCH_QUERY_KEY);
+        this.mSearchQuery = getArguments().getString(SoundLibraryActivity.SEARCH_QUERY_KEY);
 
         this.isFavoritesView = getArguments().getBoolean("isFavorites");
         this.isRecordingsView = getArguments().getBoolean("isRecordings");
@@ -179,7 +186,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
 
         // Adapter for RecyclerView
-        SoundListAdapter mAdapter = new SoundListAdapter(data, listEventHandler, isRecordingsView);
+        Intent intent = getActivity().getIntent();
+        boolean inSelectMode = intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND;
+        SoundListAdapter mAdapter = new SoundListAdapter(data, listEventHandler, isRecordingsView,
+                inSelectMode ? this : null);
         mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
@@ -197,22 +207,29 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     @Override
     public void onDownloadFinished(DAMSound damSound) {
+        if (mIntentReturnData == null) {
+            mIntentReturnData = new ArrayList<>();
+        }
 
-        mSpinner.setVisibility(View.GONE);
+        mIntentReturnData.add(damSound);
 
-        if (damSound != null && damSound.getFileName() != null) {
-            // Create the return Intent to send the selected sound
-            // to the create-view.
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, damSound);
-            getActivity().setResult(Activity.RESULT_OK, returnIntent);
-            getActivity().finish();
-        } else {
-            Snackbar.make(
-                    this.coordinatorLayout,
-                    R.string.library_download_error,
-                    Snackbar.LENGTH_LONG
-            ).show();
+        if (mIntentReturnData.size() == mWantedCount) {
+            mSpinner.setVisibility(View.GONE);
+
+            if (damSound != null && damSound.getFileName() != null) {
+                // Create the return Intent to send the selected sound
+                // to the create-view.
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, mIntentReturnData);
+                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                getActivity().finish();
+            } else {
+                Snackbar.make(
+                        this.coordinatorLayout,
+                        R.string.library_download_error,
+                        Snackbar.LENGTH_LONG
+                ).show();
+            }
         }
     }
 
@@ -258,6 +275,78 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         stopPreview(playingInd);
         clearMediaPlayer();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Clear out the multi-selection ActionMode if currently displayed
+        if (this.mMode != null) {
+            this.mMode.finish();
+            this.mMode = null;
+        }
+    }
+
+    /**
+     * Set ActionMode state.
+     * Display/Hide the ActionMode overlay over the Toolbar when selecting multiple sounds.
+     * @param actionModeOn Should ActionMode menu be visible
+     */
+    @Override
+    public void setActionMode(boolean actionModeOn) {
+        if (actionModeOn && this.mMode == null) {
+            this.mMode = ((AppCompatActivity) this.getActivity())
+                    .startSupportActionMode(actionModeCb);
+        } else if (this.mMode != null) {
+            this.mMode.finish();
+            this.mMode = null;
+        }
+
+    }
+
+    /**
+     * Callback for ActionMode events (create, item click etc).
+     * Used to display an ActionMode overlay over the Toolbar when selecting multiple sounds.
+     */
+    private android.support.v7.view.ActionMode.Callback actionModeCb =
+            new android.support.v7.view.ActionMode.Callback() {
+
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    MenuInflater inflater = mode.getMenuInflater();
+                    inflater.inflate(R.menu.library_multiselect_context, menu);
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    // Return the selection results if necessary
+                    Intent intent = getActivity().getIntent();
+                    if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
+                        ArrayList<DAMSound> selectedSounds =
+                                ((SoundListAdapter) mRecyclerView.getAdapter()).getSelectedSounds();
+
+                        mWantedCount = selectedSounds.size();
+
+                        mSpinner.setVisibility(View.VISIBLE);
+                        for (DAMSound s : selectedSounds) {
+                            new AsyncDownloader(s, getActivity(), SoundLibraryChildFragment.this).execute();
+                        }
+                    }
+
+                    return false;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+                    ((SoundListAdapter)mRecyclerView.getAdapter()).setInEditMode(false);
+                }
+            };
 
     /**
      * Load data for a search query

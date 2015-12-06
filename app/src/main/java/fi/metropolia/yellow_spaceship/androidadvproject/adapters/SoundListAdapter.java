@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import fi.metropolia.yellow_spaceship.androidadvproject.ActionModeToggleListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 
@@ -18,13 +19,17 @@ import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
     private final ArrayList<DAMSound> mDataSet;
     private final ISoundLibraryViewHolderClicks listener;
+    private final ActionModeToggleListener toggleListener;
     private final boolean showContextMenu;
+    private final ArrayList<Integer> mSelectedSounds = new ArrayList<>();
+
+    private boolean mEditMode = false;
 
     /**
      * Basic ViewHolder inner class
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+            android.support.v7.widget.PopupMenu.OnMenuItemClickListener, View.OnLongClickListener {
 
         private final ISoundLibraryViewHolderClicks mListener;
 
@@ -32,14 +37,10 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         private final ImageButton favBtn;
         private final ImageButton previewBtn;
 
-        private final boolean showContextMenu;
-
-        public ViewHolder(final View itemView, ISoundLibraryViewHolderClicks listener,
-                          boolean showContextMenu) {
+        public ViewHolder(final View itemView, ISoundLibraryViewHolderClicks listener) {
             super(itemView);
 
             this.mListener = listener;
-            this.showContextMenu = showContextMenu;
 
             this.tvTitle = (TextView) itemView.findViewById(R.id.sound_library_list_text);
             this.favBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
@@ -48,6 +49,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             this.favBtn.setOnClickListener(this);
             this.previewBtn.setOnClickListener(this);
         }
@@ -62,11 +64,19 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
             this.tvTitle.setText(sound.getTitle());
 
-            // Set play/pause icon
-            if (sound.getIsPlaying()) {
-                this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+            if (mEditMode) {
+                if (mSelectedSounds.contains(this.getAdapterPosition())) {
+                    this.previewBtn.setImageResource(R.drawable.ic_check_box_black_24dp);
+                } else {
+                    this.previewBtn.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
+                }
             } else {
-                this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+                // Set play/pause icon
+                if (sound.getIsPlaying()) {
+                    this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+                } else {
+                    this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+                }
             }
 
             // Context-menu replaces the favorite-button
@@ -96,33 +106,76 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.sound_library_fav_button) {
-                // Context-menu replaces the fav-button
-                if (this.showContextMenu) {
-                    PopupMenu popup = new PopupMenu(v.getContext(), v);
-                    popup.inflate(R.menu.recordings_context);
-                    popup.setOnMenuItemClickListener(this);
-                    popup.show();
-                } else {
-                    this.mListener.onFavorite(this.getAdapterPosition());
-                }
-            } else if (v.getId() == R.id.sound_library_preview_button) {
-                this.mListener.onPlayPauseToggle(this.getAdapterPosition());
+            if (getInEditMode()) {
+                this.selectItem();
             } else {
-                this.mListener.onRowSelect(this.getAdapterPosition());
+                if (v.getId() == R.id.sound_library_fav_button) {
+                    // Context-menu replaces the fav-button
+                    if (showContextMenu) {
+                        PopupMenu popup = new PopupMenu(v.getContext(), v);
+                        popup.inflate(R.menu.recordings_context);
+                        popup.setOnMenuItemClickListener(this);
+                        popup.show();
+                    } else {
+                        this.mListener.onFavorite(this.getAdapterPosition());
+                    }
+                } else if (v.getId() == R.id.sound_library_preview_button) {
+                    this.mListener.onPlayPauseToggle(this.getAdapterPosition());
+                } else {
+                    this.mListener.onRowSelect(this.getAdapterPosition());
+                }
             }
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
+            boolean handled = false;
             if (item.getItemId() == R.id.upload_sound) {
                 this.mListener.onRowUpload(this.getAdapterPosition());
-                return true;
+                handled = true;
             } else if (item.getItemId() == R.id.delete_sound) {
                 this.mListener.onRowDelete(this.getAdapterPosition());
+                handled = true;
+            }
+            return handled;
+        }
+
+        /**
+         * Long clicks start the multi-selection mode
+         * @param v Clicked view
+         * @return Event handled
+         */
+        @Override
+        public boolean onLongClick(View v) {
+            // toggleListener won't be defined if the caller isn't expecting any action modes
+            if (toggleListener != null) {
+                this.selectItem();
                 return true;
             }
+
             return false;
+        }
+
+        private void selectItem() {
+            int pos = this.getAdapterPosition();
+
+            if (!getInEditMode()) {
+                mSelectedSounds.add(pos);
+                setInEditMode(true);
+            } else {
+                int ind = mSelectedSounds.indexOf(pos);
+                if (ind >= 0) {
+                    mSelectedSounds.remove(ind);
+                } else {
+                    mSelectedSounds.add(pos);
+                }
+
+                notifyItemChanged(pos);
+
+                if (mSelectedSounds.size() == 0) {
+                    setInEditMode(false);
+                }
+            }
         }
     }
 
@@ -135,9 +188,11 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
      */
     public SoundListAdapter(ArrayList<DAMSound> dataSet,
                             ISoundLibraryViewHolderClicks listener,
-                            boolean showContextMenu) {
+                            boolean showContextMenu,
+                            ActionModeToggleListener toggleListener) {
         this.mDataSet = dataSet;
         this.listener = listener;
+        this.toggleListener = toggleListener;
         this.showContextMenu = showContextMenu;
     }
 
@@ -156,7 +211,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                 .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        return new ViewHolder(v, this.listener, this.showContextMenu);
+        return new ViewHolder(v, this.listener);
     }
 
     @Override
@@ -172,5 +227,32 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         } else {
             return 0;
         }
+    }
+
+    public ArrayList<DAMSound> getSelectedSounds() {
+        ArrayList<DAMSound> sounds = new ArrayList<>();
+        for (int pos : this.mSelectedSounds) {
+            sounds.add(this.mDataSet.get(pos));
+        }
+
+        return sounds;
+    }
+
+    private boolean getInEditMode() {
+        return this.mEditMode;
+    }
+
+    public void setInEditMode(boolean inEditMode) {
+        this.mEditMode = inEditMode;
+
+        if (this.toggleListener != null) {
+            this.toggleListener.setActionMode(this.mEditMode);
+        }
+
+        if (!this.mEditMode && this.mSelectedSounds.size() > 0) {
+            this.mSelectedSounds.clear();
+        }
+
+        notifyDataSetChanged();
     }
 }
