@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.adapters;
 
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,11 +67,19 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
             if (mEditMode) {
                 if (mSelectedSounds.contains(this.getAdapterPosition())) {
+                    itemView.setBackgroundResource(R.drawable.sound_library_select_ripple);
                     this.previewBtn.setImageResource(R.drawable.ic_check_box_black_24dp);
                 } else {
+                    TypedValue outValue = new TypedValue();
+                    itemView.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                    itemView.setBackgroundResource(outValue.resourceId);
                     this.previewBtn.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
                 }
             } else {
+                TypedValue outValue = new TypedValue();
+                itemView.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                itemView.setBackgroundResource(outValue.resourceId);
+
                 // Set play/pause icon
                 if (sound.getIsPlaying()) {
                     this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
