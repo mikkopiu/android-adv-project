@@ -48,8 +48,8 @@ public class RandomRunnable implements Runnable {
     /**
      * Constructor.
      *
-     * @param index Position in the data structure.
-     * @param player Reference to the SoundPlayer object.
+     * @param index        Position in the data structure.
+     * @param player       Reference to the SoundPlayer object.
      * @param nextPlayback Time until next playback in milliseconds.
      */
     public RandomRunnable(int index, SoundPlayer player, short nextPlayback) {

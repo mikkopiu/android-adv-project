@@ -26,10 +26,11 @@ public class SoundRecorder {
 
     private Thread mBackgroundThread;
 
-    public SoundRecorder() {
-
-    }
-
+    /**
+     * Constructor
+     *
+     * @param file File to write into
+     */
     public SoundRecorder(File file) {
 
         mFile = file;
@@ -37,6 +38,11 @@ public class SoundRecorder {
 
     }
 
+    /**
+     * Set the file to write into
+     *
+     * @param file New file
+     */
     public void setFile(File file) {
 
         mFile = file;
@@ -44,6 +50,9 @@ public class SoundRecorder {
 
     }
 
+    /**
+     * Start recording a new sound (and interrupt previous threads)
+     */
     public void startRecording() {
 
         mIsRecording = true;
@@ -56,12 +65,18 @@ public class SoundRecorder {
 
     }
 
+    /**
+     * Stop the recording
+     */
     public void stopRecording() {
 
         mIsRecording = false;
 
     }
 
+    /**
+     * Runnable for recording sound and saving it into a local file
+     */
     class Recorder implements Runnable {
 
         /**

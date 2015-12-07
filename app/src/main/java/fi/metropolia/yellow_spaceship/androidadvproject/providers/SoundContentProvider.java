@@ -21,6 +21,13 @@ import java.util.HashSet;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundDbHelper;
 
+/**
+ * ContentProvider for DAMSounds saved locally (or more specifically their metadata
+ * in a local SQLite database).
+ * <p/>
+ * This ContentProvider should not be interacted with directly, but through the
+ * ContentResolver API.
+ */
 public class SoundContentProvider extends ContentProvider {
 
     // Reference to our database
