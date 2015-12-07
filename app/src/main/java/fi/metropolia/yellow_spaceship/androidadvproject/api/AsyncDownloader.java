@@ -96,7 +96,33 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                         }
 
-                        return downloaded == totalSize;
+                        boolean downloadSuccess = downloaded == totalSize;
+                        if (downloadSuccess) {
+                            if (mFile.getName().toLowerCase().contains(".mp3")) {
+
+                                // Convert to wav
+                                try {
+                                    Converter converter = new Converter();
+                                    String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+                                    mDAMSound.setFileName(withoutExtension + ".wav");
+                                    converter.convert(
+                                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
+                                                    "/" + mFile.getName(),
+                                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
+                                                    "/" + withoutExtension + ".wav"
+                                    );
+                                    mFile.delete();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else if (mFile.getName().toLowerCase().contains(".wav")) {
+                                String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
+                                mDAMSound.setFileName(withoutExtension + ".wav");
+                            }
+                        }
+
+                        return downloadSuccess;
                     } else {
                         throw new IOException("Folder was not successfully created.");
                     }
@@ -141,30 +167,6 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
         // Playing the sound after download (for now)
         if (result) {
-
-            if (mFile.getName().toLowerCase().contains(".mp3")) {
-
-                // Convert to wav
-                try {
-                    Converter converter = new Converter();
-                    String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-                    mDAMSound.setFileName(withoutExtension + ".wav");
-                    converter.convert(
-                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
-                                    "/" + mFile.getName(),
-                            mContext.getFilesDir().getAbsolutePath() + "/" + SOUNDS_FOLDER +
-                                    "/" + withoutExtension + ".wav"
-                    );
-                    mFile.delete();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } else if (mFile.getName().toLowerCase().contains(".wav")) {
-                String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
-                mDAMSound.setFileName(withoutExtension + ".wav");
-            }
-
             setFileMetaData();
 
             ((AsyncDownloaderListener) mContextFragment).onDownloadFinished(mDAMSound);
