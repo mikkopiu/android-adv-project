@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,12 +25,15 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
+import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundCategory;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
+import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundType;
+import fi.metropolia.yellow_spaceship.androidadvproject.providers.SoundContentProvider;
 import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveTask;
 import fi.metropolia.yellow_spaceship.androidadvproject.tasks.ProjectSaveListener;
@@ -288,10 +293,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
         if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
             if (resultCode == Activity.RESULT_OK) {
-                // TODO: handle multi-select
-                ArrayList<DAMSound> result = data
-                        .getParcelableArrayListExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY);
-                for (DAMSound s : result) {
+                String[] ids = data.getStringArrayExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY);
+                ArrayList<ProjectSound> sounds = getSoundsForIds(ids);
+                for (ProjectSound s : sounds) {
                     addSelectedSound(s);
                 }
             }
@@ -375,6 +379,60 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         this.recyclerView.setAdapter(adapter);
     }
 
+    private ArrayList<ProjectSound> getSoundsForIds(String[] ids) {
+        ArrayList<ProjectSound> d = new ArrayList<>();
+
+        String selectionIn = "";
+        for (int i = 0; i < ids.length; i++) {
+            selectionIn += "?,";
+
+            if (i + 1 == ids.length) {
+                selectionIn = selectionIn.substring(0, selectionIn.length()-1);
+            }
+        }
+
+        Cursor cursor = this.getApplicationContext().getContentResolver().query(
+                SoundContentProvider.CONTENT_URI,
+                new String[]{
+                        DAMSoundEntry.COLUMN_NAME_TITLE,
+                        DAMSoundEntry.COLUMN_NAME_CATEGORY,
+                        DAMSoundEntry.COLUMN_NAME_TYPE,
+                        DAMSoundEntry.COLUMN_NAME_LENGTH_SEC,
+                        DAMSoundEntry.COLUMN_NAME_IS_FAVORITE,
+                        DAMSoundEntry.COLUMN_NAME_FILE_NAME,
+                        DAMSoundEntry.COLUMN_NAME_SOUND_ID,
+                        DAMSoundEntry.COLUMN_NAME_URL,
+                        DAMSoundEntry.COLUMN_NAME_FILE_EXT
+                },
+                DAMSoundEntry.COLUMN_NAME_SOUND_ID + " IN (" + selectionIn + ")",
+                ids,
+                null
+        );
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                d.add(parseDamSoundFromCursor(cursor));
+            }
+
+            cursor.close();
+        }
+
+        return d;
+    }
+
+    private ProjectSound parseDamSoundFromCursor(Cursor cursor) {
+        return new ProjectSound(
+                cursor.getString(6),
+                cursor.getString(0),
+                SoundCategory.fromApi(cursor.getString(1)),
+                SoundType.fromApi(cursor.getString(2)),
+                cursor.getString(5),
+                true,
+                false,
+                1.0f
+        );
+    }
+
     /**
      * Start an Intent to add a new sound from the Sound Library
      */
@@ -393,19 +451,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         startActivityForResult(intent, RECORD_SOUND);
     }
 
-    private void addSelectedSound(DAMSound result) {
+    private void addSelectedSound(ProjectSound ps) {
         try {
-            ProjectSound ps = new ProjectSound(
-                    result.getFormattedSoundId(),
-                    result.getTitle(),
-                    result.getCategory(),
-                    result.getSoundType(),
-                    result.getFileName(),
-                    true,       // By default on loop
-                    false,
-                    1.0f        // By default on full volume
-            );
-
             ps.setFile(new File(getFilesDir().getAbsolutePath() +
                     "/" + AsyncDownloader.SOUNDS_FOLDER +
                     "/" + ps.getFileName()));

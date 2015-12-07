@@ -26,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -96,6 +97,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                 // No need to download any time the user clicks a row, just when getting a sound
                 mSpinner.setVisibility(View.VISIBLE);
+                getActivity().getWindow().setFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                );
                 mWantedCount = 1;
                 new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
             }
@@ -215,12 +220,21 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         if (mIntentReturnData.size() == mWantedCount) {
             mSpinner.setVisibility(View.GONE);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
             if (damSound != null && damSound.getFileName() != null) {
-                // Create the return Intent to send the selected sound
+                // We don't want to block we UI and make parcelable out of all selected sounds,
+                // instead pass their IDs as the result, and let the recipient handle actually
+                // loading them from the DB, asynchronously.
+                String[] ids = new String[mIntentReturnData.size()];
+                for (int i = 0; i < mIntentReturnData.size(); i++) {
+                    ids[i] = mIntentReturnData.get(i).getFormattedSoundId();
+                }
+
+                // Create the return Intent to send the selected sound IDs
                 // to the create-view.
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, mIntentReturnData);
+                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, ids);
                 getActivity().setResult(Activity.RESULT_OK, returnIntent);
                 getActivity().finish();
             } else {
@@ -345,6 +359,11 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         mWantedCount = selectedSounds.size();
 
                         mSpinner.setVisibility(View.VISIBLE);
+                        getActivity().getWindow().setFlags(
+                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        );
+
                         for (DAMSound s : selectedSounds) {
                             new AsyncDownloader(s, getActivity(), SoundLibraryChildFragment.this).execute();
                         }
