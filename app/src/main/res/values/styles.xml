@@ -8,6 +8,7 @@
         <item name="android:windowBackground">@color/bac</item>
         <item name="android:textColorPrimary">@color/txt</item>
         <item name="colorControlNormal">@color/txt_light</item>
+        <item name="colorControlHighlight">@color/pri_light_pressed</item>
         <item name="android:textColorHint">@color/txt</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
