@@ -9,7 +9,8 @@ import android.provider.BaseColumns;
 public final class DAMSoundContract {
 
     // Empty constructor to prevent accidental instantiation
-    public DAMSoundContract() {}
+    public DAMSoundContract() {
+    }
 
     public static abstract class DAMSoundEntry implements BaseColumns {
         public static final String TABLE_NAME = "sounds";
