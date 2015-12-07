@@ -16,14 +16,17 @@ import fi.metropolia.yellow_spaceship.androidadvproject.ActionModeToggleListener
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.DAMSound;
 
-
+/**
+ * RecyclerView.Adapter for sound library's sound lists (DAM results, favourites & recordings).
+ * See SoundCategoryListAdapter for categories.
+ */
 public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
     private final ArrayList<DAMSound> mDataSet;
-    private final ISoundLibraryViewHolderClicks listener;
-    private final ActionModeToggleListener toggleListener;
-    private final boolean showContextMenu;
+    private final ISoundLibraryViewHolderClicks mClickListener;
+    private final ActionModeToggleListener mToggleListener;
     private final ArrayList<Integer> mSelectedSounds = new ArrayList<>();
 
+    private final boolean showContextMenu;
     private boolean mEditMode = false;
 
     /**
@@ -34,25 +37,26 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         private final ISoundLibraryViewHolderClicks mListener;
 
-        private final TextView tvTitle;
-        private final ImageButton favBtn;
-        private final ImageButton previewBtn;
+        private final TextView mvTvTitle;
+        private final ImageButton mFavBtn;
+        private final ImageButton mPreviewBtn;
 
         public ViewHolder(final View itemView, ISoundLibraryViewHolderClicks listener) {
             super(itemView);
 
             this.mListener = listener;
 
-            this.tvTitle = (TextView) itemView.findViewById(R.id.sound_library_list_text);
-            this.favBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
-            this.previewBtn = (ImageButton) itemView.findViewById(R.id.sound_library_preview_button);
+            // Find buttons for click handling & data binding
+            this.mvTvTitle = (TextView) itemView.findViewById(R.id.sound_library_list_text);
+            this.mFavBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+            this.mPreviewBtn = (ImageButton) itemView.findViewById(R.id.sound_library_preview_button);
 
-            this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+            this.mPreviewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-            this.favBtn.setOnClickListener(this);
-            this.previewBtn.setOnClickListener(this);
+            this.mFavBtn.setOnClickListener(this);
+            this.mPreviewBtn.setOnClickListener(this);
         }
 
         /**
@@ -63,39 +67,59 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
          */
         public void bindSound(DAMSound sound) {
 
-            this.tvTitle.setText(sound.getTitle());
+            this.mvTvTitle.setText(sound.getTitle());
 
+            // Edit-mode removes the playback icons
+            // and updates background colors for selected items.
             if (mEditMode) {
                 if (mSelectedSounds.contains(this.getAdapterPosition())) {
+                    // Selected sounds should use a darker background and
+                    // the checked checkbox.
                     itemView.setBackgroundResource(R.drawable.sound_library_select_ripple);
-                    this.previewBtn.setImageResource(R.drawable.ic_check_box_black_24dp);
+                    this.mPreviewBtn.setImageResource(R.drawable.ic_check_box_black_24dp);
                 } else {
+                    // Non-selected items should return back to the default background and
+                    // unchecked checkbox.
                     TypedValue outValue = new TypedValue();
-                    itemView.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                    itemView.getContext()
+                            .getTheme()
+                            .resolveAttribute(
+                                    android.R.attr.selectableItemBackground,
+                                    outValue,
+                                    true
+                            );
                     itemView.setBackgroundResource(outValue.resourceId);
-                    this.previewBtn.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
+                    this.mPreviewBtn
+                            .setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
                 }
             } else {
+                // Reset styles when no longer in edit-mode
                 TypedValue outValue = new TypedValue();
-                itemView.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                itemView.getContext()
+                        .getTheme()
+                        .resolveAttribute(
+                                android.R.attr.selectableItemBackground,
+                                outValue,
+                                true
+                        );
                 itemView.setBackgroundResource(outValue.resourceId);
 
                 // Set play/pause icon
                 if (sound.getIsPlaying()) {
-                    this.previewBtn.setImageResource(R.drawable.ic_pause_24dp);
+                    this.mPreviewBtn.setImageResource(R.drawable.ic_pause_24dp);
                 } else {
-                    this.previewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
+                    this.mPreviewBtn.setImageResource(R.drawable.ic_play_arrow_24dp);
                 }
             }
 
             // Context-menu replaces the favorite-button
             if (showContextMenu) {
-                this.favBtn.setImageResource(R.drawable.ic_more_vert_24dp);
+                this.mFavBtn.setImageResource(R.drawable.ic_more_vert_24dp);
             } else {
                 if (sound.getIsFavorite()) {
-                    this.favBtn.setImageResource(R.drawable.ic_star_24dp);
+                    this.mFavBtn.setImageResource(R.drawable.ic_star_24dp);
                 } else {
-                    this.favBtn.setImageResource(R.drawable.ic_star_outline_24dp);
+                    this.mFavBtn.setImageResource(R.drawable.ic_star_outline_24dp);
                 }
             }
         }
@@ -106,7 +130,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
          * @param playing Is sound currently playing
          */
         public void setPlayingState(boolean playing) {
-            this.previewBtn.setImageResource(
+            this.mPreviewBtn.setImageResource(
                     playing ?
                             R.drawable.ic_pause_24dp :
                             R.drawable.ic_play_arrow_24dp
@@ -116,6 +140,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         @Override
         public void onClick(View v) {
             if (getInEditMode()) {
+                // In edit-mode we can skip all playback functionality,
+                // as the button has been switched to the selection checkbox.
                 this.selectItem();
             } else {
                 if (v.getId() == R.id.sound_library_fav_button) {
@@ -136,6 +162,12 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             }
         }
 
+        /**
+         * Context-menu's item click handling (for favourites)
+         *
+         * @param item Clicked menu item
+         * @return Was event handled (/passed through)
+         */
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             boolean handled = false;
@@ -151,13 +183,14 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         /**
          * Long clicks start the multi-selection mode
+         *
          * @param v Clicked view
          * @return Event handled
          */
         @Override
         public boolean onLongClick(View v) {
-            // toggleListener won't be defined if the caller isn't expecting any action modes
-            if (toggleListener != null) {
+            // mToggleListener won't be defined if the caller isn't expecting any action modes
+            if (mToggleListener != null) {
                 this.selectItem();
                 return true;
             }
@@ -165,13 +198,19 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             return false;
         }
 
+        /**
+         * Set this item as selected
+         */
         private void selectItem() {
             int pos = this.getAdapterPosition();
 
             if (!getInEditMode()) {
+                // Init edit-mode if it wasn't enabled already
                 mSelectedSounds.add(pos);
                 setInEditMode(true);
             } else {
+                // If the sound exists in the selected sounds array,
+                // it means the click is meant to remove the selection.
                 int ind = mSelectedSounds.indexOf(pos);
                 if (ind >= 0) {
                     mSelectedSounds.remove(ind);
@@ -179,12 +218,15 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                     mSelectedSounds.add(pos);
                 }
 
+                // Notify to update layout (but only this one; no need to invalidate all items)
                 notifyItemChanged(pos);
 
+                // If the final item was removed, change the edit-mode to disabled
                 if (mSelectedSounds.size() == 0) {
                     setInEditMode(false);
                 } else {
-                    toggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
+                    // Otherwise just update the title to match the current selection count
+                    mToggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
                 }
             }
         }
@@ -202,8 +244,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                             boolean showContextMenu,
                             ActionModeToggleListener toggleListener) {
         this.mDataSet = dataSet;
-        this.listener = listener;
-        this.toggleListener = toggleListener;
+        this.mClickListener = listener;
+        this.mToggleListener = toggleListener;
         this.showContextMenu = showContextMenu;
     }
 
@@ -222,7 +264,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                 .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        return new ViewHolder(v, this.listener);
+        return new ViewHolder(v, this.mClickListener);
     }
 
     @Override
@@ -240,6 +282,11 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         }
     }
 
+    /**
+     * Get the array of selected sounds
+     *
+     * @return ArrayList of selected DAMSounds
+     */
     public ArrayList<DAMSound> getSelectedSounds() {
         ArrayList<DAMSound> sounds = new ArrayList<>();
         for (int pos : this.mSelectedSounds) {
@@ -249,18 +296,21 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         return sounds;
     }
 
-    private boolean getInEditMode() {
-        return this.mEditMode;
-    }
-
+    /**
+     * Toggle edit-mode
+     *
+     * @param inEditMode Is edit-mode enabled
+     */
     public void setInEditMode(boolean inEditMode) {
         this.mEditMode = inEditMode;
 
-        if (this.toggleListener != null) {
-            this.toggleListener.setActionMode(this.mEditMode);
+        if (this.mToggleListener != null) {
+            // Let the toggle listener know about mode-changes
+            this.mToggleListener.setActionMode(this.mEditMode);
 
             if (this.mEditMode) {
-                this.toggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
+                // Set the initial title
+                this.mToggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
             }
         }
 
@@ -269,5 +319,14 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         }
 
         notifyDataSetChanged();
+    }
+
+    /**
+     * Check if edit-mode is enabled
+     *
+     * @return Is edit-mode enabled
+     */
+    private boolean getInEditMode() {
+        return this.mEditMode;
     }
 }

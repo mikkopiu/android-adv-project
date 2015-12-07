@@ -14,27 +14,38 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.R;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 
+/**
+ * RecyclerView.Adapter for saved soundscapes in "Your soundscapes"
+ */
 public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.ViewHolder> {
 
     private final ArrayList<SoundScapeProject> mDataSet;
-    private final ISoundscapeViewHolderClicks listener;
+    private final ISoundscapeViewHolderClicks mClickListener;
 
+    /**
+     * ViewHolder for a single soundscape in list.
+     * Displays a title and a simple context-menu.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             android.support.v7.widget.PopupMenu.OnMenuItemClickListener {
 
-        private final ImageButton contextMenuBtn;
+        private final ImageButton mContextMenuBtn;
         private final ISoundscapeViewHolderClicks mListener;
-        private final TextView textView;
+        private final TextView mTextView;
 
-        public ViewHolder(final View itemView, ISoundscapeViewHolderClicks listener) {
+        public ViewHolder(final View itemView, final ISoundscapeViewHolderClicks listener) {
             super(itemView);
-            this.contextMenuBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
-            this.textView = (TextView) itemView.findViewById(R.id.sound_library_list_text);
+
+            // Find the layout's buttons (for click listeners & data binding)
+            this.mContextMenuBtn = (ImageButton) itemView.findViewById(R.id.sound_library_fav_button);
+            this.mTextView = (TextView) itemView.findViewById(R.id.sound_library_list_text);
 
             this.mListener = listener;
 
+            // The view itself will handle the click listening
+            // and only pass the necessary actions to the listener.
             this.itemView.setOnClickListener(this);
-            this.contextMenuBtn.setOnClickListener(this);
+            this.mContextMenuBtn.setOnClickListener(this);
         }
 
         /**
@@ -44,25 +55,34 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
          * @param project SoundScapeProject to bind
          */
         public void bindProject(SoundScapeProject project) {
-            this.textView.setText(project.getName());
-
-            this.contextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp);
+            this.mTextView.setText(project.getName());
+            this.mContextMenuBtn.setImageResource(R.drawable.ic_more_vert_24dp); // Context-menu-icon
         }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.sound_library_fav_button) {
+                // The ViewHolder uses a shared layout: fav_button is the context-menu button
+                // in this ViewHolder.
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
                 popup.inflate(R.menu.soundscape_context);
                 popup.setOnMenuItemClickListener(this);
                 popup.show();
             } else {
+                // Pass the selection event to the listener to handle
                 this.mListener.onRowSelect(getLayoutPosition());
             }
         }
 
+        /**
+         * Context menu item click handling
+         *
+         * @param item Clicked menu item
+         * @return Was event handled (/passed through)
+         */
         @Override
         public boolean onMenuItemClick(MenuItem item) {
+            // Pass the action on to the listener
             if (item.getItemId() == R.id.rename_soundscape) {
                 this.mListener.onRowRename(getLayoutPosition());
                 return true;
@@ -74,10 +94,16 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
         }
     }
 
+    /**
+     * Constructor
+     *
+     * @param dataSet  Data for this adapter
+     * @param listener Click handler for the ViewHolders
+     */
     public SoundscapesAdapter(ArrayList<SoundScapeProject> dataSet,
                               ISoundscapeViewHolderClicks listener) {
         this.mDataSet = dataSet;
-        this.listener = listener;
+        this.mClickListener = listener;
     }
 
     @Override
@@ -87,7 +113,7 @@ public class SoundscapesAdapter extends RecyclerView.Adapter<SoundscapesAdapter.
                 .inflate(R.layout.sound_library_list_item, parent, false);
 
         // Assign the view to ViewHolder and return it
-        return new ViewHolder(v, this.listener);
+        return new ViewHolder(v, this.mClickListener);
     }
 
     @Override

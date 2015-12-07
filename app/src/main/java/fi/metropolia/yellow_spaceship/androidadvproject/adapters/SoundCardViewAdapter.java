@@ -20,43 +20,47 @@ import fi.metropolia.yellow_spaceship.androidadvproject.R;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 
 /**
- * Adapter for a RecyclerView of CardViews for Sounds (e.g. in create-view)
+ * RecyclerView.Adapter for CardViews for Sounds (e.g. in create-view)
  */
 public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdapter.ViewHolder> {
 
     private final ArrayList<ProjectSound> mDataSet;
     private final IProjectSoundViewHolderClicks listener;
 
+    /**
+     * ViewHolder for a sound in the create-view
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             SeekBar.OnSeekBarChangeListener,
             SwitchCompat.OnCheckedChangeListener {
 
         private final IProjectSoundViewHolderClicks mListener;
-        private int prevProgress;
+        private int mPrevProgress;
 
-        private final ImageButton volBtn;
-        private final SeekBar volBar;
-        private final CardView cardView;
-        private final SwitchCompat randomSwitch;
-        private final TextView textView;
+        private final ImageButton mVolBtn;
+        private final SeekBar mVolBar;
+        private final CardView mCardView;
+        private final SwitchCompat mRandomSwitch;
+        private final TextView mTitleTv;
 
         public ViewHolder(final View itemView, IProjectSoundViewHolderClicks listener) {
             super(itemView);
 
             this.mListener = listener;
 
-            this.textView = (TextView) itemView.findViewById(R.id.sound_title);
-            this.volBar = (SeekBar) itemView.findViewById(R.id.volume_slider);
-            this.cardView = (CardView) itemView.findViewById(R.id.create_card_view);
-            this.randomSwitch = (SwitchCompat) itemView.findViewById(R.id.randomize_switch);
-            this.volBtn = (ImageButton) itemView.findViewById(R.id.volume_slider_btn);
+            // Find elements for click listeners & data binding
+            this.mTitleTv = (TextView) itemView.findViewById(R.id.sound_title);
+            this.mVolBar = (SeekBar) itemView.findViewById(R.id.volume_slider);
+            this.mCardView = (CardView) itemView.findViewById(R.id.create_card_view);
+            this.mRandomSwitch = (SwitchCompat) itemView.findViewById(R.id.randomize_switch);
+            this.mVolBtn = (ImageButton) itemView.findViewById(R.id.volume_slider_btn);
 
             itemView.findViewById(R.id.close_btn).setOnClickListener(this);
-            this.volBtn.setOnClickListener(this);
-            this.volBar.setOnSeekBarChangeListener(this);
-            this.randomSwitch.setOnCheckedChangeListener(this);
+            this.mVolBtn.setOnClickListener(this);
+            this.mVolBar.setOnSeekBarChangeListener(this);
+            this.mRandomSwitch.setOnCheckedChangeListener(this);
 
-            this.prevProgress = 100;
+            this.mPrevProgress = 100;
         }
 
         /**
@@ -65,10 +69,10 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
          * @param sound Sound to bind
          */
         public void bindSound(ProjectSound sound) {
-            this.textView.setText(sound.getTitle());
-            this.textView.setAllCaps(true); // XML value for capitalization is overridden when using setText
-            this.volBar.setProgress((int) (sound.getVolume() * 100));
-            this.randomSwitch.setChecked(sound.getIsRandom());
+            this.mTitleTv.setText(sound.getTitle());
+            this.mTitleTv.setAllCaps(true); // XML value for capitalization is overridden when using setText
+            this.mVolBar.setProgress((int) (sound.getVolume() * 100));
+            this.mRandomSwitch.setChecked(sound.getIsRandom());
 
             // Get colours for view elements
             Context context = this.itemView.getContext();
@@ -76,11 +80,11 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             int volBarColor = ContextCompat.getColor(context, R.color.volbar_white);
 
             // Update card's colour based on our colouring rules
-            this.cardView.setCardBackgroundColor(color);
+            this.mCardView.setCardBackgroundColor(color);
 
             // Fix volume SeekBar's (and its thumb's) and Randomize-switch's colours
-            this.volBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
-            this.volBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
+            this.mVolBar.getProgressDrawable().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
+            this.mVolBar.getThumb().setColorFilter(volBarColor, PorterDuff.Mode.SRC_ATOP);
         }
 
         @Override
@@ -88,7 +92,7 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
             if (v.getId() == R.id.close_btn) {
                 this.mListener.onCloseClick(getLayoutPosition());
             } else if (v.getId() == R.id.volume_slider_btn) {
-                this.volBar.setProgress(this.prevProgress == 0 ? 100 : 0);
+                this.mVolBar.setProgress(this.mPrevProgress == 0 ? 100 : 0);
             }
         }
 
@@ -96,11 +100,11 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             // Update icon when volume hits zero
             if (progress == 0) {
-                this.volBtn.setImageResource(R.drawable.ic_volume_mute_white_24dp);
-            } else if (this.prevProgress == 0) { // Prevent unnecessary reload of image resources
-                this.volBtn.setImageResource(R.drawable.ic_volume_up_white_24dp);
+                this.mVolBtn.setImageResource(R.drawable.ic_volume_mute_white_24dp);
+            } else if (this.mPrevProgress == 0) { // Prevent unnecessary reload of image resources
+                this.mVolBtn.setImageResource(R.drawable.ic_volume_up_white_24dp);
             }
-            this.prevProgress = progress;
+            this.mPrevProgress = progress;
 
             this.mListener.onVolumeChange(getLayoutPosition(), progress);
         }
@@ -121,6 +125,12 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
         }
     }
 
+    /**
+     * Constructor
+     *
+     * @param dataSet  Data for this adapter
+     * @param listener Click handler for ViewHolders
+     */
     public SoundCardViewAdapter(ArrayList<ProjectSound> dataSet,
                                 IProjectSoundViewHolderClicks listener) {
         this.mDataSet = dataSet;
@@ -154,7 +164,6 @@ public class SoundCardViewAdapter extends RecyclerView.Adapter<SoundCardViewAdap
 
     /**
      * Select a colour to use for a sound cardview.
-     * TODO: Replace with actual logic (maybe by index?)
      *
      * @param sound ProjectSound for the current ViewHolder
      * @return Background colour id
