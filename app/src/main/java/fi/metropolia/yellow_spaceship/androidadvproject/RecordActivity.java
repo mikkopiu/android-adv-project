@@ -159,7 +159,10 @@ public class RecordActivity extends AppCompatActivity implements SaveDialogListe
 
                 // Return intent
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, damSound);
+                returnIntent.putExtra(
+                        SoundLibraryActivity.LIBRARY_RESULT_KEY,
+                        new String[] {damSound.getFormattedSoundId()}
+                );
                 RecordActivity.this.setResult(Activity.RESULT_OK, returnIntent);
                 RecordActivity.this.finish();
 
