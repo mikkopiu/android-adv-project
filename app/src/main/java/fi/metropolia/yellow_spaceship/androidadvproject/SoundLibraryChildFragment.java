@@ -304,6 +304,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Set ActionMode state.
      * Display/Hide the ActionMode overlay over the Toolbar when selecting multiple sounds.
+     *
      * @param actionModeOn Should ActionMode menu be visible
      */
     @Override
@@ -320,7 +321,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     /**
      * Update ActionMode overlay's title (here: selection count)
-     * @param title
+     *
+     * @param title New title for ActionMode overlay
      */
     @Override
     public void setActionModeTitle(String title) {
@@ -333,8 +335,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
      * Callback for ActionMode events (create, item click etc).
      * Used to display an ActionMode overlay over the Toolbar when selecting multiple sounds.
      */
-    private android.support.v7.view.ActionMode.Callback actionModeCb =
-            new android.support.v7.view.ActionMode.Callback() {
+    private final ActionMode.Callback actionModeCb =
+            new ActionMode.Callback() {
 
                 @Override
                 public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -365,7 +367,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         );
 
                         for (DAMSound s : selectedSounds) {
-                            new AsyncDownloader(s, getActivity(), SoundLibraryChildFragment.this).execute();
+                            new AsyncDownloader(s, getActivity(), SoundLibraryChildFragment.this)
+                                    .execute();
                         }
                     }
 
@@ -374,7 +377,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
                 @Override
                 public void onDestroyActionMode(ActionMode mode) {
-                    ((SoundListAdapter)mRecyclerView.getAdapter()).setInEditMode(false);
+                    ((SoundListAdapter) mRecyclerView.getAdapter()).setInEditMode(false);
                 }
             };
 
@@ -715,7 +718,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
      * Toggles between previews pause and play states.
      * If another sound is being played it will be stopped and the sound in layoutPosition will start.
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void playPauseToggle(int layoutPosition) {
         DAMSound sound = data.get(layoutPosition);
@@ -739,8 +742,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Toggle between pause/play icon in ViewHolder.
      *
-     * @param layoutPosition
-     * @param playing
+     * @param layoutPosition Index in layout
+     * @param playing        Is sound currently playing
      */
     private void toggleViewHolderIcon(int layoutPosition, boolean playing) {
         SoundListAdapter.ViewHolder viewHolder =
@@ -755,7 +758,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Start preview playback
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void startPreview(int layoutPosition) {
 
@@ -772,7 +775,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Pause preview playback
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void pausePreview(int layoutPosition) {
         if (mediaPlayer.isPlaying()) {
@@ -790,7 +793,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Continue preview playback
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void continuePreview(int layoutPosition) {
         if (!mediaPlayer.isPlaying()) {
@@ -808,7 +811,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Stop preview playback
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void stopPreview(int layoutPosition) {
         toggleViewHolderIcon(layoutPosition, false);
@@ -830,7 +833,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     /**
      * Start preview playback when nothing is currently playing/previous audio has finished
      *
-     * @param layoutPosition
+     * @param layoutPosition Index in layout
      */
     private void startPreviewPlayback(int layoutPosition) {
         String url = this.data.get(layoutPosition).getFileName();

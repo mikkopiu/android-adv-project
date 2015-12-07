@@ -103,7 +103,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         /**
          * Update the preview button to match play-state
          *
-         * @param playing
+         * @param playing Is sound currently playing
          */
         public void setPlayingState(boolean playing) {
             this.previewBtn.setImageResource(

@@ -364,8 +364,8 @@ public class DAMSound implements Parcelable {
      * Only write the necessary fields for SoundScapes,
      * no need for anything else (might not even exist, when handling favorites).
      *
-     * @param dest
-     * @param flags
+     * @param dest Destination Parcel
+     * @param flags Parcel flags
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {

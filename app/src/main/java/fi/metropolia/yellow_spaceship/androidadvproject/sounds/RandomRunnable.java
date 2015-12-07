@@ -30,7 +30,7 @@ public class RandomRunnable implements Runnable {
     /**
      * Set the position of the sound in the data structure.
      *
-     * @param index
+     * @param index Position of the sound in the data structure
      */
     public void setIndex(int index) {
         mIndex = index;

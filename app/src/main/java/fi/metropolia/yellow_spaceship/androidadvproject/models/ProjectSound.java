@@ -42,13 +42,13 @@ public class ProjectSound implements Parcelable {
     /**
      * Full constructor
      *
-     * @param id
-     * @param title
-     * @param category
-     * @param soundType
-     * @param fileName
-     * @param isOnLoop
-     * @param isRandom
+     * @param id        ID
+     * @param title     Human readable title
+     * @param category  SoundCategory
+     * @param soundType SoundType
+     * @param fileName  Local filename
+     * @param isOnLoop  Is sound playing on loop
+     * @param isRandom  Is sound playing randomly
      */
     public ProjectSound(String id, String title, SoundCategory category, SoundType soundType,
                         String fileName, boolean isOnLoop, boolean isRandom, float volume) {
