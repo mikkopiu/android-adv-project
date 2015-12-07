@@ -2,6 +2,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -14,18 +15,26 @@ import java.io.IOException;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 
+/**
+ * AsyncTask for saving a soundscape's data to file
+ */
 public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean> {
     public final static String PROJECT_FOLDER = "projects";
     public final static String FILE_EXT = ".json";
 
-    private final ProjectSaveListener listener;
-    private final Context context;
+    private final ProjectSaveListener mListener;
+    private final Context mContext;
+    private Throwable mError;
 
-    private Throwable error;
-
-    public ProjectSaveTask(Context context, ProjectSaveListener listener) {
-        this.listener = listener;
-        this.context = context;
+    /**
+     * Constructor
+     *
+     * @param context  Context for finding the proper file directory
+     * @param listener Listener for save completion events
+     */
+    public ProjectSaveTask(Context context, @NonNull ProjectSaveListener listener) {
+        this.mListener = listener;
+        this.mContext = context;
     }
 
     @Override
@@ -37,11 +46,11 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
 
         BufferedWriter bw = null;
         try {
-            File outputFile = new File(this.context.getFilesDir() +
+            File outputFile = new File(this.mContext.getFilesDir() +
                     "/" + PROJECT_FOLDER +
                     "/" + project.getName() + FILE_EXT);
 
-            File folder = new File(this.context.getFilesDir() + "/" + PROJECT_FOLDER);
+            File folder = new File(this.mContext.getFilesDir() + "/" + PROJECT_FOLDER);
             folder.mkdirs();
 
             // We simply allow overwriting of existing projects
@@ -50,7 +59,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
             }
 
             if (!folder.exists() || !outputFile.exists()) {
-                error = new IOException("Failed to create folder or file for saving");
+                mError = new IOException("Failed to create folder or file for saving");
             } else {
                 FileWriter writer = new FileWriter(outputFile);
                 bw = new BufferedWriter(writer);
@@ -58,7 +67,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
             }
 
         } catch (IOException e) {
-            error = e;
+            mError = e;
         } finally {
             try {
                 if (bw != null) {
@@ -74,10 +83,10 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (error != null) {
-            Log.e("ProjectSaveTask", "Failed to save project", error);
+        if (mError != null) {
+            Log.e("ProjectSaveTask", "Failed to save project", mError);
         }
 
-        listener.onSaveComplete(error == null);
+        mListener.onSaveComplete(mError == null);
     }
 }

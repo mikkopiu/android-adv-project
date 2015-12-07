@@ -1,6 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,12 +14,20 @@ import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.models.SoundScapeProject;
 
+/**
+ * AsyncTask for loading saved soundscape projects' data
+ */
 public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScapeProject>> {
-    private final ProjectLoadListener listener;
-    private final ArrayList<SoundScapeProject> projects = new ArrayList<>();
+    private final ProjectLoadListener mListener;
+    private final ArrayList<SoundScapeProject> mProjects = new ArrayList<>();
 
-    public ProjectLoadTask(ProjectLoadListener listener) {
-        this.listener = listener;
+    /**
+     * Constructor
+     *
+     * @param listener Listener for handling load finishing events
+     */
+    public ProjectLoadTask(@NonNull ProjectLoadListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -39,7 +48,7 @@ public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScap
                     // A single file contains a single SoundScapeProject object to be parsed
                     bufferedReader = new BufferedReader(new FileReader(file));
                     SoundScapeProject p = gson.fromJson(bufferedReader, SoundScapeProject.class);
-                    this.projects.add(p);
+                    this.mProjects.add(p);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -55,11 +64,12 @@ public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScap
             }
         }
 
-        return this.projects;
+        return this.mProjects;
     }
 
     @Override
     protected void onPostExecute(ArrayList<SoundScapeProject> data) {
-        this.listener.onLoadFinished(data);
+        // Let the listener know the loading has finished
+        this.mListener.onLoadFinished(data);
     }
 }
