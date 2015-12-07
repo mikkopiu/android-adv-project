@@ -28,9 +28,12 @@
 
         <!-- ActionMode styles (multi-select in library) -->
         <!-- AppTheme should handle windowActionBarOverlay, but just make sure, added here too -->
+        <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="android:actionModeBackground">@color/pri_dark</item>
+        <item name="android:actionModeBackground">@color/pri</item>
+        <item name="actionModeBackground">@color/pri</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_clear_24dp</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_clear_24dp</item>
     </style>
 
     <style name="CustomSwitchStyle" parent="AppTheme">

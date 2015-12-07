@@ -3,7 +3,7 @@
     <item name="pri" type="color">#434343</item>
     <item name="pri_dark" type="color">#272727</item>
     <item name="pri_light" type="color">#F9FAFB</item>
-    <item name="pri_light_pressed" type="color">#46696969</item>
+    <item name="pri_light_pressed" type="color">#46898989</item>
     <item name="pri_light_focused" type="color">#64cccccc</item>
     <item name="acc" type="color">#FAA533</item>
     <item name="acc_light" type="color">#FDCA81</item>

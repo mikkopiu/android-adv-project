@@ -305,6 +305,17 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     }
 
     /**
+     * Update ActionMode overlay's title (here: selection count)
+     * @param title
+     */
+    @Override
+    public void setActionModeTitle(String title) {
+        if (this.mMode != null) {
+            this.mMode.setTitle(title);
+        }
+    }
+
+    /**
      * Callback for ActionMode events (create, item click etc).
      * Used to display an ActionMode overlay over the Toolbar when selecting multiple sounds.
      */

@@ -183,6 +183,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
                 if (mSelectedSounds.size() == 0) {
                     setInEditMode(false);
+                } else {
+                    toggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
                 }
             }
         }
@@ -256,6 +258,10 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
 
         if (this.toggleListener != null) {
             this.toggleListener.setActionMode(this.mEditMode);
+
+            if (this.mEditMode) {
+                this.toggleListener.setActionModeTitle(mSelectedSounds.size() + " selected");
+            }
         }
 
         if (!this.mEditMode && this.mSelectedSounds.size() > 0) {
