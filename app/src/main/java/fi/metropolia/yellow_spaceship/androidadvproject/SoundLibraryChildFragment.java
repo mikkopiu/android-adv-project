@@ -58,6 +58,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private ArrayList<DAMSound> data;
     private SoundCategory mCategory;
     private RecyclerView mRecyclerView;
+    private SoundListAdapter mAdapter;
     private String mSearchQuery;
     private ProgressBar mSpinner;
     private TextView mEmptyView;
@@ -72,6 +73,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private boolean playingAudio;
     private boolean initialStage = true;
     private int playingInd = -1;
+
+    private boolean downloadingFiles;
     private ActionMode mMode;
     private int mWantedCount = -1;
     private ArrayList<DAMSound> mIntentReturnData;
@@ -102,6 +105,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 );
                 mWantedCount = 1;
+                downloadingFiles = true;
                 new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
             }
         }
@@ -155,8 +159,37 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         // Required empty public constructor
     }
 
-    public void setSearchQuery(String query) {
-        this.mSearchQuery = query;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Retain this fragment across configuration changes.
+        setRetainInstance(true);
+
+        this.session = new SessionManager(getActivity());
+
+        // Are we in a category sound list
+        if (getArguments().getString("category") != null) {
+            this.mCategory = SoundCategory.fromApi(getArguments().getString("category"));
+        } else {
+            this.mCategory = null;
+        }
+
+        // Get other data about our current view
+        this.mSearchQuery = getArguments().getString(SoundLibraryActivity.SEARCH_QUERY_KEY);
+        this.isFavoritesView = getArguments().getBoolean("isFavorites");
+        this.isRecordingsView = getArguments().getBoolean("isRecordings");
+
+        this.coordinatorLayout = (CoordinatorLayout) getActivity()
+                .findViewById(R.id.coordinator_layout);
+
+        // Data for RecycleView
+        this.data = new ArrayList<>();
+
+        boolean inSelectMode = getActivity().getIntent()
+                .getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND;
+        this.mAdapter = new SoundListAdapter(data, listEventHandler, isRecordingsView,
+                inSelectMode ? this : null);
     }
 
     @Override
@@ -168,46 +201,76 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             toolbar.setTitle(getArguments().getString("title"));
         }
 
-        this.coordinatorLayout = (CoordinatorLayout) getActivity()
-                .findViewById(R.id.coordinator_layout);
-
-        session = new SessionManager(getActivity());
-
-        if (getArguments().getString("category") != null) {
-            this.mCategory = SoundCategory.fromApi(getArguments().getString("category"));
-        } else {
-            this.mCategory = null;
-        }
-
-        this.mSearchQuery = getArguments().getString(SoundLibraryActivity.SEARCH_QUERY_KEY);
-
-        this.isFavoritesView = getArguments().getBoolean("isFavorites");
-        this.isRecordingsView = getArguments().getBoolean("isRecordings");
-
-        // Data for RecycleView
-        data = new ArrayList<>();
-
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.sound_library_child_fragment, container, false);
+        View fragmentView = inflater
+                .inflate(R.layout.sound_library_child_fragment, container, false);
 
-        // Adapter for RecyclerView
-        Intent intent = getActivity().getIntent();
-        boolean inSelectMode = intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND;
-        SoundListAdapter mAdapter = new SoundListAdapter(data, listEventHandler, isRecordingsView,
-                inSelectMode ? this : null);
-        mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
+        this.mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
 
         // Changes in content don't affect the layout size, so set as true to improve performance
-        mRecyclerView.setHasFixedSize(!this.isFavoritesView);
+        this.mRecyclerView.setHasFixedSize(!this.isFavoritesView);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mRecyclerView.setAdapter(mAdapter);
+        this.mRecyclerView.setAdapter(this.mAdapter);
 
         return fragmentView;
 
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
+        // Set onClickListener for back button
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        this.mSpinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
+        this.mEmptyView = (TextView) getActivity().findViewById(R.id.empty_view);
+
+        if (savedInstanceState == null) {
+            this.mEmptyView.setVisibility(View.GONE);
+            this.mSpinner.setVisibility(View.GONE);
+
+
+            if (this.mCategory != null)
+                loadData();
+
+            if (this.mSearchQuery != null) {
+                loadSearchData();
+            }
+
+            if (this.isFavoritesView) {
+                loadFavoritesData();
+            }
+
+            if (this.isRecordingsView) {
+                loadRecordingsData();
+            }
+        }
+
+        if (this.downloadingFiles) {
+            this.mSpinner.setVisibility(View.VISIBLE);
+            getActivity().getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            );
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopPreview(playingInd);
+        clearMediaPlayer();
     }
 
     @Override
@@ -219,6 +282,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         mIntentReturnData.add(damSound);
 
         if (mIntentReturnData.size() == mWantedCount) {
+            downloadingFiles = false;
             mSpinner.setVisibility(View.GONE);
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -244,60 +308,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                         Snackbar.LENGTH_LONG
                 ).show();
             }
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-
-        super.onActivityCreated(savedInstanceState);
-
-        // Set onClickListener for back button
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
-
-        this.mEmptyView = (TextView) getActivity().findViewById(R.id.empty_view);
-        this.mEmptyView.setVisibility(View.GONE);
-
-        this.mSpinner = (ProgressBar) getActivity().findViewById(R.id.progressBar);
-        this.mSpinner.setVisibility(View.GONE);
-
-
-        if (this.mCategory != null)
-            loadData();
-
-        if (this.mSearchQuery != null) {
-            loadSearchData();
-        }
-
-        if (this.isFavoritesView) {
-            loadFavoritesData();
-        }
-
-        if (this.isRecordingsView) {
-            loadRecordingsData();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopPreview(playingInd);
-        clearMediaPlayer();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        // Clear out the multi-selection ActionMode if currently displayed
-        if (this.mMode != null) {
-            this.mMode.finish();
-            this.mMode = null;
         }
     }
 
@@ -331,6 +341,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
     }
 
+    public void setSearchQuery(String query) {
+        this.mSearchQuery = query;
+    }
+
     /**
      * Callback for ActionMode events (create, item click etc).
      * Used to display an ActionMode overlay over the Toolbar when selecting multiple sounds.
@@ -359,7 +373,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                                 ((SoundListAdapter) mRecyclerView.getAdapter()).getSelectedSounds();
 
                         mWantedCount = selectedSounds.size();
-
+                        downloadingFiles = true;
                         mSpinner.setVisibility(View.VISIBLE);
                         getActivity().getWindow().setFlags(
                                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
