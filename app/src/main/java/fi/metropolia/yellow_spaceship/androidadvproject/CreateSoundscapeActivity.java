@@ -42,6 +42,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
     public final static int RECORD_SOUND = 2;
     public static final String LOADED_SOUNDSCAPE_KEY = "loadedSoundscape";
 
+    private final static String LOG_TAG = "CreateActivity";
     private final static String UNSAVED_PROJECT_BUNDLE_NAME = "unsaved_project";
 
     private SoundScapeProject mProject;
@@ -175,7 +176,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
                         //sound.setIsRandom(checked);
                     } else {
                         Log.e(
-                                "CreateSoundscape DEBUG",
+                                LOG_TAG,
                                 "Lost reference to sound, cannot change random-state!"
                         );
                     }
@@ -283,12 +284,15 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             soundPlayer.clear();
         }
 
+        // Prevent leaking the Activity through the ProgressDialog
         dismissProgressDialog();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        // Check if the intent was to add new sounds to the create-view (either from
+        // the library or from a new recording).
         if (requestCode == GET_LIBRARY_SOUND || requestCode == RECORD_SOUND) {
             if (resultCode == Activity.RESULT_OK) {
                 String[] ids = data.getStringArrayExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY);
@@ -336,7 +340,6 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
     /**
      * Initialize the SoundScapeProject, either from a loaded SoundScapeProject or a new one
-     * TODO: auto-load previous project
      */
     private void initProject() {
         if (getIntent().getParcelableExtra(LOADED_SOUNDSCAPE_KEY) != null) {
@@ -377,9 +380,16 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         this.recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Get sounds from the database based on a list of IDs
+     *
+     * @param ids IDs of sounds to fetch
+     * @return ArrayList of found sounds
+     */
     private ArrayList<ProjectSound> getSoundsForIds(String[] ids) {
         ArrayList<ProjectSound> d = new ArrayList<>();
 
+        // Construct a selection in-clause for all the IDs, e.g: "(?,?,?)" for 3 IDs
         String selectionIn = "";
         for (int i = 0; i < ids.length; i++) {
             selectionIn += "?,";
@@ -409,7 +419,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                d.add(parseDamSoundFromCursor(cursor));
+                d.add(parseProjectSound(cursor));
             }
 
             cursor.close();
@@ -418,7 +428,13 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         return d;
     }
 
-    private ProjectSound parseDamSoundFromCursor(Cursor cursor) {
+    /**
+     * Parse a ProjectSound from a Cursor
+     *
+     * @param cursor Cursor for our ContentResolver
+     * @return Parsed ProjectSound
+     */
+    private ProjectSound parseProjectSound(Cursor cursor) {
         return new ProjectSound(
                 cursor.getString(6),
                 cursor.getString(0),
@@ -449,6 +465,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         startActivityForResult(intent, RECORD_SOUND);
     }
 
+    /**
+     * Add selected ProjectSound to the project & RecyclerView
+     *
+     * @param ps ProjectSound to add
+     */
     private void addSelectedSound(ProjectSound ps) {
         try {
             ps.setFile(new File(getFilesDir().getAbsolutePath() +
@@ -463,7 +484,11 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             this.recyclerView.getAdapter().notifyDataSetChanged();
 
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Log.e(
+                    LOG_TAG,
+                    "Failed to add sound, error:" + e.getMessage()
+            );
+
             Snackbar.make(
                     coordinatorLayout,
                     R.string.create_add_sound_error,
@@ -491,6 +516,9 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         }
     }
 
+    /**
+     * Dismiss the ProgressDialog (for saving) if it is visible
+     */
     private void dismissProgressDialog() {
         if (this.mProgress != null) {
             this.mProgress.dismiss();

@@ -178,7 +178,11 @@ public class YourSoundscapesActivity extends AppCompatActivity
             }
             this.mSaveDialogManager.show();
         } else {
-            Log.e("YourSoundscapes", "Tried to rename soundscape with non-existing index!");
+            Snackbar.make(
+                    this.mCoordinatorLayout,
+                    R.string.your_soundscapes_rename_error,
+                    Snackbar.LENGTH_LONG
+            ).show();
         }
     }
 

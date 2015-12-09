@@ -78,6 +78,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private int mWantedCount = -1;
     private ArrayList<DAMSound> mIntentReturnData;
 
+    private static final String LOG_TAG = "LibChildFrag";
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
     private static final String WANTED_FILETYPE = null;         // TODO: change to wav, when source
                                                                 // file headers are fixed (there are
@@ -118,7 +119,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void onRowUpload(int layoutPosition) {
-            Log.d("SoundLibChild DEBUG", "UPLOADING SOUND: " + data.get(layoutPosition).getTitle());
             DAMSound s = data.get(layoutPosition);
 
             if (s != null) {
@@ -128,7 +128,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void onRowDelete(int layoutPosition) {
-            Log.d("SoundLibChild DEBUG", "DELETING SOUND: " + data.get(layoutPosition).getTitle());
             DAMSound s = data.get(layoutPosition);
 
             if (s != null) {
@@ -462,7 +461,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         @Override
         public void failure(RetrofitError error) {
-            Log.e("LibChildFrag", "Upload failed: " + error.getMessage());
+            Log.e(LOG_TAG, "Upload failed: " + error.getMessage());
 
             ((SoundLibraryActivity)getActivity()).dismissProgressDialog();
 
@@ -912,6 +911,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         // Display a progress dialog when buffering an audio stream
         private final ProgressDialog progress;
+        private final static String LOG_TAG = "PreviewPlayer";
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -931,13 +931,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
                 mediaPlayer.prepare();
                 prepared = true;
-            } catch (IllegalArgumentException e) {
-                Log.d("IllegalArgument", e.getMessage());
+            } catch (IllegalArgumentException | IOException e) {
+                Log.e(LOG_TAG, e.getMessage());
                 prepared = false;
-                e.printStackTrace();
-            } catch (IOException e) {
-                prepared = false;
-                e.printStackTrace();
             }
             return prepared;
         }

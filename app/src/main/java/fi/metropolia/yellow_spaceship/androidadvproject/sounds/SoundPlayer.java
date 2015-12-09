@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import fi.metropolia.yellow_spaceship.androidadvproject.models.ProjectSound;
 
 /**
- * SoundPlayer
+ * SoundPlayer manages sound playback in the create-view
  */
 public class SoundPlayer implements SoundFinishedListener {
 

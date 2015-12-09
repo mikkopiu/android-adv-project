@@ -21,6 +21,8 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
     public final static String PROJECT_FOLDER = "projects";
     public final static String FILE_EXT = ".json";
 
+    private final static String LOG_TAG = "ProjectSaveTask";
+
     private final ProjectSaveListener mListener;
     private final Context mContext;
     private Throwable mError;
@@ -83,7 +85,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
     @Override
     protected void onPostExecute(Boolean result) {
         if (this.mError != null) {
-            Log.e("ProjectSaveTask", "Failed to save project", mError);
+            Log.e(LOG_TAG, "Failed to save project", mError);
         }
 
         if (this.mListener != null) {

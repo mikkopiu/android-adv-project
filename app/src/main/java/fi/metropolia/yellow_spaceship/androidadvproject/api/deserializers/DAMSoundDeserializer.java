@@ -88,11 +88,6 @@ public class DAMSoundDeserializer implements JsonDeserializer<DAMSound> {
                     sound.setDownloadLink(val.getAsString());
                     break;
                 default:
-                    Log.w(
-                            "DAMSoundDeserializer",
-                            "No match for JSON property in DAMSound. Key: " +
-                                    entry.getKey() + ", with value: " + val.getAsString()
-                    );
                     break;
             }
         }

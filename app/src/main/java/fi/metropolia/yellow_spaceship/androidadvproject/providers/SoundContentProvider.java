@@ -30,6 +30,8 @@ import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundDbHelpe
  */
 public class SoundContentProvider extends ContentProvider {
 
+    private final static String LOG_TAG = "SoundContentProvider";
+
     // Reference to our database
     private DAMSoundDbHelper dbHelper;
     private SQLiteDatabase database;
@@ -98,7 +100,7 @@ public class SoundContentProvider extends ContentProvider {
         try {
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
         } catch (NullPointerException e) {
-            Log.e("SoundContentProvider", "Could not set notification URI, context is null!");
+            Log.e(LOG_TAG, "Could not set notification URI, context is null!");
         }
 
         return cursor;
@@ -154,7 +156,7 @@ public class SoundContentProvider extends ContentProvider {
             try {
                 getContext().getContentResolver().notifyChange(uri, null);
             } catch (NullPointerException e) {
-                Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+                Log.e(LOG_TAG, "Could notify ContentResolver, context is null!");
             }
 
             return ContentUris.withAppendedId(uri, id);
@@ -194,7 +196,7 @@ public class SoundContentProvider extends ContentProvider {
         try {
             getContext().getContentResolver().notifyChange(uri, null);
         } catch (NullPointerException e) {
-            Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+            Log.e(LOG_TAG, "Could notify ContentResolver, context is null!");
         }
 
         return rowsDeleted;
@@ -204,6 +206,7 @@ public class SoundContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
 
+        // Check if the update is for multiple sounds or one specific sound
         int rowsUpdated;
         switch (uriType) {
             case SOUNDS:
@@ -214,28 +217,34 @@ public class SoundContentProvider extends ContentProvider {
                 break;
             case SOUND_ID:
                 String id = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = this.database.update(DAMSoundEntry.TABLE_NAME,
-                            values,
-                            DAMSoundEntry._ID + "=" + id,
-                            null);
+
+                // Base matching is done by ID
+                String whereClause = DAMSoundEntry._ID + "=" + id;
+
+                // An optional selection might be defined
+                if (!TextUtils.isEmpty(selection)) {
+                    whereClause += " and " + selection;
                 } else {
-                    rowsUpdated = this.database.update(DAMSoundEntry.TABLE_NAME,
-                            values,
-                            DAMSoundEntry._ID + "=" + id
-                                    + " and "
-                                    + selection,
-                            selectionArgs);
+                    selectionArgs = null;
                 }
+
+                // Actually run the update against the database
+                rowsUpdated = this.database.update(
+                        DAMSoundEntry.TABLE_NAME,
+                        values,
+                        whereClause,
+                        selectionArgs
+                );
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
+        // Attempt to notify the ContentResolver of the done updates
         try {
             getContext().getContentResolver().notifyChange(uri, null);
         } catch (NullPointerException e) {
-            Log.e("SoundContentProvider", "Could notify ContentResolver, context is null!");
+            Log.e(LOG_TAG, "Could notify ContentResolver, context is null!");
         }
 
         return rowsUpdated;
