@@ -56,7 +56,7 @@
     <string name="library_upload_error">Upload failed, try again</string>
     <string name="library_preview_error">Preview failed to start, try again</string>
     <string name="library_delete_error">Delete failed, try again</string>
-    <string name="login_collection_id_not_int">Please enter an integer as the collection ID</string>
+    <string name="login_collection_id_not_int">Please enter a numeric collection ID</string>
     <string name="login_failed">Login failed</string>
     <string name="login_no_name_or_password">Please enter a username and password</string>
     <string name="login_name_or_password_incorrect">Username or password incorrect</string>

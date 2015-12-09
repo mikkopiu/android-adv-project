@@ -29,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
 
+    private final static String LOG_TAG = "LoginActivity";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,40 +73,55 @@ public class LoginActivity extends AppCompatActivity {
         String password = txtPassword.getText().toString();
         final int collectionId;
 
+        if (username.trim().isEmpty() && password.trim().isEmpty()) {
+            showLoginFailMsg(getResources().getString(R.string.login_no_name_or_password));
+            return;
+        }
+
         try {
             collectionId = Integer.parseInt(txtCollectionId.getText().toString());
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             showLoginFailMsg(getResources().getString(R.string.login_collection_id_not_int));
             return;
         }
 
         // NOTE: Probably safe to assume collection IDs are always positive integers
-        if (username.trim().length() > 0 && password.trim().length() > 0 && collectionId >= 0) {
+        if (collectionId >= 0) {
 
             DAMUser user = new DAMUser(username, password, collectionId);
             ApiClient.getDAMApiClient().login(user, new Callback<DAMApiKey>() {
                 @Override
                 public void success(DAMApiKey apiKey, Response response) {
-                    Log.d("LoginActivity DEBUG", "Fetched api key: " + apiKey.getApi_key());
-                    sessionManager.createLoginSession(apiKey.getApi_key(), collectionId);
+                    String key = apiKey.getApi_key();
+                    if (key != null &&
+                            !key.equals("Incorrect credentials! Try again.") &&
+                            !key.contains(" ")) {
 
-                    // Start the actual application
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(i);
-                    finish();
+                        sessionManager.createLoginSession(apiKey.getApi_key(), collectionId);
+
+                        // Start the actual application
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Log.e(
+                                LOG_TAG,
+                                "Incorrect credentials returned in HTTP 200 OK, key: " +
+                                        apiKey.getApi_key()
+                        );
+                        showLoginFailMsg();
+                    }
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.e("LoginActivity ERROR", error.getMessage());
-                    error.printStackTrace();
+                    Log.e(LOG_TAG, error.getMessage());
                     showLoginFailMsg();
                 }
             });
 
         } else {
-            showLoginFailMsg(getResources().getString(R.string.login_no_name_or_password));
+            showLoginFailMsg(getResources().getString(R.string.login_collection_id_not_int));
         }
     }
 
