@@ -1,7 +1,7 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.models;
 
 /**
- * Holds data for a single RecyclerView row
+ * Holds data for a single RecyclerView row with an optional icon
  */
 public class ListRowData {
 

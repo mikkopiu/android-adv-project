@@ -339,10 +339,18 @@ public class DAMSound implements Parcelable {
         return this.soundId;
     }
 
+    /**
+     * Set a unique ID for this sound
+     * @param soundId Unique ID for this sound
+     */
     public void setFormattedSoundId(String soundId) {
         this.soundId = soundId;
     }
 
+    /**
+     * Generate a unique sound ID based on its metadata
+     * @return Unique sound id
+     */
     public String generateFormattedSoundId() {
         return String.valueOf(getCollectionID()) +
                 getTitle() +
@@ -364,7 +372,7 @@ public class DAMSound implements Parcelable {
      * Only write the necessary fields for Soundscapes,
      * no need for anything else (might not even exist, when handling favorites).
      *
-     * @param dest Destination Parcel
+     * @param dest  Destination Parcel
      * @param flags Parcel flags
      */
     @Override
@@ -379,13 +387,18 @@ public class DAMSound implements Parcelable {
         dest.writeString(getFormattedSoundId());
     }
 
+    /**
+     * Standard Creator for Parcelables
+     */
     public static final Parcelable.Creator<DAMSound> CREATOR
             = new Parcelable.Creator<DAMSound>() {
 
+        @Override
         public DAMSound createFromParcel(Parcel in) {
             return new DAMSound(in);
         }
 
+        @Override
         public DAMSound[] newArray(int size) {
             return new DAMSound[size];
         }

@@ -17,7 +17,7 @@ import fi.metropolia.yellow_spaceship.androidadvproject.sounds.SoundPlayer;
 
 /**
  * A simplified representation of a DAMSound in a SoundScapeProject.
- * Can be serialized using GSON to JSON format.
+ * Can be serialized using GSON into JSON format.
  */
 public class ProjectSound implements Parcelable {
     private String id;
@@ -29,6 +29,7 @@ public class ProjectSound implements Parcelable {
     private boolean isRandom;
     private float mVolume;
 
+    // Non-serialized properties
     private transient AudioTrack mAudioTrack;
     private transient boolean isPlaying = false;
     private transient int mChannels;
@@ -63,6 +64,10 @@ public class ProjectSound implements Parcelable {
 
     }
 
+    /**
+     * Constructor for Parcelable implementation
+     * @param in Parcel of a ProjectSound
+     */
     private ProjectSound(Parcel in) {
         this(
                 in.readString(),
@@ -76,10 +81,18 @@ public class ProjectSound implements Parcelable {
         );
     }
 
+    /**
+     * Set a listener for sound playback finish event
+     * @param sfl Listener
+     */
     public void setSoundFinishedListener(SoundFinishedListener sfl) {
         this.soundFinishedListener = sfl;
     }
 
+    /**
+     * Set a Runnable for randomizing playback of this sound
+     * @param randomRunnable Runnable
+     */
     public void setRandomRunnable(RandomRunnable randomRunnable) {
         mRandomRunnable = randomRunnable;
     }
