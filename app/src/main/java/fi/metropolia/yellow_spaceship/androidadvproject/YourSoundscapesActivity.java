@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private SoundScapeProject mEditedProject;
 
     private SaveDialogManager saveDialogManager;
+
 
     private TextView mEmptyView;
     private ProgressBar mSpinner;
@@ -146,19 +148,24 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
     @Override
     public void onRowRename(int layoutPosition) {
-        if (this.saveDialogManager == null) {
-            this.saveDialogManager = new SaveDialogManager(
-                    this,
-                    getResources().getString(R.string.soundscape_rename_dialog_title),
-                    null,
-                    this
-            );
-            this.saveDialogManager.setCounterMaxLength(
-                    getResources().getInteger(R.integer.soundscape_name_max_length)
-            );
-        }
         this.mEditedProject = this.mData.get(layoutPosition);
-        this.saveDialogManager.show();
+        if (mEditedProject != null) {
+            if (this.saveDialogManager == null) {
+                this.saveDialogManager = new SaveDialogManager(
+                        this,
+                        getResources().getString(R.string.soundscape_rename_dialog_title),
+                        null,
+                        this
+                );
+                this.saveDialogManager.setCounterMaxLength(
+                        getResources().getInteger(R.integer.soundscape_name_max_length)
+                );
+                this.saveDialogManager.setEditTextText(mEditedProject.getName());
+            }
+            this.saveDialogManager.show();
+        } else {
+            Log.e("YourSoundscapes", "Tried to rename soundscape with non-existing index!");
+        }
     }
 
     @Override
