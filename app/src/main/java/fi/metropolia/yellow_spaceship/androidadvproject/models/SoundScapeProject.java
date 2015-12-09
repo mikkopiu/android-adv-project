@@ -120,16 +120,6 @@ public class SoundScapeProject implements Parcelable {
     }
 
     /**
-     * Replace all sounds with the specified ones
-     *
-     * @param sounds New list of sounds to use
-     */
-    public void replaceSounds(ArrayList<ProjectSound> sounds) {
-        this.clearSounds();
-        this.addSounds(sounds);
-    }
-
-    /**
      * Parcelable implementations
      */
 

@@ -119,7 +119,7 @@ public class SaveDialogManager implements View.OnClickListener {
     }
 
     /**
-     * Set a predefined value to the text input (e.g. prefilled project names)
+     * Set a predefined value to the text input (e.g. pre-filled project names)
      *
      * @param str Predefined text value
      */

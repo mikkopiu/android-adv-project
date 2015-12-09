@@ -2,7 +2,6 @@ package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;

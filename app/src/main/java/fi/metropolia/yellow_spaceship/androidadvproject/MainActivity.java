@@ -22,11 +22,7 @@ public class MainActivity extends AppCompatActivity {
         // Check login status and redirect to LoginActivity if necessary
         session.checkLogin();
 
-        // Toolbar and menus + menu click events
-        //drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        //navigationView = (NavigationView)findViewById(R.id.navigation_view);
-        //navigationView.getMenu().getItem(0).setChecked(true);
-
+        // Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_title));
         toolbar.inflateMenu(R.menu.toolbar_menu);
@@ -41,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        //DrawerMenu drawerMenu = new DrawerMenu(this, navigationView, drawerLayout, toolbar);
-        //drawerMenu.createMenu();
 
         // Incontext navigation click events
         View incontextCreateSoundscape = findViewById(R.id.incontext_create_soundscape);

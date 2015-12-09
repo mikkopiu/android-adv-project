@@ -33,7 +33,7 @@ public class AlertDialogManager {
     /**
      * No need to re-create an empty listener every time, so make it static
      */
-    private static DialogInterface.OnClickListener clickListener =
+    private final static DialogInterface.OnClickListener clickListener =
             new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                 }

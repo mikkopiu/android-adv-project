@@ -86,38 +86,6 @@ public class ApiClient {
                    Callback<DAMApiKey> callback);
 
         /**
-         * Get a list of sounds matching given parameters.
-         * Set parameter as null to ignore.
-         * <p/>
-         * String.valueOf(Object) is called for all Query objects, so adding a toString-method
-         * to a custom class/enum should be enough.
-         *
-         * @param apiKey     API key
-         * @param collection Collection ID
-         * @param format     File format
-         * @param size       File size, e.g. "<50KB"
-         * @param category   SoundCategory
-         * @param tag        Tag of the sound, e.g. "dog"
-         * @param link       Show download link?
-         * @param search     Search any metadata field for string
-         * @param soundType  SoundType
-         * @param createdBy  User that created the sound
-         * @param callback   Callback for parsing
-         */
-        @GET("/api_audio_search/index.php/")
-        void getSoundsWithParams(@NonNull @Query("key") String apiKey,
-                                 @Query("collection") Integer collection,
-                                 @Query("format") String format,
-                                 @Query("size") String size,
-                                 @Query("category") SoundCategory category,
-                                 @Query("tag") String tag,
-                                 @Query("link") boolean link,
-                                 @Query("search") String search,
-                                 @Query("sound_type") SoundType soundType,
-                                 @Query("resource_created_by") String createdBy,
-                                 Callback<List<List<DAMSound>>> callback);
-
-        /**
          * Simplified method for getting all sounds for a single category
          *
          * @param apiKey       API key

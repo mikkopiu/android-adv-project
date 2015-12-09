@@ -274,9 +274,9 @@ public class DAMSound implements Parcelable {
     }
 
     /**
-     * Has the local user favorited this sound
+     * Has the local user added this sound to favourites
      *
-     * @return Is this sound favorited
+     * @return Is this sound added to favourites
      */
     public boolean getIsFavorite() {
         return isFavorite;
@@ -361,7 +361,7 @@ public class DAMSound implements Parcelable {
 
     /**
      * Implementation for Parcelable interface.
-     * Only write the necessary fields for SoundScapes,
+     * Only write the necessary fields for Soundscapes,
      * no need for anything else (might not even exist, when handling favorites).
      *
      * @param dest Destination Parcel

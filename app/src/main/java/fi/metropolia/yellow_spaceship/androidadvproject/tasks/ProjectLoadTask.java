@@ -1,7 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

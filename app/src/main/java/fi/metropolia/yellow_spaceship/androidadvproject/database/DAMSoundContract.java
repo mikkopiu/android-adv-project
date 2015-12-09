@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 /**
  * A contract class for the SQLite database.
- * Used for save metadata for sounds that are favorited and/or downloaded.
+ * Used for save metadata for sounds that are added to favourites and/or downloaded.
  */
 public final class DAMSoundContract {
 

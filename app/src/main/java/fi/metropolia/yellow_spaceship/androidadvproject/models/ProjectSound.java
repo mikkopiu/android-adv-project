@@ -178,7 +178,7 @@ public class ProjectSound implements Parcelable {
     }
 
     /**
-     * Get channel informatio for Audio Track
+     * Get channel information for Audio Track
      *
      * @return Channel information for Audio Track
      */
