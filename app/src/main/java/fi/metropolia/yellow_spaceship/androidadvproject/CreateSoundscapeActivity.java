@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundCardViewAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.IProjectSoundViewHolderClicks;
-import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.AsyncDownloader;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SaveDialogManager;

@@ -26,7 +26,7 @@ public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScap
      *
      * @param listener Listener for handling load finishing events
      */
-    public ProjectLoadTask(@NonNull ProjectLoadListener listener) {
+    public ProjectLoadTask(ProjectLoadListener listener) {
         this.mListener = listener;
     }
 
@@ -70,6 +70,8 @@ public class ProjectLoadTask extends AsyncTask<String, Void, ArrayList<SoundScap
     @Override
     protected void onPostExecute(ArrayList<SoundScapeProject> data) {
         // Let the listener know the loading has finished
-        this.mListener.onLoadFinished(data);
+        if (this.mListener != null) {
+            this.mListener.onLoadFinished(data);
+        }
     }
 }

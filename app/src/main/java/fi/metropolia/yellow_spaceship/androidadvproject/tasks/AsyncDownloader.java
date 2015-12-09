@@ -1,4 +1,4 @@
-package fi.metropolia.yellow_spaceship.androidadvproject.api;
+package fi.metropolia.yellow_spaceship.androidadvproject.tasks;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -101,6 +101,8 @@ public class AsyncDownloader extends AsyncTask<Void, Long, Boolean> {
 
                                 // Convert to wav
                                 try {
+                                    // NOTE: The Converter could be switched to some better
+                                    // performing C/C++ library (this one is quite slow).
                                     Converter converter = new Converter();
                                     String withoutExtension = mFile.getName().substring(0, mFile.getName().lastIndexOf('.'));
                                     mDAMSound.setFileName(withoutExtension + ".wav");

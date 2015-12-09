@@ -38,8 +38,8 @@ import java.util.List;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.SoundListAdapter;
 import fi.metropolia.yellow_spaceship.androidadvproject.adapters.ISoundLibraryViewHolderClicks;
 import fi.metropolia.yellow_spaceship.androidadvproject.api.ApiClient;
-import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloader;
-import fi.metropolia.yellow_spaceship.androidadvproject.api.AsyncDownloaderListener;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.AsyncDownloader;
+import fi.metropolia.yellow_spaceship.androidadvproject.tasks.AsyncDownloaderListener;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract;
 import fi.metropolia.yellow_spaceship.androidadvproject.database.DAMSoundContract.DAMSoundEntry;
 import fi.metropolia.yellow_spaceship.androidadvproject.managers.SessionManager;
@@ -61,6 +61,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private SoundListAdapter mAdapter;
     private String mSearchQuery;
     private ProgressBar mSpinner;
+    private ProgressDialog mProgressDialog;
     private TextView mEmptyView;
     private CoordinatorLayout coordinatorLayout;
 
@@ -80,7 +81,10 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private ArrayList<DAMSound> mIntentReturnData;
 
     private static final String LOCAL_SOUND_FOLDER = "/sounds";
-    private static final String WANTED_FILETYPE = "mp3";
+    private static final String WANTED_FILETYPE = null;         // TODO: change to wav, when source
+                                                                // file headers are fixed (there are
+                                                                // some extra headers currently,
+                                                                // messing up the audio).
 
     /**
      * Event handling for adapter's events
@@ -99,11 +103,14 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             Intent intent = getActivity().getIntent();
             if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                 // No need to download any time the user clicks a row, just when getting a sound
-                mSpinner.setVisibility(View.VISIBLE);
-                getActivity().getWindow().setFlags(
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                mProgressDialog = ProgressDialog.show(
+                        getContext(),
+                        null,
+                        getResources().getString(R.string.library_downloading),
+                        true,
+                        false
                 );
+
                 mWantedCount = 1;
                 downloadingFiles = true;
                 new AsyncDownloader(selectedSound, getActivity(), SoundLibraryChildFragment.this).execute();
@@ -258,11 +265,15 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         if (this.downloadingFiles) {
-            this.mSpinner.setVisibility(View.VISIBLE);
-            getActivity().getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            );
+            if (this.mProgressDialog == null) {
+                this.mProgressDialog = ProgressDialog.show(
+                        getContext(),
+                        null,
+                        getResources().getString(R.string.library_downloading),
+                        true,
+                        false
+                );
+            }
         }
     }
 
@@ -275,38 +286,41 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     @Override
     public void onDownloadFinished(DAMSound damSound) {
-        if (mIntentReturnData == null) {
-            mIntentReturnData = new ArrayList<>();
+        if (this.mIntentReturnData == null) {
+            this.mIntentReturnData = new ArrayList<>();
         }
 
-        mIntentReturnData.add(damSound);
+        this.mIntentReturnData.add(damSound);
 
-        if (mIntentReturnData.size() == mWantedCount) {
-            downloadingFiles = false;
-            mSpinner.setVisibility(View.GONE);
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        if (mIntentReturnData.size() == this.mWantedCount) {
+            this.downloadingFiles = false;
+            this.mProgressDialog.dismiss();
 
-            if (damSound != null && damSound.getFileName() != null) {
-                // We don't want to block we UI and make parcelable out of all selected sounds,
-                // instead pass their IDs as the result, and let the recipient handle actually
-                // loading them from the DB, asynchronously.
-                String[] ids = new String[mIntentReturnData.size()];
-                for (int i = 0; i < mIntentReturnData.size(); i++) {
-                    ids[i] = mIntentReturnData.get(i).getFormattedSoundId();
+            if (getActivity() != null) {
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                if (damSound != null && damSound.getFileName() != null) {
+                    // We don't want to block we UI and make parcelable out of all selected sounds,
+                    // instead pass their IDs as the result, and let the recipient handle actually
+                    // loading them from the DB, asynchronously.
+                    String[] ids = new String[this.mIntentReturnData.size()];
+                    for (int i = 0; i < this.mIntentReturnData.size(); i++) {
+                        ids[i] = this.mIntentReturnData.get(i).getFormattedSoundId();
+                    }
+
+                    // Create the return Intent to send the selected sound IDs
+                    // to the create-view.
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, ids);
+                    getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                    getActivity().finish();
+                } else {
+                    Snackbar.make(
+                            this.coordinatorLayout,
+                            R.string.library_download_error,
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 }
-
-                // Create the return Intent to send the selected sound IDs
-                // to the create-view.
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra(SoundLibraryActivity.LIBRARY_RESULT_KEY, ids);
-                getActivity().setResult(Activity.RESULT_OK, returnIntent);
-                getActivity().finish();
-            } else {
-                Snackbar.make(
-                        this.coordinatorLayout,
-                        R.string.library_download_error,
-                        Snackbar.LENGTH_LONG
-                ).show();
             }
         }
     }
@@ -374,10 +388,12 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
                         mWantedCount = selectedSounds.size();
                         downloadingFiles = true;
-                        mSpinner.setVisibility(View.VISIBLE);
-                        getActivity().getWindow().setFlags(
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        mProgressDialog = ProgressDialog.show(
+                                getContext(),
+                                null,
+                                getResources().getString(R.string.library_downloading),
+                                true,
+                                false
                         );
 
                         for (DAMSound s : selectedSounds) {
@@ -422,7 +438,12 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             for (List<DAMSound> s : lists) {
                 d.add(s.get(0));
             }
-            setSoundData(d);
+
+            // Activity no longer exists or hasn't yet been attached,
+            // no need to set the received data to a null context
+            if (getActivity() != null) {
+                setSoundData(d);
+            }
         }
 
         @Override
@@ -451,21 +472,20 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                     Snackbar.LENGTH_LONG
             ).show();
 
-            mSpinner.setVisibility(View.GONE);
+            mProgressDialog.dismiss();
         }
 
         @Override
         public void failure(RetrofitError error) {
-            error.printStackTrace();
+            Log.e("LibChildFrag", "Upload failed: " + error.getMessage());
 
-            mSpinner.setVisibility(View.GONE);
+            mProgressDialog.dismiss();
+
             Snackbar.make(
                     coordinatorLayout,
                     R.string.library_upload_error,
                     Snackbar.LENGTH_LONG
             ).show();
-
-            mSpinner.setVisibility(View.GONE);
         }
     };
 
@@ -583,7 +603,13 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     private void uploadSound(DAMSound sound) {
 
-        mSpinner.setVisibility(View.VISIBLE);
+        this.mProgressDialog = ProgressDialog.show(
+                getContext(),
+                null,
+                getResources().getString(R.string.library_uploading),
+                true,
+                false
+        );
 
         // Create a TypedFile of type octet-stream for the API upload
         File file = new File(getContext().getFilesDir() +

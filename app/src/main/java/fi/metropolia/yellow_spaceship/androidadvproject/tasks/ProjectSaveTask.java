@@ -32,7 +32,7 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
      * @param context  Context for finding the proper file directory
      * @param listener Listener for save completion events
      */
-    public ProjectSaveTask(Context context, @NonNull ProjectSaveListener listener) {
+    public ProjectSaveTask(Context context, ProjectSaveListener listener) {
         this.mListener = listener;
         this.mContext = context;
     }
@@ -83,10 +83,12 @@ public class ProjectSaveTask extends AsyncTask<SoundScapeProject, Void, Boolean>
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (mError != null) {
+        if (this.mError != null) {
             Log.e("ProjectSaveTask", "Failed to save project", mError);
         }
 
-        mListener.onSaveComplete(mError == null);
+        if (this.mListener != null) {
+            this.mListener.onSaveComplete(mError == null);
+        }
     }
 }
