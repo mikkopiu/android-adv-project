@@ -26,7 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -61,7 +60,6 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
     private SoundListAdapter mAdapter;
     private String mSearchQuery;
     private ProgressBar mSpinner;
-    private ProgressDialog mProgressDialog;
     private TextView mEmptyView;
     private CoordinatorLayout coordinatorLayout;
 
@@ -103,12 +101,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
             Intent intent = getActivity().getIntent();
             if (intent.getIntExtra(SoundLibraryActivity.LIBRARY_REQUEST_KEY, 0) == CreateSoundscapeActivity.GET_LIBRARY_SOUND) {
                 // No need to download any time the user clicks a row, just when getting a sound
-                mProgressDialog = ProgressDialog.show(
-                        getContext(),
-                        null,
-                        getResources().getString(R.string.library_downloading),
-                        true,
-                        false
+                ((SoundLibraryActivity)getActivity()).showProgressDialog(
+                        getResources().getString(R.string.library_downloading)
                 );
 
                 mWantedCount = 1;
@@ -265,13 +259,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         }
 
         if (this.downloadingFiles) {
-            if (this.mProgressDialog == null) {
-                this.mProgressDialog = ProgressDialog.show(
-                        getContext(),
-                        null,
-                        getResources().getString(R.string.library_downloading),
-                        true,
-                        false
+            if (!((SoundLibraryActivity)getActivity()).isProgressDialogShowing()) {
+                ((SoundLibraryActivity)getActivity()).showProgressDialog(
+                        getResources().getString(R.string.library_downloading)
                 );
             }
         }
@@ -294,10 +284,9 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
         if (mIntentReturnData.size() == this.mWantedCount) {
             this.downloadingFiles = false;
-            this.mProgressDialog.dismiss();
+            ((SoundLibraryActivity)getActivity()).dismissProgressDialog();
 
             if (getActivity() != null) {
-                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                 if (damSound != null && damSound.getFileName() != null) {
                     // We don't want to block we UI and make parcelable out of all selected sounds,
@@ -388,12 +377,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
                         mWantedCount = selectedSounds.size();
                         downloadingFiles = true;
-                        mProgressDialog = ProgressDialog.show(
-                                getContext(),
-                                null,
-                                getResources().getString(R.string.library_downloading),
-                                true,
-                                false
+                        ((SoundLibraryActivity)getActivity()).showProgressDialog(
+                                getResources().getString(R.string.library_downloading)
                         );
 
                         for (DAMSound s : selectedSounds) {
@@ -472,14 +457,14 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
                     Snackbar.LENGTH_LONG
             ).show();
 
-            mProgressDialog.dismiss();
+            ((SoundLibraryActivity)getActivity()).dismissProgressDialog();
         }
 
         @Override
         public void failure(RetrofitError error) {
             Log.e("LibChildFrag", "Upload failed: " + error.getMessage());
 
-            mProgressDialog.dismiss();
+            ((SoundLibraryActivity)getActivity()).dismissProgressDialog();
 
             Snackbar.make(
                     coordinatorLayout,
@@ -603,12 +588,8 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
 
     private void uploadSound(DAMSound sound) {
 
-        this.mProgressDialog = ProgressDialog.show(
-                getContext(),
-                null,
-                getResources().getString(R.string.library_uploading),
-                true,
-                false
+        ((SoundLibraryActivity)getActivity()).showProgressDialog(
+                getResources().getString(R.string.library_uploading)
         );
 
         // Create a TypedFile of type octet-stream for the API upload

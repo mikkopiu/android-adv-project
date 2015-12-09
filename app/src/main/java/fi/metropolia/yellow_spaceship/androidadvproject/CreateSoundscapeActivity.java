@@ -196,9 +196,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
                         Snackbar.LENGTH_SHORT
                 ).show();
                 mIsSaving = false;
-                if (mProgress.isShowing()) {
-                    mProgress.dismiss();
-                }
+                dismissProgressDialog();
 
                 saveDialogManager.dismiss();
             } else {
@@ -284,6 +282,8 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             stopPlayback();
             soundPlayer.clear();
         }
+
+        dismissProgressDialog();
     }
 
     @Override
@@ -385,7 +385,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             selectionIn += "?,";
 
             if (i + 1 == ids.length) {
-                selectionIn = selectionIn.substring(0, selectionIn.length()-1);
+                selectionIn = selectionIn.substring(0, selectionIn.length() - 1);
             }
         }
 
@@ -479,12 +479,22 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
         if (!mIsSaving) {
 
             mIsSaving = true;
-            this.mProgress = new ProgressDialog(this);
-            this.mProgress.setMessage(getResources().getString(R.string.saving_project));
-            this.mProgress.setCancelable(false);
-            this.mProgress.show();
+            this.mProgress = ProgressDialog.show(
+                    CreateSoundscapeActivity.this,
+                    null,
+                    getResources().getString(R.string.saving_project),
+                    true,
+                    false
+            );
             this.mProject.setName(fileName);
             new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(this.mProject);
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (this.mProgress != null) {
+            this.mProgress.dismiss();
+            this.mProgress = null;
         }
     }
 }

@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
     public static final String LIBRARY_REQUEST_KEY = "requestCode";
     public static final String LIBRARY_RESULT_KEY = "result";
     public static final String SEARCH_QUERY_KEY = "search-query";
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,52 @@ public class SoundLibraryActivity extends AppCompatActivity implements SearchVie
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.dismissProgressDialog();
+    }
+
+    /**
+     * Show a simple ProgressDialog while doing tasks that shouldn't be
+     * cancelled by the user.
+     *
+     * @param msg Message to display (e.g. "Loading...")
+     */
+    public void showProgressDialog(String msg) {
+        mProgressDialog = ProgressDialog.show(
+                SoundLibraryActivity.this,
+                null,
+                msg,
+                true,
+                false
+        );
+    }
+
+    /**
+     * Dismiss the ProgressDialog if is exists
+     */
+    public void dismissProgressDialog() {
+        if (this.mProgressDialog != null) {
+            this.mProgressDialog.dismiss();
+            this.mProgressDialog = null;
+        }
+    }
+
+    /**
+     * Check if ProgressDialog is visible
+     *
+     * @return Is ProgressDialog currently visible
+     */
+    public boolean isProgressDialogShowing() {
+        return this.mProgressDialog != null && this.mProgressDialog.isShowing();
+    }
+
+    /**
+     * Swap the currently displayed Fragment to another one
+     *
+     * @param fragment Fragment to display
+     */
     public void swapFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(

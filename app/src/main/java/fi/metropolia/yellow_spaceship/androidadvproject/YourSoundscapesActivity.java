@@ -1,5 +1,6 @@
 package fi.metropolia.yellow_spaceship.androidadvproject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -33,16 +34,16 @@ public class YourSoundscapesActivity extends AppCompatActivity
         SaveDialogListener {
 
     private ArrayList<SoundScapeProject> mData;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
 
     private SoundScapeProject mEditedProject;
 
-    private SaveDialogManager saveDialogManager;
+    private SaveDialogManager mSaveDialogManager;
 
-
+    private ProgressDialog mProgressDialog;
     private TextView mEmptyView;
     private ProgressBar mSpinner;
-    private CoordinatorLayout coordinatorLayout;
+    private CoordinatorLayout mCoordinatorLayout;
 
     /**
      * ProjectSaveListener for renaming projects (they need to be re-saved in order to
@@ -53,18 +54,18 @@ public class YourSoundscapesActivity extends AppCompatActivity
         public void onSaveComplete(boolean success) {
             if (success) {
                 Snackbar.make(
-                        coordinatorLayout,
+                        mCoordinatorLayout,
                         R.string.your_soundscapes_rename_success,
                         Snackbar.LENGTH_SHORT
                 ).show();
 
-                saveDialogManager.dismiss();
+                dismissProgressDialog();
 
                 // Reload data
                 loadData();
             } else {
                 Snackbar.make(
-                        coordinatorLayout,
+                        mCoordinatorLayout,
                         R.string.your_soundscapes_rename_error,
                         Snackbar.LENGTH_LONG
                 ).show();
@@ -98,7 +99,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
         this.mEmptyView.setText(R.string.no_saved_soundscapes);
         this.mEmptyView.setVisibility(View.GONE);
 
-        this.coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        this.mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         initRecyclerView();
 
@@ -112,6 +113,19 @@ public class YourSoundscapesActivity extends AppCompatActivity
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.dismissProgressDialog();
+    }
+
+    private void dismissProgressDialog() {
+        if (this.mProgressDialog != null) {
+            this.mProgressDialog.dismiss();
+            this.mProgressDialog = null;
+        }
+    }
+
+    @Override
     public void onLoadFinished(ArrayList<SoundScapeProject> data) {
         if (this.mData != null) {
             this.mData.clear();
@@ -122,13 +136,13 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
         this.mData.addAll(data);
         this.mSpinner.setVisibility(View.GONE);
-        this.recyclerView.getAdapter().notifyDataSetChanged();
+        this.mRecyclerView.getAdapter().notifyDataSetChanged();
 
-        if (this.recyclerView.getAdapter().getItemCount() == 0) {
-            this.recyclerView.setVisibility(View.GONE);
+        if (this.mRecyclerView.getAdapter().getItemCount() == 0) {
+            this.mRecyclerView.setVisibility(View.GONE);
             this.mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            this.recyclerView.setVisibility(View.VISIBLE);
+            this.mRecyclerView.setVisibility(View.VISIBLE);
             this.mEmptyView.setVisibility(View.GONE);
         }
     }
@@ -150,19 +164,19 @@ public class YourSoundscapesActivity extends AppCompatActivity
     public void onRowRename(int layoutPosition) {
         this.mEditedProject = this.mData.get(layoutPosition);
         if (mEditedProject != null) {
-            if (this.saveDialogManager == null) {
-                this.saveDialogManager = new SaveDialogManager(
+            if (this.mSaveDialogManager == null) {
+                this.mSaveDialogManager = new SaveDialogManager(
                         this,
                         getResources().getString(R.string.soundscape_rename_dialog_title),
                         null,
                         this
                 );
-                this.saveDialogManager.setCounterMaxLength(
+                this.mSaveDialogManager.setCounterMaxLength(
                         getResources().getInteger(R.integer.soundscape_name_max_length)
                 );
-                this.saveDialogManager.setEditTextText(mEditedProject.getName());
+                this.mSaveDialogManager.setEditTextText(mEditedProject.getName());
             }
-            this.saveDialogManager.show();
+            this.mSaveDialogManager.show();
         } else {
             Log.e("YourSoundscapes", "Tried to rename soundscape with non-existing index!");
         }
@@ -187,8 +201,8 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
     @Override
     public void onDialogCancel() {
-        if (this.saveDialogManager != null) {
-            this.saveDialogManager.dismiss();
+        if (this.mSaveDialogManager != null) {
+            this.mSaveDialogManager.dismiss();
         }
     }
 
@@ -205,12 +219,12 @@ public class YourSoundscapesActivity extends AppCompatActivity
      * Initialize the RecyclerView (list of soundscapes)
      */
     private void initRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         initRecyclerViewAdapter();
     }
@@ -221,7 +235,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
     private void initRecyclerViewAdapter() {
         mData = new ArrayList<>();
         SoundscapesAdapter adapter = new SoundscapesAdapter(mData, this);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(adapter);
     }
 
     /**
@@ -238,7 +252,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
 
             // Bail out if a project with the same name already exists
             if (newFile.exists()) {
-                this.saveDialogManager.setTextInputLayoutError(
+                this.mSaveDialogManager.setTextInputLayoutError(
                         getResources().getString(R.string.your_soundscapes_rename_error_name_taken)
                 );
                 return;
@@ -247,7 +261,17 @@ public class YourSoundscapesActivity extends AppCompatActivity
             // Delete the old file (synchronous, relatively quick)
             deleteProject(project);
 
-            // Star a ProjectSaveTask for saving the renamed project (to serialize the new name)
+            // Dismiss the save dialog and show a spinner
+            mSaveDialogManager.dismiss();
+            this.mProgressDialog = ProgressDialog.show(
+                    YourSoundscapesActivity.this,
+                    null,
+                    getResources().getString(R.string.saving_project),
+                    true,
+                    false
+            );
+
+            // Start a ProjectSaveTask for saving the renamed project (to serialize the new name)
             project.setName(name);
             new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(project);
         }
@@ -271,7 +295,7 @@ public class YourSoundscapesActivity extends AppCompatActivity
                 this.loadData();
             } else {
                 Snackbar.make(
-                        this.coordinatorLayout,
+                        this.mCoordinatorLayout,
                         R.string.your_soundscapes_delete_error,
                         Snackbar.LENGTH_LONG
                 ).show();
