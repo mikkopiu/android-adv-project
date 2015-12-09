@@ -197,7 +197,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
                 ).show();
                 mIsSaving = false;
                 if (mProgress.isShowing()) {
-                    mProgress.cancel();
+                    mProgress.dismiss();
                 }
 
                 saveDialogManager.dismiss();
@@ -481,6 +481,7 @@ public class CreateSoundscapeActivity extends AppCompatActivity implements SaveD
             mIsSaving = true;
             this.mProgress = new ProgressDialog(this);
             this.mProgress.setMessage(getResources().getString(R.string.saving_project));
+            this.mProgress.setCancelable(false);
             this.mProgress.show();
             this.mProject.setName(fileName);
             new ProjectSaveTask(this.getApplicationContext(), projectSaveListener).execute(this.mProject);

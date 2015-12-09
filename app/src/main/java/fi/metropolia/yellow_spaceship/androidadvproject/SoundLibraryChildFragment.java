@@ -939,7 +939,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (progress.isShowing()) {
-                progress.cancel();
+                progress.dismiss();
             }
 
             if (result) {
@@ -964,6 +964,7 @@ public class SoundLibraryChildFragment extends Fragment implements AsyncDownload
         protected void onPreExecute() {
             super.onPreExecute();
             this.progress.setMessage(getResources().getString(R.string.library_buffering));
+            this.progress.setCancelable(false);
             this.progress.show();
         }
     }
