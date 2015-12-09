@@ -26,7 +26,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
     private final ActionModeToggleListener mToggleListener;
     private final ArrayList<Integer> mSelectedSounds = new ArrayList<>();
 
-    private final boolean showContextMenu;
+    private final boolean mShowContextMenu;
     private boolean mEditMode = false;
 
     /**
@@ -40,6 +40,8 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         private final TextView mvTvTitle;
         private final ImageButton mFavBtn;
         private final ImageButton mPreviewBtn;
+
+        private final TypedValue mSelectableBackgroundDefault;
 
         public ViewHolder(final View itemView, ISoundLibraryViewHolderClicks listener) {
             super(itemView);
@@ -57,6 +59,16 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             itemView.setOnLongClickListener(this);
             this.mFavBtn.setOnClickListener(this);
             this.mPreviewBtn.setOnClickListener(this);
+
+            // Find the selectableItemBackground for later use
+            mSelectableBackgroundDefault = new TypedValue();
+            itemView.getContext()
+                    .getTheme()
+                    .resolveAttribute(
+                            android.R.attr.selectableItemBackground,
+                            mSelectableBackgroundDefault,
+                            true
+                    );
         }
 
         /**
@@ -67,6 +79,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
          */
         public void bindSound(DAMSound sound) {
 
+            // Update sound title
             this.mvTvTitle.setText(sound.getTitle());
 
             // Edit-mode removes the playback icons
@@ -80,29 +93,13 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
                 } else {
                     // Non-selected items should return back to the default background and
                     // unchecked checkbox.
-                    TypedValue outValue = new TypedValue();
-                    itemView.getContext()
-                            .getTheme()
-                            .resolveAttribute(
-                                    android.R.attr.selectableItemBackground,
-                                    outValue,
-                                    true
-                            );
-                    itemView.setBackgroundResource(outValue.resourceId);
+                    itemView.setBackgroundResource(mSelectableBackgroundDefault.resourceId);
                     this.mPreviewBtn
                             .setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
                 }
             } else {
                 // Reset styles when no longer in edit-mode
-                TypedValue outValue = new TypedValue();
-                itemView.getContext()
-                        .getTheme()
-                        .resolveAttribute(
-                                android.R.attr.selectableItemBackground,
-                                outValue,
-                                true
-                        );
-                itemView.setBackgroundResource(outValue.resourceId);
+                itemView.setBackgroundResource(mSelectableBackgroundDefault.resourceId);
 
                 // Set play/pause icon
                 if (sound.getIsPlaying()) {
@@ -113,7 +110,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             }
 
             // Context-menu replaces the favorite-button
-            if (showContextMenu) {
+            if (mShowContextMenu) {
                 this.mFavBtn.setImageResource(R.drawable.ic_more_vert_24dp);
             } else {
                 if (sound.getIsFavorite()) {
@@ -146,7 +143,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
             } else {
                 if (v.getId() == R.id.sound_library_fav_button) {
                     // Context-menu replaces the fav-button
-                    if (showContextMenu) {
+                    if (mShowContextMenu) {
                         PopupMenu popup = new PopupMenu(v.getContext(), v);
                         popup.inflate(R.menu.recordings_context);
                         popup.setOnMenuItemClickListener(this);
@@ -246,7 +243,7 @@ public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.View
         this.mDataSet = dataSet;
         this.mClickListener = listener;
         this.mToggleListener = toggleListener;
-        this.showContextMenu = showContextMenu;
+        this.mShowContextMenu = showContextMenu;
     }
 
     /**
