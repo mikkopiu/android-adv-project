@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final SessionManager session = new SessionManager(getApplicationContext());
+        final SessionManager session = new SessionManager(this);
 
         // Check login status and redirect to LoginActivity if necessary
         session.checkLogin();

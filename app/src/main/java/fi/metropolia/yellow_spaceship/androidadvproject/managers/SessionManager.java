@@ -3,6 +3,7 @@ package fi.metropolia.yellow_spaceship.androidadvproject.managers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
 
 import fi.metropolia.yellow_spaceship.androidadvproject.LoginActivity;
 
@@ -62,13 +63,11 @@ public class SessionManager {
         // After logout redirect user to Login Activity
         Intent i = new Intent(mContext, LoginActivity.class);
         // Closing all the Activities
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Add new Flag to start new Activity
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // Staring Login Activity
         mContext.startActivity(i);
+        ((AppCompatActivity)this.mContext).finish();
     }
 
     /**
@@ -80,14 +79,13 @@ public class SessionManager {
         if (!this.isLoggedIn()) {
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(mContext, LoginActivity.class);
-            // Closing all the Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Closing all the Activities
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             // Staring Login Activity
             mContext.startActivity(i);
+            ((AppCompatActivity)this.mContext).finish();
         }
 
         // Invalidate old SessionManager versions
